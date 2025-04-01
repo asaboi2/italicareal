@@ -80,7 +80,6 @@ button:hover { background-color: #45a049; }
     background: url('assets/backdrop.png') center center no-repeat;
     background-size: contain; /* Adjust cover/contain as needed */
     overflow: hidden;
-    width: 100%;
     border-bottom: 5px solid #5d4037;
     min-height: 200px;
 }
