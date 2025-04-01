@@ -78,7 +78,7 @@ button:hover { background-color: #45a049; }
     position: relative;
     /* Using 'assets/backdrop.png' as confirmed */
     background: url('assets/backdrop.png') center center no-repeat;
-    background-size: cover; /* Adjust cover/contain as needed */
+    background-size: contain; /* Adjust cover/contain as needed */
     overflow: hidden;
     width: 100%;
     border-bottom: 5px solid #5d4037;
