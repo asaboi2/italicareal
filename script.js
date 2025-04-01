@@ -739,3 +739,11 @@ document.addEventListener('DOMContentLoaded', () => {
             default: return tK.charAt(0).toUpperCase() + tK.slice(1); 
         } 
     }
+
+    // Run initial visual setup
+    initializeGameVisuals();
+
+    // --- Automatically Start Level 1 ---
+    startGame(); // <<< ADD THIS LINE
+
+}); // End DOMContentLoaded
