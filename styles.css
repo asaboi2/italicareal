@@ -26,22 +26,22 @@ body {
 .header {
     background-color: #8d1f1f;
     color: white;
-    padding: 8px 20px; /* Slightly less padding */
+    padding: 8px 20px;
     text-align: center;
     border-bottom: 3px solid #5d4037;
     z-index: 10;
-    flex-shrink: 0; /* Prevent shrinking */
-    height: 95px; /* Give it an explicit height */
+    flex-shrink: 0;
+    height: 95px;
 }
 .score-container {
     display: flex;
     justify-content: space-between;
-    margin-bottom: 5px; /* Less margin */
-    font-size: 15px; /* Slightly smaller */
+    margin-bottom: 5px;
+    font-size: 15px;
     font-weight: 600;
 }
 .header h1 {
-    font-size: 20px; /* Smaller title */
+    font-size: 20px;
     margin-bottom: 5px;
     letter-spacing: 1px;
     font-weight: 600;
@@ -50,12 +50,13 @@ body {
     display: flex;
     justify-content: center;
     gap: 15px;
+    margin-top: 5px; /* Added small margin */
 }
 button {
-    background-color: #4CAF50;
+    background-color: #4CAF50; /* Start Day Green */
     color: white;
     border: none;
-    padding: 7px 14px; /* Slightly smaller */
+    padding: 7px 14px;
     font-size: 13px;
     cursor: pointer;
     border-radius: 5px;
@@ -65,24 +66,23 @@ button {
 }
 button:active { transform: scale(0.98); }
 button:hover { background-color: #45a049; }
-#menu-btn { background-color: #f4a261; }
-#menu-btn:hover { background-color: #e76f51; }
-#restart-btn { background-color: #5bc0de; }
+/* #menu-btn related styles removed */
+#restart-btn { background-color: #5bc0de; } /* Restart Blue */
 #restart-btn:hover { background-color: #31b0d5; }
-#close-menu-btn { background-color: #d9534f; margin-top: 15px;}
+#close-menu-btn { background-color: #d9534f; margin-top: 15px;} /* Close Red */
 #close-menu-btn:hover { background-color: #c9302c; }
 
 /* ROW 2: RESTAURANT (GAME AREA) */
 .restaurant {
-    flex-grow: 1; /* Take remaining vertical space */
+    flex-grow: 1;
     position: relative;
-    /* *** VERIFY THIS BACKGROUND PATH AND PROPERTIES *** */
-    background: url('assets/backdrop.png') center center no-repeat; /* <<< VERIFY OR CHANGE THIS PATH */
-    background-size: contain; /* Use 'cover' or 'contain' based on image */
+    /* Using 'assets/backdrop.png' as confirmed */
+    background: url('assets/backdrop.png') center center no-repeat;
+    background-size: cover; /* Adjust cover/contain as needed */
     overflow: hidden;
-    width: 100%; /* Ensure full width */
-    border-bottom: 5px solid #5d4037; /* Separator */
-    min-height: 200px; /* Increased min-height */
+    width: 100%;
+    border-bottom: 5px solid #5d4037;
+    min-height: 200px;
 }
 
 /* --- Elements within Restaurant --- */
@@ -90,11 +90,11 @@ button:hover { background-color: #45a049; }
 .debug-info.hidden { display: none; }
 .dining-area { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; }
 
-/* --- Table Styles with NEW Positions --- */
+/* --- Table Styles with Pixel Art Positions --- */
 .table {
     position: absolute;
-    width: 90px; /* Adjust width to match pixel art table */
-    height: 75px;/* Adjust height to match pixel art table */
+    width: 90px; /* Adjust width */
+    height: 75px;/* Adjust height */
     /* background-color: rgba(0, 255, 0, 0.2); */ /* TEMP: Uncomment to see hitboxes */
     border-radius: 5px;
     display: flex;
@@ -103,28 +103,11 @@ button:hover { background-color: #45a049; }
     cursor: pointer;
     z-index: 2;
 }
-/* *** NEW TABLE POSITIONS (Adjust percentages if needed) *** */
-#table1 { /* Top Left Table */
-    top: 38%;
-    left: 18%;
-    transform: translate(-50%, -50%);
-}
-#table2 { /* Top Right Table */
-    top: 38%;
-    left: 82%;
-    transform: translate(-50%, -50%);
-}
-#table3 { /* Bottom Left Table */
-    top: 80%;
-    left: 18%;
-    transform: translate(-50%, -50%);
-}
-#table4 { /* Bottom Right Table */
-    top: 80%;
-    left: 82%;
-    transform: translate(-50%, -50%);
-}
-/* *** END NEW TABLE POSITIONS *** */
+/* Positions adjusted for pixel art background */
+#table1 { top: 38%; left: 18%; transform: translate(-50%, -50%); }
+#table2 { top: 38%; left: 82%; transform: translate(-50%, -50%); }
+#table3 { top: 80%; left: 18%; transform: translate(-50%, -50%); }
+#table4 { top: 80%; left: 82%; transform: translate(-50%, -50%); }
 .seat { width: 100%; height: 100%; position: relative; }
 
 /* --- Player & Customer Styles --- */
