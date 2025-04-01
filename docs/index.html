@@ -1,372 +1,581 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Italica Restaurant Sim</title>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="styles.css" />
-</head>
-<body>
-  <div class="container">
-    <!-- Left Column: Permanent Menu Panel -->
-    <div class="menu-column">
-      <div class="menu-header">
-        <h1>Italica Dinner Menu</h1>
-      </div>
-      <section class="menu-section">
-        <h2>For the Table</h2>
-        <div class="menu-item">
-          <h3>Bread Basket – $5</h3>
-          <p>Focaccia of the day | ciabatta | evoo | salted butter</p>
-        </div>
-        <div class="menu-item">
-          <h3>Cherry Tomato &amp; Garlic Confit – $12</h3>
-          <p>Focaccia | evoo | smoked maldon salt</p>
-        </div>
-        <div class="menu-item">
-          <h3>Ahi Crudo – $20</h3>
-          <p>Crispy garlic | charred lemon dressing | chili oil</p>
-        </div>
-        <div class="menu-item">
-          <h3>Whipped Ricotta – $14</h3>
-          <p>Pan-fried ciabatta | calabrian honey</p>
-        </div>
-      </section>
-      <section class="menu-section">
-        <h2>Small Plates</h2>
-        <div class="menu-item">
-          <h3>Raviolo al Uovo – $8</h3>
-          <p>Spinach &amp; ricotta filling | brown butter pistachios | pecorino</p>
-        </div>
-        <div class="menu-item">
-          <h3>Prosciutto e Melone – $10</h3>
-          <p>(Description if available)</p>
-        </div>
-        <div class="menu-item">
-          <h3>Crispy Gnudi – $12</h3>
-          <p>Red sauce | grana padano</p>
-        </div>
-        <div class="menu-item">
-          <h3>Marinated Olives – $6</h3>
-          <p>(Description if available)</p>
-        </div>
-      </section>
-      <section class="menu-section">
-        <h2>Salad</h2>
-        <div class="menu-item">
-          <h3>House Salad – $12</h3>
-          <p>Parmigiano-crusted roast fingerlings | cherry tomato &amp; garlic confit | arugula | charred lemon dressing</p>
-        </div>
-        <div class="menu-item">
-          <h3>Spicy Caesar – $14</h3>
-          <p>Romaine | focaccia croutons | pickled fresnos | parmigiano frico | spicy caesar dressing</p>
-        </div>
-        <div class="menu-item">
-          <h3>Mean Green – $12</h3>
-          <p>Tuscan kale | spinach | pesto genovese dressing | pistachios | toasted bread crumbs</p>
-        </div>
-        <div class="menu-item">
-          <h3>Summer Tomato Panzanella – $10</h3>
-          <p>Focaccia croutons | heirloom tomatoes | balsamic | aleppo | evoo</p>
-        </div>
-      </section>
-      <section class="menu-section">
-        <h2>Pasta</h2>
-        <div class="menu-item">
-          <h3>Cacio e Pepe – $20</h3>
-          <p>Bucatini</p>
-        </div>
-        <div class="menu-item">
-          <h3>Seeing Red Pesto – $24</h3>
-          <p>Ditalini | fresno &amp; calabrian chilis | pecorino | walnuts | burrata</p>
-        </div>
-        <div class="menu-item">
-          <h3>Short Rib Agnolotti – $32</h3>
-          <p>Ricotta | brodo | chili oil</p>
-        </div>
-        <div class="menu-item">
-          <h3>Pomodoro – $26</h3>
-          <p>Spaghetti | garlic confit | parmigiano | basil</p>
-        </div>
-      </section>
-      <section class="menu-section">
-        <h2>Pizza</h2>
-        <div class="menu-subsection">
-          <h3>Grandma Pies</h3>
-          <div class="menu-item">
-            <h4>Tre Sale – Whole $30 | Slice $6</h4>
-            <p>Pomodoro | spicy vodka | pesto genovese | asiago</p>
-          </div>
-          <div class="menu-item">
-            <h4>Tomato Pie – Whole $25 | Slice $5</h4>
-            <p>Pomodoro | aleppo | smoked maldon salt</p>
-          </div>
-        </div>
-        <div class="menu-subsection">
-          <h3>Neopolitan</h3>
-          <div class="menu-item">
-            <h4>Garlic Girl – $25</h4>
-            <p>Garlic confit | burrata | crispy garlic | lemon zest | thyme</p>
-          </div>
-          <div class="menu-item">
-            <h4>Toni Roni – $26</h4>
-            <p>Pomodoro | mozzarella di bufala | calabrian chili honey</p>
-          </div>
-        </div>
-      </section>
-      <section class="menu-section">
-        <h2>Mains &amp; Sides</h2>
-        <p class="menu-note">(Choice of two sides - not simulated in game)</p>
-        <div class="menu-item">
-          <h3>Sweet &amp; Spicy Chicken Cutlets – $28</h3>
-          <p>Calabrian honey | pickled fresnos</p>
-        </div>
-        <div class="menu-item">
-          <h3>Roasted Half-Chicken – $34</h3>
-          <p>Balsamic | rosemary &amp; thyme</p>
-        </div>
-        <div class="menu-item">
-          <h3>Grilled Sockeye Salmon – $36</h3>
-          <p>Charred lemon dressing | tarragon &amp; dill</p>
-        </div>
-        <div class="menu-item">
-          <h3>Seared Hanger Steak – $38</h3>
-          <p>Salsa verde</p>
-        </div>
-        <h2>A La Carte Sides</h2>
-        <div class="menu-item">
-          <h3>Mushroom Risotto – $12</h3>
-        </div>
-        <div class="menu-item">
-          <h3>Crispy Baked Polenta – $10</h3>
-        </div>
-        <div class="menu-item">
-          <h3>Garlic Confit Mashed Potatoes – $10</h3>
-        </div>
-        <div class="menu-item">
-          <h3>Parmigiano-Crusted Roast Fingerlings – $8</h3>
-        </div>
-        <div class="menu-item">
-          <h3>Shoestring French Fries – $6</h3>
-        </div>
-        <div class="menu-item">
-          <h3>Blackened Eggplant – $8</h3>
-        </div>
-        <div class="menu-item">
-          <h3>Sauteed Rainbow Chard – $6</h3>
-        </div>
-        <div class="menu-item">
-          <h3>Grilled Asparagus – $8</h3>
-        </div>
-        <div class="menu-item">
-          <h3>Cherry Tomato &amp; Garlic Confit – $10</h3>
-        </div>
-        <div class="menu-item">
-          <h3>Focaccia or Ciabatta – $4</h3>
-        </div>
-      </section>
-    </div>
-    
-    <!-- Right Column: Game Area -->
-    <div class="game-column">
-      <div class="game-container">
-        <div class="header">
-          <div class="score-container">
-            <div class="money">Cash: $<span id="money">0</span></div>
-            <div class="time">Time: <span id="timer">180</span>s</div>
-            <div class="level">Level: <span id="level">1</span></div>
-          </div>
-          <h1>Italica Restaurant Sim</h1>
-          <div class="controls">
-            <button id="start-btn">Start Day</button>
-            <button id="menu-btn">View Menu</button>
-          </div>
-        </div>
-  
-        <div class="restaurant">
-          <!-- Debug Info -->
-          <div id="debug-info" class="debug-info hidden">
-            Carrying: <span id="debug-food">None</span>
-          </div>
-          <!-- Kitchen Area (Food Stations) -->
-          <div class="kitchen">
-            <div class="food-prep-area">
-              <h3>Appetizers</h3>
-              <div class="food-station-container">
-                <div class="food-station" data-item="Bread Basket">🍞</div>
-                <div class="station-label">Bread Basket</div>
-              </div>
-              <div class="food-station-container">
-                <div class="food-station" data-item="Cherry Tomato &amp; Garlic Confit">🍅</div>
-                <div class="station-label">Tomato Confit</div>
-              </div>
-              <div class="food-station-container">
-                <div class="food-station" data-item="Whipped Ricotta">🧀</div>
-                <div class="station-label">Whipped Ricotta</div>
-              </div>
-              <div class="food-station-container">
-                <div class="food-station" data-item="Marinated Olives">🫒</div>
-                <div class="station-label">Mar. Olives</div>
-              </div>
-              <div class="food-station-container">
-                <div class="food-station" data-item="Crispy Gnudi">🍝</div>
-                <div class="station-label">Crispy Gnudi</div>
-              </div>
-            </div>
-            <div class="food-prep-area">
-              <h3>Salads</h3>
-              <div class="food-station-container">
-                <div class="food-station" data-item="House Salad">🥗</div>
-                <div class="station-label">House Salad</div>
-              </div>
-              <div class="food-station-container">
-                <div class="food-station" data-item="Spicy Caesar Salad">🥗</div>
-                <div class="station-label">Spicy Caesar</div>
-              </div>
-            </div>
-            <div class="food-prep-area">
-              <h3>Pasta</h3>
-              <div class="food-station-container">
-                <div class="food-station" data-item="Cacio e Pepe">🍝</div>
-                <div class="station-label">Cacio e Pepe</div>
-              </div>
-              <div class="food-station-container">
-                <div class="food-station" data-item="Seeing Red Pesto">🌶️</div>
-                <div class="station-label">Seeing Red</div>
-              </div>
-              <div class="food-station-container">
-                <div class="food-station" data-item="Short Rib Agnolotti">🥟</div>
-                <div class="station-label">Agnolotti</div>
-              </div>
-              <div class="food-station-container">
-                <div class="food-station" data-item="Pomodoro">🍝</div>
-                <div class="station-label">Pomodoro</div>
-              </div>
-            </div>
-            <div class="food-prep-area">
-              <h3>Pizza</h3>
-              <div class="food-station-container">
-                <div class="food-station" data-item="Tomato Pie Slice">🍕</div>
-                <div class="station-label">Tomato Pie Slc</div>
-              </div>
-              <div class="food-station-container">
-                <div class="food-station" data-item="Tre Sale Slice">🍕</div>
-                <div class="station-label">Tre Sale Slc</div>
-              </div>
-              <div class="food-station-container">
-                <div class="food-station" data-item="Garlic Girl">🍕</div>
-                <div class="station-label">Garlic Girl</div>
-              </div>
-              <div class="food-station-container">
-                <div class="food-station" data-item="Toni Roni">🍕</div>
-                <div class="station-label">Toni Roni</div>
-              </div>
-            </div>
-            <div class="food-prep-area">
-              <h3>Mains</h3>
-              <div class="food-station-container">
-                <div class="food-station" data-item="Chicken Cutlets">🍗</div>
-                <div class="station-label">Chicken Cutlet</div>
-              </div>
-              <div class="food-station-container">
-                <div class="food-station" data-item="Roasted Half-Chicken">🐔</div>
-                <div class="station-label">Roast Chicken</div>
-              </div>
-              <div class="food-station-container">
-                <div class="food-station" data-item="Grilled Salmon">🐟</div>
-                <div class="station-label">Grilled Salmon</div>
-              </div>
-              <div class="food-station-container">
-                <div class="food-station" data-item="Hanger Steak">🥩</div>
-                <div class="station-label">Hanger Steak</div>
-              </div>
-            </div>
-            <div class="food-prep-area">
-              <h3>Sides</h3>
-              <div class="food-station-container">
-                <div class="food-station" data-item="Mushroom Risotto">🍄</div>
-                <div class="station-label">Risotto</div>
-              </div>
-              <div class="food-station-container">
-                <div class="food-station" data-item="Crispy Polenta">🌽</div>
-                <div class="station-label">Crispy Polenta</div>
-              </div>
-              <div class="food-station-container">
-                <div class="food-station" data-item="Mashed Potatoes">🥔</div>
-                <div class="station-label">Mashed Pots</div>
-              </div>
-              <div class="food-station-container">
-                <div class="food-station" data-item="Shoestring Fries">🍟</div>
-                <div class="station-label">Fries</div>
-              </div>
-              <div class="food-station-container">
-                <div class="food-station" data-item="Grilled Asparagus">🍢</div>
-                <div class="station-label">Asparagus</div>
-              </div>
-            </div>
-            <div class="food-prep-area">
-              <h3>Drinks</h3>
-              <div class="food-station-container">
-                <div class="food-station" data-item="Water">💧</div>
-                <div class="station-label">Water</div>
-              </div>
-              <div class="food-station-container">
-                <div class="food-station" data-item="Wine">🍷</div>
-                <div class="station-label">Wine</div>
-              </div>
-              <div class="food-station-container">
-                <div class="food-station" data-item="Soda">🥤</div>
-                <div class="station-label">Soda</div>
-              </div>
-            </div>
-          </div>
-  
-          <!-- Dining Area -->
-          <div class="dining-area">
-            <div class="table" id="table1" data-table="1"><div class="seat"></div></div>
-            <div class="table" id="table2" data-table="2"><div class="seat"></div></div>
-            <div class="table" id="table3" data-table="3"><div class="seat"></div></div>
-            <div class="table" id="table4" data-table="4"><div class="seat"></div></div>
-          </div>
-  
-          <!-- Player Character -->
-          <div class="player" id="player">
-            <div class="player-image">👩🏻‍🍳</div>
-            <div class="carrying" id="carrying"></div>
-          </div>
-        </div>
-  
-        <!-- Game Over Modal -->
-        <div id="game-over" class="modal hidden">
-          <div class="modal-content">
-            <h2>End of Day!</h2>
-            <p>Final Cash: $<span id="final-score">0</span></p>
-            <button id="restart-btn">Start New Day</button>
-          </div>
-        </div>
-  
-        <!-- Optional Pop-up Menu Modal (if desired) -->
-        <div id="menu-modal" class="modal hidden">
-          <div class="modal-content menu-content">
-            <h2>Italica - Dinner Menu</h2>
-            <div class="menu-tabs">
-              <button class="tab-btn active" data-tab="appetizers">Appetizers</button>
-              <button class="tab-btn" data-tab="salads">Salads</button>
-              <button class="tab-btn" data-tab="pasta">Pasta</button>
-              <button class="tab-btn" data-tab="pizza">Pizza</button>
-              <button class="tab-btn" data-tab="mains">Mains &amp; Sides</button>
-              <button class="tab-btn" data-tab="drinks">Drinks</button>
-            </div>
-            <div class="menu-sections">
-              <!-- You can mirror the left panel menu here if needed -->
-            </div>
-            <button id="close-menu-btn">Close Menu</button>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-  <script src="script.js"></script>
-</body>
-</html>
+/* Reset & Base Styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+body {
+  font-family: 'Poppins', sans-serif;
+  background-color: #f5f0e8;
+  color: #333;
+  overflow: hidden;
+}
+
+/* Container: Two-Column Layout */
+.container {
+  display: flex;
+  height: 100vh;
+  width: 100vw;
+}
+
+/* Left Column: Permanent Menu Panel */
+.menu-column {
+  width: 25%;
+  background-color: #fff;
+  overflow-y: auto;
+  padding: 20px;
+  border-right: 5px solid #8d1f1f;
+}
+.menu-header h1 {
+  font-size: 28px;
+  color: #8d1f1f;
+  margin-bottom: 20px;
+}
+.menu-section {
+  margin-bottom: 30px;
+}
+.menu-section h2 {
+  font-size: 20px;
+  margin-bottom: 10px;
+  color: #5d4037;
+  border-bottom: 1px solid #ddd;
+  padding-bottom: 5px;
+}
+.menu-item {
+  margin-bottom: 15px;
+}
+.menu-item h3 {
+  font-size: 16px;
+  color: #8d1f1f;
+  margin-bottom: 5px;
+}
+.menu-item p {
+  font-size: 14px;
+  line-height: 1.4;
+  color: #555;
+}
+.menu-subsection h3 {
+  font-size: 18px;
+  margin-bottom: 10px;
+  color: #5d4037;
+}
+
+/* Right Column: Game Area */
+.game-column {
+  width: 75%;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Game Container (Game Area) */
+.game-container {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  border: 5px solid #8d1f1f;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+}
+
+/* Header (Game) */
+.header {
+  background-color: #8d1f1f;
+  color: white;
+  padding: 10px 20px;
+  text-align: center;
+  position: relative;
+  border-bottom: 3px solid #5d4037;
+  z-index: 20;
+}
+.score-container {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 8px;
+  font-size: 16px;
+  font-weight: 600;
+}
+.header h1 {
+  margin-bottom: 8px;
+  font-size: 24px;
+  letter-spacing: 1px;
+  font-weight: 600;
+}
+.controls {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+}
+button {
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  padding: 8px 15px;
+  font-size: 14px;
+  cursor: pointer;
+  border-radius: 5px;
+  transition: background-color 0.3s, transform 0.1s;
+  font-weight: 600;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+button:active {
+  transform: scale(0.98);
+}
+button:hover {
+  background-color: #45a049;
+}
+#menu-btn { background-color: #f4a261; }
+#menu-btn:hover { background-color: #e76f51; }
+#restart-btn { background-color: #5bc0de; }
+#restart-btn:hover { background-color: #31b0d5; }
+#close-menu-btn { background-color: #d9534f; }
+#close-menu-btn:hover { background-color: #c9302c; }
+
+/* Restaurant Area (Game) */
+.restaurant {
+  position: relative;
+  height: calc(100% - 170px);
+  background: url('assets/backdrop.png') no-repeat center center;
+  background-size: cover;
+  overflow: hidden;
+}
+
+/* Kitchen (Game) */
+.kitchen {
+  display: flex;
+  justify-content: flex-start;
+  align-items: flex-start;
+  background-color: rgba(233, 236, 239, 0.85);
+  padding: 10px;
+  border-bottom: 3px solid #8d6e63;
+  height: 170px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  gap: 8px;
+  position: relative;
+  z-index: 15;
+  width: 100%;
+  white-space: nowrap;
+}
+.kitchen::-webkit-scrollbar {
+  height: 8px;
+}
+.kitchen::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 4px;
+}
+.kitchen::-webkit-scrollbar-thumb {
+  background: #a1887f;
+  border-radius: 4px;
+}
+.kitchen::-webkit-scrollbar-thumb:hover {
+  background: #8d6e63;
+}
+
+/* Food Prep Areas & Stations (Game) */
+.food-prep-area {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: rgba(255, 255, 255, 0.75);
+  border-radius: 8px;
+  padding: 8px 5px;
+  width: auto;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  flex-shrink: 0;
+  vertical-align: top;
+  height: 100%;
+}
+.food-prep-area h3 {
+  margin-bottom: 8px;
+  font-size: 13px;
+  color: #5d4037;
+  font-weight: 600;
+  text-align: center;
+  width: 100%;
+  white-space: normal;
+}
+.food-prep-area > div:not(:first-child) {
+  display: inline-block;
+  vertical-align: top;
+  margin: 0 3px;
+}
+.food-station-container {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 5px;
+  width: 70px;
+  vertical-align: top;
+}
+.food-station {
+  width: 45px;
+  height: 45px;
+  background-color: #fff;
+  border: 2px solid #a1887f;
+  border-radius: 5px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 24px;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+  position: relative;
+  z-index: 1;
+}
+.food-station:hover {
+  transform: scale(1.1);
+  box-shadow: 0 0 10px rgba(0,0,0,0.2);
+  border-color: #5d4037;
+}
+.station-label {
+  font-size: 10px;
+  color: #333;
+  text-align: center;
+  margin-top: 3px;
+  width: 100%;
+  white-space: normal;
+  line-height: 1.1;
+  font-weight: 500;
+  height: 22px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Dining Area (Game) */
+.dining-area {
+  padding: 0;
+  height: calc(100% - 170px);
+  position: absolute;
+  top: 170px;
+  left: 0;
+  width: 100%;
+  z-index: 5;
+}
+.table {
+  position: absolute;
+  width: 80px;
+  height: 80px;
+  background-color: transparent;
+  border-radius: 5px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  box-shadow: none;
+  z-index: 1;
+}
+#table1 { top: 70%; left: 22%; transform: translate(-50%, -50%); }
+#table2 { top: 70%; left: 78%; transform: translate(-50%, -50%); }
+#table3 { top: 40%; left: 22%; transform: translate(-50%, -50%); }
+#table4 { top: 40%; left: 78%; transform: translate(-50%, -50%); }
+.seat {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Player & Delivery Indicator (Game) */
+.player {
+  position: absolute;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transition: left 0.1s linear, top 0.1s linear;
+  z-index: 10;
+  user-select: none;
+  pointer-events: none;
+  width: 50px;
+  height: 70px;
+  opacity: 0;
+}
+.player-image {
+  font-size: 40px;
+  filter: drop-shadow(0 2px 3px rgba(0,0,0,0.3));
+  line-height: 1;
+}
+.carrying {
+  position: absolute;
+  top: -15px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 20px;
+  height: 25px;
+  width: 25px;
+  background-color: rgba(255,255,255,0.8);
+  border-radius: 50%;
+  padding: 1px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1;
+}
+.delivery-radius {
+  position: absolute;
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  border: 2px dashed rgba(0,0,0,0.3);
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.3s;
+  z-index: 9;
+}
+.delivery-radius.active {
+  opacity: 0.5;
+}
+
+/* Modals & Feedback (Game) */
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0,0,0,0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 100;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease, visibility 0s linear 0.3s;
+}
+.modal:not(.hidden) {
+  opacity: 1;
+  visibility: visible;
+  transition: opacity 0.3s ease, visibility 0s linear 0s;
+}
+.modal.hidden {
+  display: flex;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+.modal-content {
+  background-color: #fff;
+  padding: 25px 30px;
+  border-radius: 10px;
+  text-align: center;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+  max-width: 90%;
+  width: 500px;
+  transform: scale(0.9);
+  transition: transform 0.3s ease;
+  position: relative;
+  z-index: 101;
+}
+.modal:not(.hidden) .modal-content {
+  transform: scale(1);
+}
+.modal-content h2 {
+  margin-bottom: 15px;
+  color: #8d1f1f;
+}
+.modal-content p {
+  margin-bottom: 20px;
+  font-size: 16px;
+  color: #555;
+}
+
+/* Menu Modal Specifics */
+.menu-content {
+  width: 800px;
+  max-width: 95%;
+  max-height: 85vh;
+  overflow-y: auto;
+  text-align: left;
+}
+.menu-content::-webkit-scrollbar {
+  width: 8px;
+}
+.menu-content::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 4px;
+}
+.menu-content::-webkit-scrollbar-thumb {
+  background: #a1887f;
+  border-radius: 4px;
+}
+.menu-content::-webkit-scrollbar-thumb:hover {
+  background: #8d6e63;
+}
+.menu-tabs {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin: 15px 0 25px 0;
+  flex-wrap: wrap;
+}
+.tab-btn {
+  background-color: #f1f1f1;
+  color: #555;
+  border: 1px solid #ddd;
+  padding: 8px 12px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 500;
+  transition: background-color 0.3s, color 0.3s;
+}
+.tab-btn:hover {
+  background-color: #e0e0e0;
+}
+.tab-btn.active {
+  background-color: #8d1f1f;
+  color: white;
+  border-color: #8d1f1f;
+}
+.menu-sections {
+  margin-top: 10px;
+}
+.menu-section {
+  display: none;
+  padding: 0 15px;
+}
+.menu-section.active {
+  display: block;
+  animation: fadeIn 0.4s ease;
+}
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.menu-section h4 {
+  margin-top: 20px;
+  margin-bottom: 10px;
+  color: #5d4037;
+  font-size: 16px;
+  font-weight: 600;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 5px;
+}
+.menu-section h4:first-child {
+  margin-top: 0;
+}
+.menu-item {
+  margin-bottom: 15px;
+  padding-bottom: 15px;
+  border-bottom: 1px dotted #ddd;
+}
+.menu-item:last-child {
+  border-bottom: none;
+}
+.menu-item h5 {
+  color: #8d1f1f;
+  margin-bottom: 5px;
+  font-size: 14px;
+  font-weight: 600;
+}
+.menu-item p {
+  color: #666;
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+/* Additional Game CSS (for customer, table highlight, modals, etc.) */
+/* For brevity, the remaining game styles from your original code are included below: */
+
+.customer {
+  position: absolute;
+  font-size: 30px;
+  z-index: 3;
+  cursor: pointer;
+  transition: transform 0.3s ease, opacity 0.5s ease;
+  transform: translateY(-10px);
+  opacity: 0;
+}
+.speech-bubble {
+  position: absolute;
+  background-color: rgba(255,255,255,0.9);
+  border: 2px solid #5d4037;
+  border-radius: 10px;
+  padding: 6px 8px;
+  font-size: 11px;
+  top: -55px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 120px;
+  z-index: 4;
+  text-align: center;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.15);
+  opacity: 0;
+}
+.speech-bubble::after {
+  content: '';
+  position: absolute;
+  bottom: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  border-width: 10px 8px 0;
+  border-style: solid;
+  border-top-color: #5d4037;
+  z-index: -1;
+  border-left-color: transparent;
+  border-right-color: transparent;
+}
+.speech-bubble::before {
+  content: '';
+  position: absolute;
+  bottom: -7px;
+  left: 50%;
+  transform: translateX(-50%);
+  border-width: 7px 6px 0;
+  border-style: solid;
+  border-color: rgba(255,255,255,0.9) transparent transparent transparent;
+}
+.mood-indicator {
+  position: absolute;
+  top: -30px;
+  left: 50%;
+  transform: translateX(15px);
+  font-size: 16px;
+  transition: transform 0.3s ease, opacity 0.3s ease;
+  z-index: 5;
+  background-color: rgba(255,255,255,0.7);
+  padding: 1px 3px;
+  border-radius: 50%;
+}
+.table-highlight .seat::before {
+  content: '';
+  position: absolute;
+  width: 110%;
+  height: 110%;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  border: 3px solid gold;
+  border-radius: 10px;
+  box-shadow: 0 0 15px 5px gold;
+  animation: pulse 1.2s infinite ease-in-out;
+  z-index: 0;
+  pointer-events: none;
+}
+@keyframes pulse {
+  0% {
+    box-shadow: 0 0 10px 3px gold;
+    opacity: 0.7;
+  }
+  50% {
+    box-shadow: 0 0 20px 6px gold;
+    opacity: 1;
+  }
+  100% {
+    box-shadow: 0 0 10px 3px gold;
+    opacity: 0.7;
+  }
+}
