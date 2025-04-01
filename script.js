@@ -307,7 +307,7 @@ document.addEventListener('DOMContentLoaded', () => {
      function getCategoryNameFromTabKey(tK) { switch(tK) { case 'appetizers': return 'Appetizers'; case 'salads': return 'Salads'; case 'pasta': return 'Pasta'; case 'pizza': return 'Pizza'; case 'mains': return 'Mains'; case 'sides': return 'Sides'; case 'drinks': return 'Drinks'; default: return tK.charAt(0).toUpperCase() + tK.slice(1); } }
 
     // ... (Keep initializeGameVisuals - ensures Start Day shows initially) ...
-    function initializeGameVisuals() {
+ function initializeGameVisuals() {
         if (restaurantArea.offsetWidth > 0) {
             const plyH = player.offsetHeight / 2 || 35;
             const plyW = player.offsetWidth / 2 || 25;
@@ -324,7 +324,7 @@ document.addEventListener('DOMContentLoaded', () => {
         menuModal.classList.add('hidden'); // Ensure menu modal is hidden initially
         eventModal.classList.add('hidden');
         debugInfo.classList.toggle('hidden', !debugMode);
-        startBtn.style.display = 'inline-block'; // <<< Make sure Start Day is visible initially
+        // startBtn.style.display = 'inline-block'; // <<< THIS LINE IS REMOVED
         try {
             restaurantArea.style.backgroundImage = `url('${BACKGROUND_IMAGE_URL}')`;
              if (!BACKGROUND_IMAGE_URL) { console.warn("BG URL missing!"); }
