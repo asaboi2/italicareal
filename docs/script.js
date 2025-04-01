@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
-  // --- DOM Elements ---
+  // --- DOM Elements (Scoped to the game area) ---
   const player = document.getElementById('player');
   const carryingDisplay = document.getElementById('carrying');
   const moneyDisplay = document.getElementById('money');
@@ -10,14 +10,13 @@ document.addEventListener('DOMContentLoaded', () => {
   const restartBtn = document.getElementById('restart-btn');
   const gameOverScreen = document.getElementById('game-over');
   const finalScoreDisplay = document.getElementById('final-score');
-  const tables = document.querySelectorAll('.table');
-  const foodStations = document.querySelectorAll('.food-station');
-  const menuModal = document.getElementById('menu-modal');
-  const closeMenuBtn = document.getElementById('close-menu-btn');
-  const tabBtns = document.querySelectorAll('.tab-btn');
-  const menuSections = document.querySelectorAll('.menu-section');
-  const restaurantArea = document.querySelector('.restaurant');
-  const diningArea = document.querySelector('.dining-area');
+
+  // Only target food stations inside the game container:
+  const foodStations = document.querySelectorAll('.game-column .food-station');
+  // Likewise, scope restaurant and dining area to game area:
+  const restaurantArea = document.querySelector('.game-column .restaurant');
+  const diningArea = document.querySelector('.game-column .dining-area');
+
   const debugInfo = document.getElementById('debug-info');
   const debugFood = document.getElementById('debug-food');
   const eventModal = document.getElementById('event-modal');
@@ -45,8 +44,6 @@ document.addEventListener('DOMContentLoaded', () => {
   let isMoving = false;
   let debugMode = false;
   let levelThresholds = [0, 75, 180, 300, 450, 650, 900, 1200, 1600];
-  // We'll set the background via CSS (background-size: contain).
-  // But you can still store the path in a variable if desired:
   const BACKGROUND_IMAGE_URL = 'assets/backdrop.png';
 
   // --- Game Configuration ---
@@ -56,31 +53,31 @@ document.addEventListener('DOMContentLoaded', () => {
     'Whipped Ricotta': { emoji: '🧀', price: 14, category: 'Appetizers', prepTime: 2 },
     'Marinated Olives': { emoji: '🫒', price: 6, category: 'Appetizers', prepTime: 1 },
     'Crispy Gnudi': { emoji: '🍝', price: 12, category: 'Appetizers', prepTime: 3.5 },
-
+    
     'House Salad': { emoji: '🥗', price: 12, category: 'Salads', prepTime: 2.5 },
     'Spicy Caesar Salad': { emoji: '🥗', price: 14, category: 'Salads', prepTime: 3 },
-
+    
     'Cacio e Pepe': { emoji: '🍝', price: 20, category: 'Pasta', prepTime: 4 },
     'Seeing Red Pesto': { emoji: '🌶️', price: 24, category: 'Pasta', prepTime: 4 },
     'Short Rib Agnolotti': { emoji: '🥟', price: 32, category: 'Pasta', prepTime: 5 },
     'Pomodoro': { emoji: '🍝', price: 26, category: 'Pasta', prepTime: 3.5 },
-
+    
     'Tomato Pie Slice': { emoji: '🍕', price: 5, category: 'Pizza', prepTime: 3 },
     'Tre Sale Slice': { emoji: '🍕', price: 6, category: 'Pizza', prepTime: 3.5 },
     'Garlic Girl': { emoji: '🍕', price: 25, category: 'Pizza', prepTime: 4.5 },
     'Toni Roni': { emoji: '🍕', price: 26, category: 'Pizza', prepTime: 5 },
-
+    
     'Chicken Cutlets': { emoji: '🍗', price: 28, category: 'Mains', prepTime: 5 },
     'Roasted Half-Chicken': { emoji: '🐔', price: 34, category: 'Mains', prepTime: 7 },
     'Grilled Salmon': { emoji: '🐟', price: 36, category: 'Mains', prepTime: 4.5 },
     'Hanger Steak': { emoji: '🥩', price: 38, category: 'Mains', prepTime: 6 },
-
+    
     'Mushroom Risotto': { emoji: '🍄', price: 12, category: 'Sides', prepTime: 5 },
     'Crispy Polenta': { emoji: '🌽', price: 10, category: 'Sides', prepTime: 4 },
     'Mashed Potatoes': { emoji: '🥔', price: 10, category: 'Sides', prepTime: 3 },
     'Shoestring Fries': { emoji: '🍟', price: 6, category: 'Sides', prepTime: 2.5 },
     'Grilled Asparagus': { emoji: '🍢', price: 8, category: 'Sides', prepTime: 3 },
-
+    
     'Water': { emoji: '💧', price: 0, category: 'Drinks', prepTime: 0.5 },
     'Wine': { emoji: '🍷', price: 12, category: 'Drinks', prepTime: 0.5 },
     'Soda': { emoji: '🥤', price: 3, category: 'Drinks', prepTime: 0.5 }
@@ -162,7 +159,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  // Food station logic
+  // Only attach food station events in the game area.
   foodStations.forEach(station => {
     station.addEventListener('click', () => {
       if (!gameRunning || isPaused || isMoving || station.classList.contains('preparing')) return;
@@ -193,7 +190,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
-  // Move on click in dining area
   diningArea.addEventListener('click', (e) => {
     if (!gameRunning || isPaused || isMoving) return;
     if (e.target.closest('.customer') || e.target.closest('.table') || e.target.closest('.player')) return;
@@ -203,7 +199,6 @@ document.addEventListener('DOMContentLoaded', () => {
     movePlayerToCoordinates(targetX, targetY);
   });
 
-  // Table click logic
   tables.forEach(table => {
     table.addEventListener('click', (e) => {
       if (!gameRunning || isPaused || isMoving) return;
@@ -240,7 +235,7 @@ document.addEventListener('DOMContentLoaded', () => {
     carryingFoodEmoji = null;
     customers = [];
     isMoving = false;
-
+  
     moneyDisplay.textContent = money;
     levelDisplay.textContent = level;
     timerDisplay.textContent = timeLeft;
@@ -251,26 +246,26 @@ document.addEventListener('DOMContentLoaded', () => {
     gameOverScreen.classList.add('hidden');
     menuModal.classList.add('hidden');
     eventModal.classList.add('hidden');
-
+  
     clearCustomersAndIndicators();
     stopPlayerMovement();
-
-    // Set backdrop if needed:
+  
     restaurantArea.style.backgroundImage = `url('${BACKGROUND_IMAGE_URL}')`;
-
+    if (!BACKGROUND_IMAGE_URL) console.warn("BACKGROUND_IMAGE_URL is not set!");
+  
     playerPosition.x = restaurantArea.offsetWidth / 2;
     playerPosition.y = restaurantArea.offsetHeight - 60;
     updatePlayerPosition();
     player.style.opacity = '1';
     player.style.display = 'flex';
-
+  
     clearInterval(timerInterval);
     timerInterval = setInterval(gameTick, 1000);
     clearTimeout(customerSpawnTimeout);
     scheduleNextCustomer();
     console.log("Game started.");
   }
-
+  
   function endGame() {
     console.log("Ending game...");
     gameRunning = false;
@@ -283,7 +278,7 @@ document.addEventListener('DOMContentLoaded', () => {
     deliveryRadius.classList.remove('active');
     console.log("Game ended. Final Score:", money);
   }
-
+  
   function pauseGame() {
     if (!gameRunning || isPaused) return;
     isPaused = true;
@@ -291,7 +286,7 @@ document.addEventListener('DOMContentLoaded', () => {
     stopPlayerMovement();
     console.log("Game Paused");
   }
-
+  
   function resumeGame() {
     if (!gameRunning || !isPaused) return;
     isPaused = false;
@@ -299,7 +294,7 @@ document.addEventListener('DOMContentLoaded', () => {
     timerInterval = setInterval(gameTick, 1000);
     console.log("Game Resumed");
   }
-
+  
   function gameTick() {
     if (!gameRunning || isPaused) {
       clearInterval(timerInterval);
@@ -312,12 +307,11 @@ document.addEventListener('DOMContentLoaded', () => {
       endGame();
       return;
     }
-    // 1% chance each second to trigger random event
     if (Math.random() < 0.01) {
       triggerRandomEvent();
     }
   }
-
+  
   function updateCustomers() {
     if (isPaused) return;
     const now = Date.now();
@@ -330,39 +324,35 @@ document.addEventListener('DOMContentLoaded', () => {
         customerLeavesAngry(customer);
       }
     });
-    // Filter out removed customers
     customers = customers.filter(c => c.state !== 'remove');
   }
-
+  
   function customerLeavesAngry(customer) {
     if (customer.state === 'leaving') return;
     console.log("Customer leaving angry:", customer.id);
     customer.state = 'leaving';
     customer.tableElement.classList.remove('table-highlight');
     showFeedbackIndicator(customer.tableElement, "Left Angry! 😡", "negative");
-    if(customer.element) {
+    if (customer.element) {
       customer.element.style.transition = 'opacity 0.5s ease';
       customer.element.style.opacity = '0';
     }
     setTimeout(() => {
-      if (customer.element && customer.element.parentNode) {
-        customer.element.remove();
-      }
+      if (customer.element && customer.element.parentNode) customer.element.remove();
       customer.state = 'remove';
     }, 500);
   }
-
+  
   function movePlayerToElement(targetElement, callback = null) {
     if (isPaused || !targetElement) return;
     const targetRect = targetElement.getBoundingClientRect();
     const restaurantRect = restaurantArea.getBoundingClientRect();
     const targetX = targetRect.left - restaurantRect.left + targetRect.width / 2;
-    // Slight offset if it's a food station
     const yOffset = targetElement.classList.contains('food-station') ? targetRect.height * 0.1 : targetRect.height / 2;
     const targetY = targetRect.top - restaurantRect.top + yOffset;
     movePlayerToCoordinates(targetX, targetY, callback);
   }
-
+  
   function movePlayerToCoordinates(targetX, targetY, callback = null) {
     if (isPaused || isMoving) return;
     isMoving = true;
@@ -409,19 +399,19 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     animationFrameId = requestAnimationFrame(step);
   }
-
+  
   function stopPlayerMovement() {
     isMoving = false;
     console.log("Requested move stop / Marked as not moving");
   }
-
+  
   function updatePlayerPosition() {
-    const kitchenHeight = 0; // No top kitchen area in the right column now
+    // In the game area, there is no kitchen above.
     const playerWidthHalf = player.offsetWidth / 2;
     const playerHeightHalf = player.offsetHeight / 2;
     const minX = playerWidthHalf;
     const maxX = restaurantArea.offsetWidth - playerWidthHalf;
-    const minY = kitchenHeight + playerHeightHalf + 5;
+    const minY = playerHeightHalf + 5;
     const maxY = restaurantArea.offsetHeight - playerHeightHalf - 5;
     playerPosition.x = Math.max(minX, Math.min(maxX, playerPosition.x));
     playerPosition.y = Math.max(minY, Math.min(maxY, playerPosition.y));
@@ -430,7 +420,7 @@ document.addEventListener('DOMContentLoaded', () => {
     deliveryRadius.style.left = `${playerPosition.x}px`;
     deliveryRadius.style.top = `${playerPosition.y}px`;
   }
-
+  
   function scheduleNextCustomer() {
     if (!gameRunning || isPaused) return;
     clearTimeout(customerSpawnTimeout);
@@ -440,7 +430,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const nextSpawnDelay = Math.max(minSpawnTime, baseSpawnTime - spawnTimeReduction);
     customerSpawnTimeout = setTimeout(spawnCustomer, nextSpawnDelay * (0.8 + Math.random() * 0.4));
   }
-
+  
   function spawnCustomer() {
     if (!gameRunning || isPaused) return;
     const availableTables = Array.from(tables).filter(table =>
@@ -493,7 +483,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     scheduleNextCustomer();
   }
-
+  
   function serveCustomer(customer) {
     if (!customer || customer.state !== 'waiting') return;
     console.log("Serving customer:", customer.id);
@@ -512,43 +502,33 @@ document.addEventListener('DOMContentLoaded', () => {
     showFeedbackIndicator(table, `+ $${price}<br/>+ $${tipAmount} tip!`, "positive");
     customer.moodIndicator.textContent = '😋';
     const speechBubble = customer.element.querySelector('.speech-bubble');
-    if (speechBubble) {
-      speechBubble.innerHTML = "Grazie! 👌";
-    }
+    if (speechBubble) speechBubble.innerHTML = "Grazie! 👌";
     table.classList.remove('table-highlight');
     carryingFood = null;
     carryingFoodEmoji = null;
     carryingDisplay.textContent = '';
     deliveryRadius.classList.remove('active');
-    if (debugMode) {
-      debugFood.textContent = "None";
-    }
+    if (debugMode) debugFood.textContent = "None";
     checkLevelUp();
     if (customer.element) {
       customer.element.style.transition = 'opacity 1s ease 0.5s';
       customer.element.style.opacity = '0.7';
     }
     setTimeout(() => {
-      if (customer.element && customer.element.parentNode) {
-        customer.element.remove();
-      }
+      if (customer.element && customer.element.parentNode) customer.element.remove();
       customer.state = 'remove';
     }, 2000);
   }
-
+  
   function updateCustomerMood(customer) {
     const patienceRatio = Math.max(0, customer.patienceCurrent) / customer.patienceTotal;
     let mood = moodEmojis.happy;
-    if (patienceRatio <= 0.2) {
-      mood = moodEmojis.angry;
-    } else if (patienceRatio <= 0.5) {
-      mood = moodEmojis.impatient;
-    } else if (patienceRatio <= 0.8) {
-      mood = moodEmojis.neutral;
-    }
+    if (patienceRatio <= 0.2) mood = moodEmojis.angry;
+    else if (patienceRatio <= 0.5) mood = moodEmojis.impatient;
+    else if (patienceRatio <= 0.8) mood = moodEmojis.neutral;
     customer.moodIndicator.textContent = mood;
   }
-
+  
   function checkLevelUp() {
     const nextLevel = level;
     if (nextLevel >= levelThresholds.length) return;
@@ -562,27 +542,22 @@ document.addEventListener('DOMContentLoaded', () => {
       console.log("Level Up! Reached level", level);
     }
   }
-
+  
   function clearCustomersAndIndicators() {
     console.log("Clearing customers and indicators...");
     customers.forEach(customer => {
-      if (customer.element && customer.element.parentNode) {
-        customer.element.remove();
-      }
+      if (customer.element && customer.element.parentNode) customer.element.remove();
     });
     customers = [];
     document.querySelectorAll('.money-indicator, .feedback-indicator').forEach(el => el.remove());
     tables.forEach(table => table.classList.remove('table-highlight'));
   }
-
+  
   function showFeedbackIndicator(targetElement, text, type = "info", duration = 1800) {
     const indicator = document.createElement('div');
     indicator.className = 'feedback-indicator';
-    if (type === "negative") {
-      indicator.classList.add('negative');
-    } else if (type === "positive") {
-      indicator.classList.add('positive');
-    }
+    if (type === "negative") indicator.classList.add('negative');
+    else if (type === "positive") indicator.classList.add('positive');
     indicator.innerHTML = text;
     const container = (targetElement.classList.contains('table') || targetElement.classList.contains('food-station'))
       ? targetElement
@@ -595,7 +570,7 @@ document.addEventListener('DOMContentLoaded', () => {
     indicator.style.top = `${targetRect.top - containerRect.top + targetRect.height * 0.1}px`;
     setTimeout(() => indicator.remove(), duration);
   }
-
+  
   function triggerRandomEvent() {
     if (!gameRunning || isPaused || !eventModal.classList.contains('hidden')) return;
     console.log("Triggering random event...");
@@ -615,7 +590,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
     eventModal.classList.remove('hidden');
   }
-
+  
   function handleEventChoice(e) {
     const button = e.target;
     const moneyEffect = parseInt(button.dataset.effectMoney || '0');
@@ -632,7 +607,7 @@ document.addEventListener('DOMContentLoaded', () => {
     eventModal.classList.add('hidden');
     resumeGame();
   }
-
+  
   function initializeGame() {
     console.log("Initializing game UI...");
     playerPosition.x = restaurantArea.offsetWidth / 2;
@@ -645,12 +620,13 @@ document.addEventListener('DOMContentLoaded', () => {
     eventModal.classList.add('hidden');
     debugInfo.classList.toggle('hidden', !debugMode);
     startBtn.style.display = 'inline-block';
-
-    // Set background to contain entire image:
-    restaurantArea.style.backgroundSize = 'contain';
-    restaurantArea.style.backgroundRepeat = 'no-repeat';
+  
+    restaurantArea.style.backgroundImage = `url('${BACKGROUND_IMAGE_URL}')`;
+    if (!BACKGROUND_IMAGE_URL) console.warn("BACKGROUND_IMAGE_URL is not set!");
+    else console.log("Attempting to load background:", BACKGROUND_IMAGE_URL);
+  
     console.log("Initialization complete. Ready to start.");
   }
-
+  
   initializeGame();
 });
