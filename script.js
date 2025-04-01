@@ -48,7 +48,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let animationFrameId = null; // For player movement
     let debugMode = false;
     let levelThresholds = [0, 75, 180, 300, 450, 650, 900, 1200, 1600];
-    const BACKGROUND_IMAGE_URL = 'assets/your-widescreen-backdrop.png'; // <<< CHANGE THIS PATH
+    const BACKGROUND_IMAGE_URL = 'assets/backdrop.png'; // <<< CHANGE THIS PATH
     let currentPrep = { // Tracks the actively preparing item
         timeoutId: null,
         cancelAnimation: null,
@@ -319,7 +319,7 @@ document.addEventListener('DOMContentLoaded', () => {
         stopPlayerMovement();
         console.log("--- startGame: Cleared dynamic elements & stations ---");
         console.log("--- startGame: Attempting to set background ---");
-        try { restaurantArea.style.backgroundImage = `url('${BACKGROUND_IMAGE_URL}')`; if (!BACKGROUND_IMAGE_URL || BACKGROUND_IMAGE_URL === 'assets/your-widescreen-backdrop.png') { console.warn("BG URL missing/default!"); } }
+        try { restaurantArea.style.backgroundImage = `url('${BACKGROUND_IMAGE_URL}')`; if (!BACKGROUND_IMAGE_URL || BACKGROUND_IMAGE_URL === 'assets/backdrop.png') { console.warn("BG URL missing/default!"); } }
         catch (e) { console.error("--- startGame: ERROR setting background ---", e); }
         console.log("--- startGame: Background set (or attempted) ---");
         console.log("--- startGame: Initializing visuals ---");
@@ -366,7 +366,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function handleEventChoice(e) { const btn = e.target; const mE = parseInt(btn.dataset.effectMoney || '0'); const tE = parseInt(btn.dataset.effectTime || '0'); const fb = btn.dataset.feedback || "Okay."; money += mE; timeLeft += tE; money = Math.max(0, money); timeLeft = Math.max(0, timeLeft); moneyDisplay.textContent = money; timerDisplay.textContent = timeLeft; showFeedbackIndicator(player, fb, (mE < 0 || tE < 0) ? "negative" : "info"); eventModal.classList.add('hidden'); if (timeLeft > 0 && gameRunning) { resumeGame(); } else if (timeLeft <= 0) { endGame(); } }
     function populateMenuModal() { menuSectionsContainer.innerHTML = ''; const cats = {}; for (const iN in foodItems) { const i = foodItems[iN]; if (!cats[i.category]) cats[i.category] = []; cats[i.category].push({ name: iN, ...i }); } const tOrd = Array.from(tabBtns).map(b => b.getAttribute('data-tab')); tOrd.forEach(tK => { let catN = getCategoryNameFromTabKey(tK); let items = []; if (tK === 'mains') { items = [...(cats['Mains'] || []), ...(cats['Sides'] || [])]; if (!items.length) catN = null; } else { items = cats[catN]; } if (items && items.length > 0) { const sDiv = document.createElement('div'); sDiv.className = 'menu-section'; sDiv.setAttribute('data-section', tK); items.forEach(it => { const iDiv = document.createElement('div'); iDiv.className = 'menu-item'; iDiv.innerHTML = `<h5>${it.name} ${it.emoji} - $${it.price}</h5><p>Prep Time: ${it.prepTime}s</p>`; sDiv.appendChild(iDiv); }); menuSectionsContainer.appendChild(sDiv); } }); }
     function getCategoryNameFromTabKey(tK) { switch(tK) { case 'appetizers': return 'Appetizers'; case 'salads': return 'Salads'; case 'pasta': return 'Pasta'; case 'pizza': return 'Pizza'; case 'mains': return 'Mains'; case 'sides': return 'Sides'; case 'drinks': return 'Drinks'; default: return tK.charAt(0).toUpperCase() + tK.slice(1); } }
-    function initializeGameVisuals() { if (restaurantArea.offsetWidth > 0) { const plyH = player.offsetHeight / 2 || 35; const plyW = player.offsetWidth / 2 || 25; playerPosition.x = restaurantArea.offsetWidth / 2; playerPosition.y = restaurantArea.offsetHeight - plyH - 10; updatePlayerPosition(); player.style.opacity = '1'; player.style.display = 'flex'; } else { setTimeout(initializeGameVisuals, 100); return; } gameOverScreen.classList.add('hidden'); menuModal.classList.add('hidden'); eventModal.classList.add('hidden'); debugInfo.classList.toggle('hidden', !debugMode); startBtn.style.display = 'inline-block'; try { restaurantArea.style.backgroundImage = `url('${BACKGROUND_IMAGE_URL}')`; if (!BACKGROUND_IMAGE_URL || BACKGROUND_IMAGE_URL === 'assets/your-widescreen-backdrop.png') { console.warn("BG URL missing/default!"); } } catch(e) { console.error("Error setting BG in init:", e)} console.log("Initial visuals set."); }
+    function initializeGameVisuals() { if (restaurantArea.offsetWidth > 0) { const plyH = player.offsetHeight / 2 || 35; const plyW = player.offsetWidth / 2 || 25; playerPosition.x = restaurantArea.offsetWidth / 2; playerPosition.y = restaurantArea.offsetHeight - plyH - 10; updatePlayerPosition(); player.style.opacity = '1'; player.style.display = 'flex'; } else { setTimeout(initializeGameVisuals, 100); return; } gameOverScreen.classList.add('hidden'); menuModal.classList.add('hidden'); eventModal.classList.add('hidden'); debugInfo.classList.toggle('hidden', !debugMode); startBtn.style.display = 'inline-block'; try { restaurantArea.style.backgroundImage = `url('${BACKGROUND_IMAGE_URL}')`; if (!BACKGROUND_IMAGE_URL || BACKGROUND_IMAGE_URL === 'assets/backdrop.png') { console.warn("BG URL missing/default!"); } } catch(e) { console.error("Error setting BG in init:", e)} console.log("Initial visuals set."); }
 
     // Run initial visual setup
     initializeGameVisuals();
