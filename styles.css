@@ -78,7 +78,7 @@ button:hover { background-color: #45a049; }
     position: relative;
     /* *** VERIFY THIS BACKGROUND PATH AND PROPERTIES *** */
     background: url('assets/backdrop.png') center center no-repeat; /* <<< VERIFY OR CHANGE THIS PATH */
-    background-size: cover; /* Use 'cover' or 'contain' based on image */
+    background-size: contain; /* Use 'cover' or 'contain' based on image */
     overflow: hidden;
     width: 100%; /* Ensure full width */
     border-bottom: 5px solid #5d4037; /* Separator */
