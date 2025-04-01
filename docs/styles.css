@@ -1,0 +1,679 @@
+{\rtf1\ansi\ansicpg1252\cocoartf2761
+\cocoatextscaling0\cocoaplatform0{\fonttbl\f0\fswiss\fcharset0 Helvetica;}
+{\colortbl;\red255\green255\blue255;}
+{\*\expandedcolortbl;;}
+\margl1440\margr1440\vieww11520\viewh8400\viewkind0
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+
+\f0\fs24 \cf0 * \{\
+  margin: 0;\
+  padding: 0;\
+  box-sizing: border-box;\
+\}\
+\
+body \{\
+  font-family: 'Poppins', sans-serif;\
+  background-color: #f5f0e8; /* Light beige background */\
+  color: #333;\
+  display: flex;\
+  justify-content: center;\
+  align-items: center;\
+  min-height: 100vh;\
+  overflow: hidden;\
+\}\
+\
+.game-container \{\
+  width: 100vw;\
+  height: 100vh;\
+  background-color: #fff;\
+  border-radius: 10px;\
+  overflow: hidden;\
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);\
+  position: relative;\
+  border: 5px solid #8d1f1f;\
+\}\
+\
+.header \{\
+  background-color: #8d1f1f;\
+  color: white;\
+  padding: 10px 20px;\
+  text-align: center;\
+  position: relative;\
+  border-bottom: 3px solid #5d4037;\
+  z-index: 20;\
+\}\
+\
+.score-container \{\
+  display: flex;\
+  justify-content: space-between;\
+  margin-bottom: 8px;\
+  font-size: 16px;\
+  font-weight: 600;\
+\}\
+\
+h1 \{\
+  margin-bottom: 8px;\
+  font-size: 24px;\
+  letter-spacing: 1px;\
+  font-weight: 600;\
+\}\
+\
+.controls \{\
+  display: flex;\
+  justify-content: center;\
+  gap: 15px;\
+\}\
+\
+button \{\
+  background-color: #4CAF50;\
+  color: white;\
+  border: none;\
+  padding: 8px 15px;\
+  text-align: center;\
+  font-size: 14px;\
+  cursor: pointer;\
+  border-radius: 5px;\
+  transition: background-color 0.3s, transform 0.1s;\
+  font-weight: 600;\
+  box-shadow: 0 2px 5px rgba(0,0,0,0.2);\
+\}\
+button:active \{\
+  transform: scale(0.98);\
+\}\
+button:hover \{\
+  background-color: #45a049;\
+\}\
+#menu-btn \{ background-color: #f4a261; \}\
+#menu-btn:hover \{ background-color: #e76f51; \}\
+#restart-btn \{ background-color: #5bc0de; \}\
+#restart-btn:hover \{ background-color: #31b0d5; \}\
+#close-menu-btn \{ background-color: #d9534f; \}\
+#close-menu-btn:hover \{ background-color: #c9302c; \}\
+\
+.restaurant \{\
+  position: relative;\
+  height: 650px;\
+  background: url('assets/backdrop.png') no-repeat center center;\
+  background-size: cover;\
+  overflow: hidden;\
+\}\
+\
+.kitchen \{\
+  display: flex;\
+  justify-content: flex-start;\
+  align-items: flex-start;\
+  background-color: rgba(233, 236, 239, 0.85);\
+  padding: 10px;\
+  border-bottom: 3px solid #8d6e63;\
+  height: 170px;\
+  overflow-x: auto;\
+  overflow-y: hidden;\
+  gap: 8px;\
+  position: relative;\
+  z-index: 15;\
+  width: 100%;\
+  white-space: nowrap;\
+\}\
+\
+.kitchen::-webkit-scrollbar \{\
+  height: 8px;\
+\}\
+.kitchen::-webkit-scrollbar-track \{\
+  background: #f1f1f1;\
+  border-radius: 4px;\
+\}\
+.kitchen::-webkit-scrollbar-thumb \{\
+  background: #a1887f;\
+  border-radius: 4px;\
+\}\
+.kitchen::-webkit-scrollbar-thumb:hover \{\
+  background: #8d6e63;\
+\}\
+\
+.food-prep-area \{\
+  display: inline-flex;\
+  flex-direction: column;\
+  align-items: center;\
+  background-color: rgba(255, 255, 255, 0.75);\
+  border-radius: 8px;\
+  padding: 8px 5px;\
+  width: auto;\
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);\
+  flex-shrink: 0;\
+  vertical-align: top;\
+  height: 100%;\
+\}\
+\
+.food-prep-area h3 \{\
+  margin-bottom: 8px;\
+  font-size: 13px;\
+  color: #5d4037;\
+  font-weight: 600;\
+  text-align: center;\
+  width: 100%;\
+  white-space: normal;\
+\}\
+\
+.food-prep-area > div:not(:first-child) \{\
+  display: inline-block;\
+  vertical-align: top;\
+  margin: 0 3px;\
+\}\
+\
+.food-station-container \{\
+  display: inline-flex;\
+  flex-direction: column;\
+  align-items: center;\
+  margin-bottom: 5px;\
+  width: 70px;\
+  vertical-align: top;\
+\}\
+\
+.food-station \{\
+  width: 45px;\
+  height: 45px;\
+  background-color: #fff;\
+  border: 2px solid #a1887f;\
+  border-radius: 5px;\
+  display: flex;\
+  justify-content: center;\
+  align-items: center;\
+  font-size: 24px;\
+  cursor: pointer;\
+  transition: transform 0.2s, box-shadow 0.2s;\
+  position: relative;\
+  z-index: 1;\
+\}\
+\
+.food-station:hover \{\
+  transform: scale(1.1);\
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);\
+  border-color: #5d4037;\
+\}\
+\
+.station-label \{\
+  font-size: 10px;\
+  color: #333;\
+  text-align: center;\
+  margin-top: 3px;\
+  width: 100%;\
+  white-space: normal;\
+  line-height: 1.1;\
+  font-weight: 500;\
+  height: 22px;\
+  overflow: hidden;\
+  display: flex;\
+  align-items: center;\
+  justify-content: center;\
+\}\
+\
+.dining-area \{\
+  padding: 0;\
+  height: calc(100% - 170px);\
+  position: absolute;\
+  top: 170px;\
+  left: 0;\
+  width: 100%;\
+  z-index: 5;\
+\}\
+\
+.table \{\
+  position: absolute;\
+  width: 80px;\
+  height: 80px;\
+  background-color: transparent;\
+  border-radius: 5px;\
+  display: flex;\
+  justify-content: center;\
+  align-items: center;\
+  cursor: pointer;\
+  box-shadow: none;\
+  z-index: 1;\
+\}\
+\
+#table1 \{ top: 70%; left: 22%; transform: translate(-50%, -50%); \}\
+#table2 \{ top: 70%; left: 78%; transform: translate(-50%, -50%); \}\
+#table3 \{ top: 40%; left: 22%; transform: translate(-50%, -50%); \}\
+#table4 \{ top: 40%; left: 78%; transform: translate(-50%, -50%); \}\
+\
+.seat \{\
+  width: 100%;\
+  height: 100%;\
+  position: relative;\
+  display: flex;\
+  justify-content: center;\
+  align-items: center;\
+\}\
+\
+.customer \{\
+  position: absolute;\
+  font-size: 30px;\
+  z-index: 3;\
+  cursor: pointer;\
+  transition: transform 0.3s ease, opacity 0.5s ease;\
+  transform: translateY(-10px);\
+  opacity: 0;\
+\}\
+\
+.speech-bubble \{\
+  position: absolute;\
+  background-color: rgba(255, 255, 255, 0.9);\
+  border: 2px solid #5d4037;\
+  border-radius: 10px;\
+  padding: 6px 8px;\
+  font-size: 11px;\
+  top: -55px;\
+  left: 50%;\
+  transform: translateX(-50%);\
+  width: 120px;\
+  z-index: 4;\
+  text-align: center;\
+  box-shadow: 0 2px 5px rgba(0,0,0,0.15);\
+  opacity: 0;\
+\}\
+.speech-bubble::after \{\
+  content: '';\
+  position: absolute;\
+  bottom: -10px;\
+  left: 50%;\
+  transform: translateX(-50%);\
+  border-width: 10px 8px 0;\
+  border-style: solid;\
+  border-top-color: #5d4037;\
+  z-index: -1;\
+  border-left-color: transparent;\
+  border-right-color: transparent;\
+\}\
+.speech-bubble::before \{\
+  content: '';\
+  position: absolute;\
+  bottom: -7px;\
+  left: 50%;\
+  transform: translateX(-50%);\
+  border-width: 7px 6px 0;\
+  border-style: solid;\
+  border-color: rgba(255, 255, 255, 0.9) transparent transparent transparent;\
+\}\
+\
+.dish-name \{\
+  font-weight: 600;\
+  font-size: 10px;\
+  color: #333;\
+  margin-bottom: 2px;\
+\}\
+.dish-price \{\
+  font-size: 10px;\
+  color: #8d1f1f;\
+  font-weight: 600;\
+\}\
+.dish-emoji \{\
+  font-size: 18px;\
+  margin-top: 2px;\
+\}\
+\
+.player \{\
+  position: absolute;\
+  transform: translateX(-50%);\
+  display: flex;\
+  flex-direction: column;\
+  align-items: center;\
+  transition: left 0.1s linear, top 0.1s linear;\
+  z-index: 10;\
+  user-select: none;\
+  pointer-events: none;\
+  width: 50px;\
+  height: 70px;\
+  opacity: 0;\
+\}\
+\
+.player-image \{\
+  font-size: 40px;\
+  filter: drop-shadow(0 2px 3px rgba(0, 0, 0, 0.3));\
+  line-height: 1;\
+\}\
+\
+.carrying \{\
+  position: absolute;\
+  top: -15px;\
+  left: 50%;\
+  transform: translateX(-50%);\
+  font-size: 20px;\
+  height: 25px;\
+  width: 25px;\
+  background-color: rgba(255, 255, 255, 0.8);\
+  border-radius: 50%;\
+  padding: 1px;\
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);\
+  display: flex;\
+  justify-content: center;\
+  align-items: center;\
+  z-index: 1;\
+\}\
+\
+.delivery-radius \{\
+  position: absolute;\
+  width: 80px;\
+  height: 80px;\
+  border-radius: 50%;\
+  border: 2px dashed rgba(0, 0, 0, 0.3);\
+  transform: translate(-50%, -50%);\
+  pointer-events: none;\
+  opacity: 0;\
+  transition: opacity 0.3s;\
+  z-index: 9;\
+\}\
+.delivery-radius.active \{\
+  opacity: 0.5;\
+\}\
+\
+/* --- Modals --- */\
+.modal \{\
+  position: fixed;\
+  top: 0;\
+  left: 0;\
+  width: 100%;\
+  height: 100%;\
+  background-color: rgba(0, 0, 0, 0.6);\
+  display: flex;\
+  justify-content: center;\
+  align-items: center;\
+  z-index: 100;\
+  opacity: 0;\
+  visibility: hidden;\
+  transition: opacity 0.3s ease, visibility 0s linear 0.3s;\
+\}\
+.modal:not(.hidden) \{\
+  opacity: 1;\
+  visibility: visible;\
+  transition: opacity 0.3s ease, visibility 0s linear 0s;\
+\}\
+.modal.hidden \{\
+  display: flex;\
+  opacity: 0;\
+  visibility: hidden;\
+  pointer-events: none;\
+\}\
+.modal-content \{\
+  background-color: #fff;\
+  padding: 25px 30px;\
+  border-radius: 10px;\
+  text-align: center;\
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);\
+  max-width: 90%;\
+  width: 500px;\
+  transform: scale(0.9);\
+  transition: transform 0.3s ease;\
+  position: relative;\
+  z-index: 101;\
+\}\
+.modal:not(.hidden) .modal-content \{\
+  transform: scale(1);\
+\}\
+.modal-content h2 \{\
+  margin-bottom: 15px;\
+  color: #8d1f1f;\
+\}\
+.modal-content p \{\
+  margin-bottom: 20px;\
+  font-size: 16px;\
+  color: #555;\
+\}\
+\
+/* Menu Modal Specifics */\
+.menu-content \{\
+  width: 800px;\
+  max-width: 95%;\
+  max-height: 85vh;\
+  overflow-y: auto;\
+  text-align: left;\
+\}\
+.menu-content::-webkit-scrollbar \{\
+  width: 8px;\
+\}\
+.menu-content::-webkit-scrollbar-track \{\
+  background: #f1f1f1;\
+  border-radius: 4px;\
+\}\
+.menu-content::-webkit-scrollbar-thumb \{\
+  background: #a1887f;\
+  border-radius: 4px;\
+\}\
+.menu-content::-webkit-scrollbar-thumb:hover \{\
+  background: #8d6e63;\
+\}\
+.menu-tabs \{\
+  display: flex;\
+  justify-content: center;\
+  gap: 10px;\
+  margin: 15px 0 25px 0;\
+  flex-wrap: wrap;\
+\}\
+.tab-btn \{\
+  background-color: #f1f1f1;\
+  color: #555;\
+  border: 1px solid #ddd;\
+  padding: 8px 12px;\
+  border-radius: 5px;\
+  cursor: pointer;\
+  font-size: 13px;\
+  font-weight: 500;\
+  transition: background-color 0.3s, color 0.3s;\
+\}\
+.tab-btn:hover \{\
+  background-color: #e0e0e0;\
+\}\
+.tab-btn.active \{\
+  background-color: #8d1f1f;\
+  color: white;\
+  border-color: #8d1f1f;\
+\}\
+.menu-sections \{\
+  margin-top: 10px;\
+\}\
+.menu-section \{\
+  display: none;\
+  padding: 0 15px;\
+\}\
+.menu-section.active \{\
+  display: block;\
+  animation: fadeIn 0.4s ease;\
+\}\
+@keyframes fadeIn \{\
+  from \{\
+    opacity: 0;\
+    transform: translateY(10px);\
+  \}\
+  to \{\
+    opacity: 1;\
+    transform: translateY(0);\
+  \}\
+\}\
+.menu-section h4 \{\
+  margin-top: 20px;\
+  margin-bottom: 10px;\
+  color: #5d4037;\
+  font-size: 16px;\
+  font-weight: 600;\
+  border-bottom: 1px solid #eee;\
+  padding-bottom: 5px;\
+\}\
+.menu-section h4:first-child \{\
+  margin-top: 0;\
+\}\
+.menu-item \{\
+  margin-bottom: 15px;\
+  padding-bottom: 15px;\
+  border-bottom: 1px dotted #ddd;\
+\}\
+.menu-item:last-child \{\
+  border-bottom: none;\
+\}\
+.menu-item h5 \{\
+  color: #8d1f1f;\
+  margin-bottom: 5px;\
+  font-size: 14px;\
+  font-weight: 600;\
+\}\
+.menu-item p \{\
+  color: #666;\
+  font-size: 12px;\
+  line-height: 1.4;\
+\}\
+\
+/* Event Modal */\
+.event-options-container \{\
+  margin-top: 20px;\
+  display: flex;\
+  flex-direction: column;\
+  gap: 10px;\
+  align-items: center;\
+\}\
+.event-options-container button \{\
+  background-color: #5bc0de;\
+  width: 80%;\
+  padding: 10px 15px;\
+  font-size: 14px;\
+\}\
+.event-options-container button:hover \{\
+  background-color: #31b0d5;\
+\}\
+\
+/* Indicators */\
+.money-indicator,\
+.feedback-indicator \{\
+  position: absolute;\
+  left: 50%;\
+  top: 40%;\
+  transform: translateX(-50%);\
+  font-size: 16px;\
+  color: gold;\
+  font-weight: bold;\
+  animation: float-up-fade 1.8s forwards ease-out;\
+  z-index: 20;\
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);\
+  pointer-events: none;\
+  text-align: center;\
+  line-height: 1.2;\
+\}\
+.feedback-indicator.negative \{\
+  color: #e74c3c;\
+\}\
+.feedback-indicator.positive \{\
+  color: #2ecc71;\
+\}\
+@keyframes float-up-fade \{\
+  from \{\
+    opacity: 1;\
+    transform: translate(-50%, 0);\
+  \}\
+  to \{\
+    opacity: 0;\
+    transform: translate(-50%, -60px);\
+  \}\
+\}\
+\
+/* Table Highlight */\
+.table-highlight .seat::before \{\
+  content: '';\
+  position: absolute;\
+  width: 110%;\
+  height: 110%;\
+  top: 50%;\
+  left: 50%;\
+  transform: translate(-50%, -50%);\
+  border: 3px solid gold;\
+  border-radius: 10px;\
+  box-shadow: 0 0 15px 5px gold;\
+  animation: pulse 1.2s infinite ease-in-out;\
+  z-index: 0;\
+  pointer-events: none;\
+\}\
+@keyframes pulse \{\
+  0% \{\
+    box-shadow: 0 0 10px 3px gold;\
+    opacity: 0.7;\
+  \}\
+  50% \{\
+    box-shadow: 0 0 20px 6px gold;\
+    opacity: 1;\
+  \}\
+  100% \{\
+    box-shadow: 0 0 10px 3px gold;\
+    opacity: 0.7;\
+  \}\
+\}\
+\
+/* Mood Indicator */\
+.mood-indicator \{\
+  position: absolute;\
+  top: -30px;\
+  left: 50%;\
+  transform: translateX(15px);\
+  font-size: 16px;\
+  transition: transform 0.3s ease, opacity 0.3s ease;\
+  z-index: 5;\
+  background-color: rgba(255, 255, 255, 0.7);\
+  padding: 1px 3px;\
+  border-radius: 50%;\
+\}\
+\
+/* Preparing Animation */\
+.preparing \{\
+  animation: preparing-pulse 0.6s infinite alternate ease-in-out;\
+  cursor: not-allowed !important;\
+\}\
+@keyframes preparing-pulse \{\
+  from \{\
+    transform: scale(1);\
+    box-shadow: 0 0 5px rgba(76, 175, 80, 0.5);\
+  \}\
+  to \{\
+    transform: scale(1.1);\
+    box-shadow: 0 0 15px rgba(76, 175, 80, 1);\
+  \}\
+\}\
+\
+/* Debug Info */\
+.debug-info \{\
+  position: absolute;\
+  top: 5px;\
+  right: 5px;\
+  background: rgba(0, 0, 0, 0.75);\
+  color: #0f0;\
+  padding: 5px 8px;\
+  font-size: 11px;\
+  font-family: 'Courier New', Courier, monospace;\
+  border-radius: 4px;\
+  z-index: 101;\
+  opacity: 0.9;\
+\}\
+.debug-info.hidden \{\
+  display: none;\
+\}\
+\
+/* Missing Ingredients */\
+.missing-ingredients \{\
+  position: absolute;\
+  top: -25px;\
+  left: 50%;\
+  transform: translateX(-50%);\
+  background-color: rgba(255, 0, 0, 0.8);\
+  color: white;\
+  padding: 3px 8px;\
+  border-radius: 4px;\
+  font-size: 10px;\
+  white-space: nowrap;\
+  z-index: 15;\
+  animation: fadeOutQuickly 1.5s forwards;\
+\}\
+@keyframes fadeOutQuickly \{\
+  0% \{\
+    opacity: 1;\
+  \}\
+  80% \{\
+    opacity: 1;\
+  \}\
+  100% \{\
+    opacity: 0;\
+  \}\
+\}}
