@@ -2,371 +2,245 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Italica Restaurant Sim</title>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="styles.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="styles.css"/>
 </head>
 <body>
   <div class="container">
-    <!-- Left Column: Permanent Menu Panel -->
-    <div class="menu-column">
-      <div class="menu-header">
-        <h1>Italica Dinner Menu</h1>
+    
+    <!-- Left Column: Kitchen / Food Stations -->
+    <div class="kitchen-column">
+      <!-- This top "header" row is removed from the kitchen so it won't appear above. 
+           We only keep the actual "kitchen" content here. -->
+      <h2 class="kitchen-title">Kitchen Stations</h2>
+      
+      <div class="food-prep-area">
+        <h3>Appetizers</h3>
+        <div class="food-station-container">
+          <div class="food-station" data-item="Bread Basket">🍞</div>
+          <div class="station-label">Bread Basket</div>
+        </div>
+        <div class="food-station-container">
+          <div class="food-station" data-item="Cherry Tomato &amp; Garlic Confit">🍅</div>
+          <div class="station-label">Tomato Confit</div>
+        </div>
+        <div class="food-station-container">
+          <div class="food-station" data-item="Whipped Ricotta">🧀</div>
+          <div class="station-label">Whipped Ricotta</div>
+        </div>
+        <div class="food-station-container">
+          <div class="food-station" data-item="Marinated Olives">🫒</div>
+          <div class="station-label">Mar. Olives</div>
+        </div>
+        <div class="food-station-container">
+          <div class="food-station" data-item="Crispy Gnudi">🍝</div>
+          <div class="station-label">Crispy Gnudi</div>
+        </div>
       </div>
-      <section class="menu-section">
-        <h2>For the Table</h2>
-        <div class="menu-item">
-          <h3>Bread Basket – $5</h3>
-          <p>Focaccia of the day | ciabatta | evoo | salted butter</p>
+
+      <div class="food-prep-area">
+        <h3>Salads</h3>
+        <div class="food-station-container">
+          <div class="food-station" data-item="House Salad">🥗</div>
+          <div class="station-label">House Salad</div>
         </div>
-        <div class="menu-item">
-          <h3>Cherry Tomato &amp; Garlic Confit – $12</h3>
-          <p>Focaccia | evoo | smoked maldon salt</p>
+        <div class="food-station-container">
+          <div class="food-station" data-item="Spicy Caesar Salad">🥗</div>
+          <div class="station-label">Spicy Caesar</div>
         </div>
-        <div class="menu-item">
-          <h3>Ahi Crudo – $20</h3>
-          <p>Crispy garlic | charred lemon dressing | chili oil</p>
+      </div>
+
+      <div class="food-prep-area">
+        <h3>Pasta</h3>
+        <div class="food-station-container">
+          <div class="food-station" data-item="Cacio e Pepe">🍝</div>
+          <div class="station-label">Cacio e Pepe</div>
         </div>
-        <div class="menu-item">
-          <h3>Whipped Ricotta – $14</h3>
-          <p>Pan-fried ciabatta | calabrian honey</p>
+        <div class="food-station-container">
+          <div class="food-station" data-item="Seeing Red Pesto">🌶️</div>
+          <div class="station-label">Seeing Red</div>
         </div>
-      </section>
-      <section class="menu-section">
-        <h2>Small Plates</h2>
-        <div class="menu-item">
-          <h3>Raviolo al Uovo – $8</h3>
-          <p>Spinach &amp; ricotta filling | brown butter pistachios | pecorino</p>
+        <div class="food-station-container">
+          <div class="food-station" data-item="Short Rib Agnolotti">🥟</div>
+          <div class="station-label">Agnolotti</div>
         </div>
-        <div class="menu-item">
-          <h3>Prosciutto e Melone – $10</h3>
-          <p>(Description if available)</p>
+        <div class="food-station-container">
+          <div class="food-station" data-item="Pomodoro">🍝</div>
+          <div class="station-label">Pomodoro</div>
         </div>
-        <div class="menu-item">
-          <h3>Crispy Gnudi – $12</h3>
-          <p>Red sauce | grana padano</p>
+      </div>
+
+      <div class="food-prep-area">
+        <h3>Pizza</h3>
+        <div class="food-station-container">
+          <div class="food-station" data-item="Tomato Pie Slice">🍕</div>
+          <div class="station-label">Tomato Pie Slc</div>
         </div>
-        <div class="menu-item">
-          <h3>Marinated Olives – $6</h3>
-          <p>(Description if available)</p>
+        <div class="food-station-container">
+          <div class="food-station" data-item="Tre Sale Slice">🍕</div>
+          <div class="station-label">Tre Sale Slc</div>
         </div>
-      </section>
-      <section class="menu-section">
-        <h2>Salad</h2>
-        <div class="menu-item">
-          <h3>House Salad – $12</h3>
-          <p>Parmigiano-crusted roast fingerlings | cherry tomato &amp; garlic confit | arugula | charred lemon dressing</p>
+        <div class="food-station-container">
+          <div class="food-station" data-item="Garlic Girl">🍕</div>
+          <div class="station-label">Garlic Girl</div>
         </div>
-        <div class="menu-item">
-          <h3>Spicy Caesar – $14</h3>
-          <p>Romaine | focaccia croutons | pickled fresnos | parmigiano frico | spicy caesar dressing</p>
+        <div class="food-station-container">
+          <div class="food-station" data-item="Toni Roni">🍕</div>
+          <div class="station-label">Toni Roni</div>
         </div>
-        <div class="menu-item">
-          <h3>Mean Green – $12</h3>
-          <p>Tuscan kale | spinach | pesto genovese dressing | pistachios | toasted bread crumbs</p>
+      </div>
+
+      <div class="food-prep-area">
+        <h3>Mains</h3>
+        <div class="food-station-container">
+          <div class="food-station" data-item="Chicken Cutlets">🍗</div>
+          <div class="station-label">Chicken Cutlet</div>
         </div>
-        <div class="menu-item">
-          <h3>Summer Tomato Panzanella – $10</h3>
-          <p>Focaccia croutons | heirloom tomatoes | balsamic | aleppo | evoo</p>
+        <div class="food-station-container">
+          <div class="food-station" data-item="Roasted Half-Chicken">🐔</div>
+          <div class="station-label">Roast Chicken</div>
         </div>
-      </section>
-      <section class="menu-section">
-        <h2>Pasta</h2>
-        <div class="menu-item">
-          <h3>Cacio e Pepe – $20</h3>
-          <p>Bucatini</p>
+        <div class="food-station-container">
+          <div class="food-station" data-item="Grilled Salmon">🐟</div>
+          <div class="station-label">Grilled Salmon</div>
         </div>
-        <div class="menu-item">
-          <h3>Seeing Red Pesto – $24</h3>
-          <p>Ditalini | fresno &amp; calabrian chilis | pecorino | walnuts | burrata</p>
+        <div class="food-station-container">
+          <div class="food-station" data-item="Hanger Steak">🥩</div>
+          <div class="station-label">Hanger Steak</div>
         </div>
-        <div class="menu-item">
-          <h3>Short Rib Agnolotti – $32</h3>
-          <p>Ricotta | brodo | chili oil</p>
+      </div>
+
+      <div class="food-prep-area">
+        <h3>Sides</h3>
+        <div class="food-station-container">
+          <div class="food-station" data-item="Mushroom Risotto">🍄</div>
+          <div class="station-label">Risotto</div>
         </div>
-        <div class="menu-item">
-          <h3>Pomodoro – $26</h3>
-          <p>Spaghetti | garlic confit | parmigiano | basil</p>
+        <div class="food-station-container">
+          <div class="food-station" data-item="Crispy Polenta">🌽</div>
+          <div class="station-label">Crispy Polenta</div>
         </div>
-      </section>
-      <section class="menu-section">
-        <h2>Pizza</h2>
-        <div class="menu-subsection">
-          <h3>Grandma Pies</h3>
-          <div class="menu-item">
-            <h4>Tre Sale – Whole $30 | Slice $6</h4>
-            <p>Pomodoro | spicy vodka | pesto genovese | asiago</p>
-          </div>
-          <div class="menu-item">
-            <h4>Tomato Pie – Whole $25 | Slice $5</h4>
-            <p>Pomodoro | aleppo | smoked maldon salt</p>
-          </div>
+        <div class="food-station-container">
+          <div class="food-station" data-item="Mashed Potatoes">🥔</div>
+          <div class="station-label">Mashed Pots</div>
         </div>
-        <div class="menu-subsection">
-          <h3>Neopolitan</h3>
-          <div class="menu-item">
-            <h4>Garlic Girl – $25</h4>
-            <p>Garlic confit | burrata | crispy garlic | lemon zest | thyme</p>
-          </div>
-          <div class="menu-item">
-            <h4>Toni Roni – $26</h4>
-            <p>Pomodoro | mozzarella di bufala | calabrian chili honey</p>
-          </div>
+        <div class="food-station-container">
+          <div class="food-station" data-item="Shoestring Fries">🍟</div>
+          <div class="station-label">Fries</div>
         </div>
-      </section>
-      <section class="menu-section">
-        <h2>Mains &amp; Sides</h2>
-        <p class="menu-note">(Choice of two sides - not simulated in game)</p>
-        <div class="menu-item">
-          <h3>Sweet &amp; Spicy Chicken Cutlets – $28</h3>
-          <p>Calabrian honey | pickled fresnos</p>
+        <div class="food-station-container">
+          <div class="food-station" data-item="Grilled Asparagus">🍢</div>
+          <div class="station-label">Asparagus</div>
         </div>
-        <div class="menu-item">
-          <h3>Roasted Half-Chicken – $34</h3>
-          <p>Balsamic | rosemary &amp; thyme</p>
+      </div>
+
+      <div class="food-prep-area">
+        <h3>Drinks</h3>
+        <div class="food-station-container">
+          <div class="food-station" data-item="Water">💧</div>
+          <div class="station-label">Water</div>
         </div>
-        <div class="menu-item">
-          <h3>Grilled Sockeye Salmon – $36</h3>
-          <p>Charred lemon dressing | tarragon &amp; dill</p>
+        <div class="food-station-container">
+          <div class="food-station" data-item="Wine">🍷</div>
+          <div class="station-label">Wine</div>
         </div>
-        <div class="menu-item">
-          <h3>Seared Hanger Steak – $38</h3>
-          <p>Salsa verde</p>
+        <div class="food-station-container">
+          <div class="food-station" data-item="Soda">🥤</div>
+          <div class="station-label">Soda</div>
         </div>
-        <h2>A La Carte Sides</h2>
-        <div class="menu-item">
-          <h3>Mushroom Risotto – $12</h3>
-        </div>
-        <div class="menu-item">
-          <h3>Crispy Baked Polenta – $10</h3>
-        </div>
-        <div class="menu-item">
-          <h3>Garlic Confit Mashed Potatoes – $10</h3>
-        </div>
-        <div class="menu-item">
-          <h3>Parmigiano-Crusted Roast Fingerlings – $8</h3>
-        </div>
-        <div class="menu-item">
-          <h3>Shoestring French Fries – $6</h3>
-        </div>
-        <div class="menu-item">
-          <h3>Blackened Eggplant – $8</h3>
-        </div>
-        <div class="menu-item">
-          <h3>Sauteed Rainbow Chard – $6</h3>
-        </div>
-        <div class="menu-item">
-          <h3>Grilled Asparagus – $8</h3>
-        </div>
-        <div class="menu-item">
-          <h3>Cherry Tomato &amp; Garlic Confit – $10</h3>
-        </div>
-        <div class="menu-item">
-          <h3>Focaccia or Ciabatta – $4</h3>
-        </div>
-      </section>
+      </div>
     </div>
     
-    <!-- Right Column: Game Area -->
+    <!-- Right Column: Scoreboard, Restaurant, Player, etc. -->
     <div class="game-column">
-      <div class="game-container">
-        <div class="header">
-          <div class="score-container">
-            <div class="money">Cash: $<span id="money">0</span></div>
-            <div class="time">Time: <span id="timer">180</span>s</div>
-            <div class="level">Level: <span id="level">1</span></div>
+      
+      <div class="header">
+        <div class="score-container">
+          <div class="money">Cash: $<span id="money">0</span></div>
+          <div class="time">Time: <span id="timer">180</span>s</div>
+          <div class="level">Level: <span id="level">1</span></div>
+        </div>
+        <h1>Italica Restaurant Sim</h1>
+        <div class="controls">
+          <button id="start-btn">Start Day</button>
+          <button id="menu-btn">View Menu</button>
+        </div>
+      </div>
+
+      <div class="restaurant">
+        <!-- Debug Info -->
+        <div id="debug-info" class="debug-info hidden">
+          Carrying: <span id="debug-food">None</span>
+        </div>
+
+        <!-- Dining Area -->
+        <div class="dining-area">
+          <!-- Approx. table positions. Adjust top/left for alignment. -->
+          <div class="table" id="table1" data-table="1">
+            <div class="seat"></div>
           </div>
-          <h1>Italica Restaurant Sim</h1>
-          <div class="controls">
-            <button id="start-btn">Start Day</button>
-            <button id="menu-btn">View Menu</button>
+          <div class="table" id="table2" data-table="2">
+            <div class="seat"></div>
+          </div>
+          <div class="table" id="table3" data-table="3">
+            <div class="seat"></div>
+          </div>
+          <div class="table" id="table4" data-table="4">
+            <div class="seat"></div>
           </div>
         </div>
-  
-        <div class="restaurant">
-          <!-- Debug Info -->
-          <div id="debug-info" class="debug-info hidden">
-            Carrying: <span id="debug-food">None</span>
-          </div>
-          <!-- Kitchen Area (Food Stations) -->
-          <div class="kitchen">
-            <div class="food-prep-area">
-              <h3>Appetizers</h3>
-              <div class="food-station-container">
-                <div class="food-station" data-item="Bread Basket">🍞</div>
-                <div class="station-label">Bread Basket</div>
-              </div>
-              <div class="food-station-container">
-                <div class="food-station" data-item="Cherry Tomato &amp; Garlic Confit">🍅</div>
-                <div class="station-label">Tomato Confit</div>
-              </div>
-              <div class="food-station-container">
-                <div class="food-station" data-item="Whipped Ricotta">🧀</div>
-                <div class="station-label">Whipped Ricotta</div>
-              </div>
-              <div class="food-station-container">
-                <div class="food-station" data-item="Marinated Olives">🫒</div>
-                <div class="station-label">Mar. Olives</div>
-              </div>
-              <div class="food-station-container">
-                <div class="food-station" data-item="Crispy Gnudi">🍝</div>
-                <div class="station-label">Crispy Gnudi</div>
-              </div>
-            </div>
-            <div class="food-prep-area">
-              <h3>Salads</h3>
-              <div class="food-station-container">
-                <div class="food-station" data-item="House Salad">🥗</div>
-                <div class="station-label">House Salad</div>
-              </div>
-              <div class="food-station-container">
-                <div class="food-station" data-item="Spicy Caesar Salad">🥗</div>
-                <div class="station-label">Spicy Caesar</div>
-              </div>
-            </div>
-            <div class="food-prep-area">
-              <h3>Pasta</h3>
-              <div class="food-station-container">
-                <div class="food-station" data-item="Cacio e Pepe">🍝</div>
-                <div class="station-label">Cacio e Pepe</div>
-              </div>
-              <div class="food-station-container">
-                <div class="food-station" data-item="Seeing Red Pesto">🌶️</div>
-                <div class="station-label">Seeing Red</div>
-              </div>
-              <div class="food-station-container">
-                <div class="food-station" data-item="Short Rib Agnolotti">🥟</div>
-                <div class="station-label">Agnolotti</div>
-              </div>
-              <div class="food-station-container">
-                <div class="food-station" data-item="Pomodoro">🍝</div>
-                <div class="station-label">Pomodoro</div>
-              </div>
-            </div>
-            <div class="food-prep-area">
-              <h3>Pizza</h3>
-              <div class="food-station-container">
-                <div class="food-station" data-item="Tomato Pie Slice">🍕</div>
-                <div class="station-label">Tomato Pie Slc</div>
-              </div>
-              <div class="food-station-container">
-                <div class="food-station" data-item="Tre Sale Slice">🍕</div>
-                <div class="station-label">Tre Sale Slc</div>
-              </div>
-              <div class="food-station-container">
-                <div class="food-station" data-item="Garlic Girl">🍕</div>
-                <div class="station-label">Garlic Girl</div>
-              </div>
-              <div class="food-station-container">
-                <div class="food-station" data-item="Toni Roni">🍕</div>
-                <div class="station-label">Toni Roni</div>
-              </div>
-            </div>
-            <div class="food-prep-area">
-              <h3>Mains</h3>
-              <div class="food-station-container">
-                <div class="food-station" data-item="Chicken Cutlets">🍗</div>
-                <div class="station-label">Chicken Cutlet</div>
-              </div>
-              <div class="food-station-container">
-                <div class="food-station" data-item="Roasted Half-Chicken">🐔</div>
-                <div class="station-label">Roast Chicken</div>
-              </div>
-              <div class="food-station-container">
-                <div class="food-station" data-item="Grilled Salmon">🐟</div>
-                <div class="station-label">Grilled Salmon</div>
-              </div>
-              <div class="food-station-container">
-                <div class="food-station" data-item="Hanger Steak">🥩</div>
-                <div class="station-label">Hanger Steak</div>
-              </div>
-            </div>
-            <div class="food-prep-area">
-              <h3>Sides</h3>
-              <div class="food-station-container">
-                <div class="food-station" data-item="Mushroom Risotto">🍄</div>
-                <div class="station-label">Risotto</div>
-              </div>
-              <div class="food-station-container">
-                <div class="food-station" data-item="Crispy Polenta">🌽</div>
-                <div class="station-label">Crispy Polenta</div>
-              </div>
-              <div class="food-station-container">
-                <div class="food-station" data-item="Mashed Potatoes">🥔</div>
-                <div class="station-label">Mashed Pots</div>
-              </div>
-              <div class="food-station-container">
-                <div class="food-station" data-item="Shoestring Fries">🍟</div>
-                <div class="station-label">Fries</div>
-              </div>
-              <div class="food-station-container">
-                <div class="food-station" data-item="Grilled Asparagus">🍢</div>
-                <div class="station-label">Asparagus</div>
-              </div>
-            </div>
-            <div class="food-prep-area">
-              <h3>Drinks</h3>
-              <div class="food-station-container">
-                <div class="food-station" data-item="Water">💧</div>
-                <div class="station-label">Water</div>
-              </div>
-              <div class="food-station-container">
-                <div class="food-station" data-item="Wine">🍷</div>
-                <div class="station-label">Wine</div>
-              </div>
-              <div class="food-station-container">
-                <div class="food-station" data-item="Soda">🥤</div>
-                <div class="station-label">Soda</div>
-              </div>
-            </div>
-          </div>
-  
-          <!-- Dining Area -->
-          <div class="dining-area">
-            <div class="table" id="table1" data-table="1"><div class="seat"></div></div>
-            <div class="table" id="table2" data-table="2"><div class="seat"></div></div>
-            <div class="table" id="table3" data-table="3"><div class="seat"></div></div>
-            <div class="table" id="table4" data-table="4"><div class="seat"></div></div>
-          </div>
-  
-          <!-- Player Character -->
-          <div class="player" id="player">
-            <div class="player-image">👩🏻‍🍳</div>
-            <div class="carrying" id="carrying"></div>
-          </div>
+
+        <!-- Player Character -->
+        <div class="player" id="player">
+          <div class="player-image">👩🏻‍🍳</div>
+          <div class="carrying" id="carrying"></div>
         </div>
-  
-        <!-- Game Over Modal -->
-        <div id="game-over" class="modal hidden">
-          <div class="modal-content">
-            <h2>End of Day!</h2>
-            <p>Final Cash: $<span id="final-score">0</span></p>
-            <button id="restart-btn">Start New Day</button>
-          </div>
+      </div>
+
+      <!-- Game Over Modal -->
+      <div id="game-over" class="modal hidden">
+        <div class="modal-content">
+          <h2>End of Day!</h2>
+          <p>Final Cash: $<span id="final-score">0</span></p>
+          <button id="restart-btn">Start New Day</button>
         </div>
-  
-        <!-- Optional Pop-up Menu Modal (if desired) -->
-        <div id="menu-modal" class="modal hidden">
-          <div class="modal-content menu-content">
-            <h2>Italica - Dinner Menu</h2>
-            <div class="menu-tabs">
-              <button class="tab-btn active" data-tab="appetizers">Appetizers</button>
-              <button class="tab-btn" data-tab="salads">Salads</button>
-              <button class="tab-btn" data-tab="pasta">Pasta</button>
-              <button class="tab-btn" data-tab="pizza">Pizza</button>
-              <button class="tab-btn" data-tab="mains">Mains &amp; Sides</button>
-              <button class="tab-btn" data-tab="drinks">Drinks</button>
-            </div>
-            <div class="menu-sections">
-              <!-- You can mirror the left panel menu here if needed -->
-            </div>
-            <button id="close-menu-btn">Close Menu</button>
+      </div>
+
+      <!-- Optional Pop-up Menu Modal -->
+      <div id="menu-modal" class="modal hidden">
+        <div class="modal-content menu-content">
+          <h2>Italica - Dinner Menu</h2>
+          <div class="menu-tabs">
+            <button class="tab-btn active" data-tab="appetizers">Appetizers</button>
+            <button class="tab-btn" data-tab="salads">Salads</button>
+            <button class="tab-btn" data-tab="pasta">Pasta</button>
+            <button class="tab-btn" data-tab="pizza">Pizza</button>
+            <button class="tab-btn" data-tab="mains">Mains &amp; Sides</button>
+            <button class="tab-btn" data-tab="drinks">Drinks</button>
+          </div>
+          <div class="menu-sections">
+            <!-- You can mirror the left column menu here if you want. -->
+          </div>
+          <button id="close-menu-btn">Close Menu</button>
+        </div>
+      </div>
+
+      <!-- Event Modal -->
+      <div id="event-modal" class="modal hidden">
+        <div class="modal-content">
+          <h2 id="event-title">Event!</h2>
+          <p id="event-description">Something is happening!</p>
+          <div id="event-options" class="event-options-container">
+            <!-- Option buttons added by JS -->
           </div>
         </div>
       </div>
+      
     </div>
   </div>
+
   <script src="script.js"></script>
 </body>
 </html>
