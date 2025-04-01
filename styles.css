@@ -1,44 +1,133 @@
-/* styles.css */
-
 /* RESET & BASE */
-* { margin: 0; padding: 0; box-sizing: border-box; }
-body { font-family: 'Poppins', sans-serif; background-color: #f5f0e8; color: #333; overflow: hidden; height: 100vh; width: 100vw; }
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: #f5f0e8; /* Fallback */
+    color: #333;
+    overflow: hidden; /* Prevent scrolling the entire page */
+    height: 100vh;
+    width: 100vw;
+}
 
 /* 3-ROW LAYOUT CONTAINER */
-.container { display: flex; flex-direction: column; width: 100%; height: 100%; background-color: #e0d8cd; }
+.container {
+    display: flex;
+    flex-direction: column; /* Stack children vertically */
+    width: 100%;
+    height: 100%;
+    background-color: #e0d8cd; /* A slightly darker background */
+}
 
 /* ROW 1: HEADER */
-.header { background-color: #8d1f1f; color: white; padding: 8px 20px; text-align: center; border-bottom: 3px solid #5d4037; z-index: 10; flex-shrink: 0; height: 95px; }
-.score-container { display: flex; justify-content: space-between; margin-bottom: 5px; font-size: 15px; font-weight: 600; }
-.header h1 { font-size: 20px; margin-bottom: 5px; letter-spacing: 1px; font-weight: 600; }
-.controls { display: flex; justify-content: center; gap: 15px; }
-button { background-color: #4CAF50; color: white; border: none; padding: 7px 14px; font-size: 13px; cursor: pointer; border-radius: 5px; transition: background-color 0.3s, transform 0.1s; font-weight: 600; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
-button:active { transform: scale(0.98); } button:hover { background-color: #45a049; }
-#menu-btn { background-color: #f4a261; } #menu-btn:hover { background-color: #e76f51; }
-#restart-btn { background-color: #5bc0de; } #restart-btn:hover { background-color: #31b0d5; }
-#close-menu-btn { background-color: #d9534f; margin-top: 15px;} #close-menu-btn:hover { background-color: #c9302c; }
+.header {
+    background-color: #8d1f1f;
+    color: white;
+    padding: 8px 20px; /* Slightly less padding */
+    text-align: center;
+    border-bottom: 3px solid #5d4037;
+    z-index: 10;
+    flex-shrink: 0; /* Prevent shrinking */
+    height: 95px; /* Give it an explicit height */
+}
+.score-container {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 5px; /* Less margin */
+    font-size: 15px; /* Slightly smaller */
+    font-weight: 600;
+}
+.header h1 {
+    font-size: 20px; /* Smaller title */
+    margin-bottom: 5px;
+    letter-spacing: 1px;
+    font-weight: 600;
+}
+.controls {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+}
+button {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    padding: 7px 14px; /* Slightly smaller */
+    font-size: 13px;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: background-color 0.3s, transform 0.1s;
+    font-weight: 600;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+button:active { transform: scale(0.98); }
+button:hover { background-color: #45a049; }
+#menu-btn { background-color: #f4a261; }
+#menu-btn:hover { background-color: #e76f51; }
+#restart-btn { background-color: #5bc0de; }
+#restart-btn:hover { background-color: #31b0d5; }
+#close-menu-btn { background-color: #d9534f; margin-top: 15px;}
+#close-menu-btn:hover { background-color: #c9302c; }
 
 /* ROW 2: RESTAURANT (GAME AREA) */
 .restaurant {
-    flex-grow: 1; position: relative;
-    background: url('assets/your-widescreen-backdrop.png') center center no-repeat; /* <<< CHANGE THIS PATH */
-    background-size: cover;
-    overflow: hidden; width: 100%;
-    border-bottom: 5px solid #5d4037;
+    flex-grow: 1; /* Take remaining vertical space */
+    position: relative;
+    /* *** VERIFY THIS BACKGROUND PATH AND PROPERTIES *** */
+    background: url('assets/backdrop.png') center center no-repeat; /* <<< VERIFY OR CHANGE THIS PATH */
+    background-size: cover; /* Use 'cover' or 'contain' based on image */
+    overflow: hidden;
+    width: 100%; /* Ensure full width */
+    border-bottom: 5px solid #5d4037; /* Separator */
     min-height: 200px; /* Increased min-height */
 }
 
 /* --- Elements within Restaurant --- */
 .debug-info { position: absolute; top: 5px; right: 5px; background: rgba(0,0,0,0.75); color: #0f0; padding: 5px 8px; font-size: 11px; font-family: 'Courier New', Courier, monospace; border-radius: 4px; z-index: 101; opacity: 0.9; }
 .debug-info.hidden { display: none; }
-.dining-area { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; /* Below other stations */ }
-.table { position: absolute; width: 80px; height: 80px; border-radius: 5px; display: flex; justify-content: center; align-items: center; cursor: pointer; z-index: 2; /* Above dining area */ }
-/* *** ADJUST TABLE POSITIONS *** */
-#table1 { top: 65%; left: 20%; transform: translate(-50%, -50%); }
-#table2 { top: 65%; left: 80%; transform: translate(-50%, -50%); }
-#table3 { top: 35%; left: 20%; transform: translate(-50%, -50%); }
-#table4 { top: 35%; left: 80%; transform: translate(-50%, -50%); }
+.dining-area { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; }
+
+/* --- Table Styles with NEW Positions --- */
+.table {
+    position: absolute;
+    width: 90px; /* Adjust width to match pixel art table */
+    height: 75px;/* Adjust height to match pixel art table */
+    /* background-color: rgba(0, 255, 0, 0.2); */ /* TEMP: Uncomment to see hitboxes */
+    border-radius: 5px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    z-index: 2;
+}
+/* *** NEW TABLE POSITIONS (Adjust percentages if needed) *** */
+#table1 { /* Top Left Table */
+    top: 38%;
+    left: 18%;
+    transform: translate(-50%, -50%);
+}
+#table2 { /* Top Right Table */
+    top: 38%;
+    left: 82%;
+    transform: translate(-50%, -50%);
+}
+#table3 { /* Bottom Left Table */
+    top: 80%;
+    left: 18%;
+    transform: translate(-50%, -50%);
+}
+#table4 { /* Bottom Right Table */
+    top: 80%;
+    left: 82%;
+    transform: translate(-50%, -50%);
+}
+/* *** END NEW TABLE POSITIONS *** */
 .seat { width: 100%; height: 100%; position: relative; }
+
+/* --- Player & Customer Styles --- */
 .player { position: absolute; display: flex; flex-direction: column; align-items: center; transition: transform 0.1s linear; z-index: 10; user-select: none; pointer-events: none; width: 50px; height: 70px; opacity: 0; }
 .player-image { font-size: 40px; filter: drop-shadow(0 2px 3px rgba(0,0,0,0.3)); line-height: 1; }
 .carrying { position: absolute; top: -15px; left: 50%; transform: translateX(-50%); font-size: 20px; height: 25px; width: 25px; background-color: rgba(255,255,255,0.8); border-radius: 50%; padding: 1px; box-shadow: 0 1px 3px rgba(0,0,0,0.2); display: flex; justify-content: center; align-items: center; z-index: 11; }
@@ -53,77 +142,15 @@ button:active { transform: scale(0.98); } button:hover { background-color: #45a0
 .dish-emoji { font-size: 18px; margin-top: 2px; }
 .mood-indicator { position: absolute; top: -10px; right: -10px; font-size: 18px; }
 
+/* --- Delivery Station / Pass --- */
+.delivery-station { position: absolute; bottom: 10px; left: 10px; width: 300px; height: 60px; background-color: rgba(161, 136, 127, 0.8); border: 3px solid #5d4037; border-radius: 8px; padding: 5px; display: flex; align-items: center; gap: 8px; overflow-x: auto; overflow-y: hidden; z-index: 4; }
+.delivery-station-label { position: absolute; top: -20px; left: 5px; font-size: 12px; font-weight: 600; color: #5d4037; background-color: rgba(215, 204, 200, 0.9); padding: 1px 5px; border-radius: 4px 4px 0 0; }
+.ready-food-item { width: 40px; height: 40px; font-size: 28px; background-color: #fff; border: 2px solid #4CAF50; border-radius: 5px; display: flex; justify-content: center; align-items: center; cursor: pointer; flex-shrink: 0; box-shadow: 0 0 8px rgba(76, 175, 80, 0.6); transition: transform 0.2s ease; }
+.ready-food-item:hover { transform: scale(1.1); }
 
-/* --- NEW: Delivery Station / Pass --- */
-.delivery-station {
-    position: absolute;
-    bottom: 10px; /* Position near the bottom */
-    left: 10px;  /* Position near the left */
-    width: 300px; /* Adjust width */
-    height: 60px; /* Adjust height */
-    background-color: rgba(161, 136, 127, 0.8); /* Semi-transparent brown */
-    border: 3px solid #5d4037; /* Darker border */
-    border-radius: 8px;
-    padding: 5px;
-    display: flex; /* Arrange items horizontally */
-    align-items: center; /* Center items vertically */
-    gap: 8px; /* Space between ready items */
-    overflow-x: auto; /* Scroll if many items */
-    overflow-y: hidden;
-    z-index: 4; /* Above dining area, below player potentially */
-}
-.delivery-station-label {
-    position: absolute;
-    top: -20px; /* Position label above the pass */
-    left: 5px;
-    font-size: 12px;
-    font-weight: 600;
-    color: #5d4037;
-    background-color: rgba(215, 204, 200, 0.9); /* Match kitchen bg */
-    padding: 1px 5px;
-    border-radius: 4px 4px 0 0;
-}
-.ready-food-item {
-    width: 40px;
-    height: 40px;
-    font-size: 28px; /* Emoji size */
-    background-color: #fff;
-    border: 2px solid #4CAF50; /* Green border */
-    border-radius: 5px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    cursor: pointer;
-    flex-shrink: 0; /* Prevent item shrinking */
-    box-shadow: 0 0 8px rgba(76, 175, 80, 0.6); /* Green glow */
-    transition: transform 0.2s ease;
-}
-.ready-food-item:hover {
-    transform: scale(1.1);
-}
-
-/* --- NEW: Trash Can --- */
-.trash-can {
-    position: absolute;
-    bottom: 10px; /* Align with delivery station vertically */
-    right: 10px; /* Position on the right */
-    width: 50px;
-    height: 50px;
-    font-size: 35px;
-    background-color: rgba(100, 100, 100, 0.7);
-    border: 2px solid #333;
-    border-radius: 50%; /* Make it round */
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    cursor: pointer;
-    z-index: 4;
-    transition: transform 0.2s, background-color 0.2s;
-}
-.trash-can:hover {
-    transform: scale(1.1);
-    background-color: rgba(150, 100, 100, 0.8); /* Reddish tint on hover */
-}
+/* --- Trash Can --- */
+.trash-can { position: absolute; bottom: 10px; right: 10px; width: 50px; height: 50px; font-size: 35px; background-color: rgba(100, 100, 100, 0.7); border: 2px solid #333; border-radius: 50%; display: flex; justify-content: center; align-items: center; cursor: pointer; z-index: 4; transition: transform 0.2s, background-color 0.2s; }
+.trash-can:hover { transform: scale(1.1); background-color: rgba(150, 100, 100, 0.8); }
 
 /* ROW 3: KITCHEN */
 .kitchen-row { background-color: #d7ccc8; padding: 10px; flex-shrink: 0; height: 160px; display: flex; overflow-x: auto; overflow-y: hidden; gap: 15px; align-items: stretch; border-top: 5px solid #8d1f1f; flex-wrap: nowrap; width: 100%; }
@@ -131,36 +158,15 @@ button:active { transform: scale(0.98); } button:hover { background-color: #45a0
 .food-prep-area h3 { font-size: 13px; color: #5d4037; margin-bottom: 8px; text-align: center; width: 100%; flex-shrink: 0; }
 .stations-wrapper { display: flex; flex-wrap: nowrap; gap: 8px; justify-content: flex-start; width: 100%; overflow-x: hidden; }
 .food-station-container { display: flex; flex-direction: column; align-items: center; width: 65px; text-align: center; flex-shrink: 0; }
-.food-station {
-    width: 45px; height: 45px; background-color: #fff; border: 2px solid #a1887f; border-radius: 5px;
-    display: flex; justify-content: center; align-items: center; font-size: 24px; cursor: pointer;
-    transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
-    margin-bottom: 3px;
-    position: relative; /* For progress bar */
-    overflow: hidden; /* Hide progress bar overflow */
-}
+.food-station { width: 45px; height: 45px; background-color: #fff; border: 2px solid #a1887f; border-radius: 5px; display: flex; justify-content: center; align-items: center; font-size: 24px; cursor: pointer; transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s; margin-bottom: 3px; position: relative; overflow: hidden; }
 .food-station:hover { transform: scale(1.1); box-shadow: 0 0 10px rgba(0,0,0,0.2); border-color: #5d4037; }
 .station-label { font-size: 11px; color: #333; line-height: 1.2; height: 2.4em; overflow: hidden; word-wrap: break-word; }
 
 /* Preparation Progress & State */
-.prep-progress-bar {
-    position: absolute; bottom: 0; left: 0; width: 100%; height: 5px;
-    background-color: rgba(0, 0, 0, 0.2);
-    z-index: 1; transform: scaleX(0); transform-origin: left;
-}
-.food-station.preparing .prep-progress-bar {
-     background-color: #ffcc00; /* Yellow while preparing */
-}
-.preparing { /* Pulse animation for station */
-    animation: preparing-pulse 0.6s infinite alternate ease-in-out;
-    cursor: not-allowed !important;
-}
-@keyframes preparing-pulse {
-    from { transform: scale(1); box-shadow: 0 0 5px rgba(255, 204, 0, 0.5); border-color: #ffcc00; }
-    to { transform: scale(1.1); box-shadow: 0 0 15px rgba(255, 204, 0, 1); border-color: #ffaa00; }
-}
-/* Remove .ready styles for food-station, state is now on the pass */
-
+.prep-progress-bar { position: absolute; bottom: 0; left: 0; width: 100%; height: 5px; background-color: rgba(0, 0, 0, 0.2); z-index: 1; transform: scaleX(0); transform-origin: left; }
+.food-station.preparing .prep-progress-bar { background-color: #ffcc00; /* Yellow while preparing */ }
+.preparing { animation: preparing-pulse 0.6s infinite alternate ease-in-out; cursor: not-allowed !important; }
+@keyframes preparing-pulse { from { transform: scale(1); box-shadow: 0 0 5px rgba(255, 204, 0, 0.5); border-color: #ffcc00; } to { transform: scale(1.1); box-shadow: 0 0 15px rgba(255, 204, 0, 1); border-color: #ffaa00; } }
 
 /* MODALS, FEEDBACK, HIGHLIGHT */
 .modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.6); display: flex; justify-content: center; align-items: center; z-index: 100; opacity: 0; visibility: hidden; transition: opacity 0.3s ease, visibility 0s linear 0.3s; }
