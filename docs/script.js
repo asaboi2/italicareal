@@ -45,7 +45,6 @@ document.addEventListener('DOMContentLoaded', () => {
   let isMoving = false;
   let debugMode = false;
   let levelThresholds = [0, 75, 180, 300, 450, 650, 900, 1200, 1600];
-  // Set background image to your asset
   const BACKGROUND_IMAGE_URL = 'assets/backdrop.png';
 
   // --- Game Configuration ---
@@ -55,37 +54,37 @@ document.addEventListener('DOMContentLoaded', () => {
     'Whipped Ricotta': { emoji: '🧀', price: 14, category: 'Appetizers', prepTime: 2 },
     'Marinated Olives': { emoji: '🫒', price: 6, category: 'Appetizers', prepTime: 1 },
     'Crispy Gnudi': { emoji: '🍝', price: 12, category: 'Appetizers', prepTime: 3.5 },
-
+    
     'House Salad': { emoji: '🥗', price: 12, category: 'Salads', prepTime: 2.5 },
     'Spicy Caesar Salad': { emoji: '🥗', price: 14, category: 'Salads', prepTime: 3 },
-
+    
     'Cacio e Pepe': { emoji: '🍝', price: 20, category: 'Pasta', prepTime: 4 },
     'Seeing Red Pesto': { emoji: '🌶️', price: 24, category: 'Pasta', prepTime: 4 },
     'Short Rib Agnolotti': { emoji: '🥟', price: 32, category: 'Pasta', prepTime: 5 },
     'Pomodoro': { emoji: '🍝', price: 26, category: 'Pasta', prepTime: 3.5 },
-
+    
     'Tomato Pie Slice': { emoji: '🍕', price: 5, category: 'Pizza', prepTime: 3 },
     'Tre Sale Slice': { emoji: '🍕', price: 6, category: 'Pizza', prepTime: 3.5 },
     'Garlic Girl': { emoji: '🍕', price: 25, category: 'Pizza', prepTime: 4.5 },
     'Toni Roni': { emoji: '🍕', price: 26, category: 'Pizza', prepTime: 5 },
-
+    
     'Chicken Cutlets': { emoji: '🍗', price: 28, category: 'Mains', prepTime: 5 },
     'Roasted Half-Chicken': { emoji: '🐔', price: 34, category: 'Mains', prepTime: 7 },
     'Grilled Salmon': { emoji: '🐟', price: 36, category: 'Mains', prepTime: 4.5 },
     'Hanger Steak': { emoji: '🥩', price: 38, category: 'Mains', prepTime: 6 },
-
+    
     'Mushroom Risotto': { emoji: '🍄', price: 12, category: 'Sides', prepTime: 5 },
     'Crispy Polenta': { emoji: '🌽', price: 10, category: 'Sides', prepTime: 4 },
     'Mashed Potatoes': { emoji: '🥔', price: 10, category: 'Sides', prepTime: 3 },
     'Shoestring Fries': { emoji: '🍟', price: 6, category: 'Sides', prepTime: 2.5 },
     'Grilled Asparagus': { emoji: '🍢', price: 8, category: 'Sides', prepTime: 3 },
-
+    
     'Water': { emoji: '💧', price: 0, category: 'Drinks', prepTime: 0.5 },
     'Wine': { emoji: '🍷', price: 12, category: 'Drinks', prepTime: 0.5 },
     'Soda': { emoji: '🥤', price: 3, category: 'Drinks', prepTime: 0.5 }
   };
 
-  const customerEmojis = ['👩', '👨', '👵', '👴', '👱‍♀️', '👱', '👩‍🦰', '👨‍🦰', '👩‍🦱', '👨‍🦱', '🧑‍🎄', '👸', '👨‍🎨', '👩‍🔬', '💂', '🕵️'];
+  const customerEmojis = ['👩','👨','👵','👴','👱‍♀️','👱','👩‍🦰','👨‍🦰','👩‍🦱','👨‍🦱','🧑‍🎄','👸','👨‍🎨','👩‍🔬','💂','🕵️'];
   const moodEmojis = { happy: '😊', neutral: '😐', impatient: '😠', angry: '😡' };
 
   const randomEvents = [
@@ -233,7 +232,7 @@ document.addEventListener('DOMContentLoaded', () => {
     carryingFoodEmoji = null;
     customers = [];
     isMoving = false;
-
+  
     moneyDisplay.textContent = money;
     levelDisplay.textContent = level;
     timerDisplay.textContent = timeLeft;
@@ -244,26 +243,26 @@ document.addEventListener('DOMContentLoaded', () => {
     gameOverScreen.classList.add('hidden');
     menuModal.classList.add('hidden');
     eventModal.classList.add('hidden');
-
+  
     clearCustomersAndIndicators();
     stopPlayerMovement();
-
+  
     restaurantArea.style.backgroundImage = `url('${BACKGROUND_IMAGE_URL}')`;
     if (!BACKGROUND_IMAGE_URL) console.warn("BACKGROUND_IMAGE_URL is not set!");
-
+  
     playerPosition.x = restaurantArea.offsetWidth / 2;
     playerPosition.y = restaurantArea.offsetHeight - 60;
     updatePlayerPosition();
     player.style.opacity = '1';
     player.style.display = 'flex';
-
+  
     clearInterval(timerInterval);
     timerInterval = setInterval(gameTick, 1000);
     clearTimeout(customerSpawnTimeout);
     scheduleNextCustomer();
     console.log("Game started.");
   }
-
+  
   function endGame() {
     console.log("Ending game...");
     gameRunning = false;
@@ -276,7 +275,7 @@ document.addEventListener('DOMContentLoaded', () => {
     deliveryRadius.classList.remove('active');
     console.log("Game ended. Final Score:", money);
   }
-
+  
   function pauseGame() {
     if (!gameRunning || isPaused) return;
     isPaused = true;
@@ -284,7 +283,7 @@ document.addEventListener('DOMContentLoaded', () => {
     stopPlayerMovement();
     console.log("Game Paused");
   }
-
+  
   function resumeGame() {
     if (!gameRunning || !isPaused) return;
     isPaused = false;
@@ -292,7 +291,7 @@ document.addEventListener('DOMContentLoaded', () => {
     timerInterval = setInterval(gameTick, 1000);
     console.log("Game Resumed");
   }
-
+  
   function gameTick() {
     if (!gameRunning || isPaused) {
       clearInterval(timerInterval);
@@ -309,7 +308,7 @@ document.addEventListener('DOMContentLoaded', () => {
       triggerRandomEvent();
     }
   }
-
+  
   function updateCustomers() {
     if (isPaused) return;
     const now = Date.now();
@@ -324,7 +323,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
     customers = customers.filter(c => c.state !== 'remove');
   }
-
+  
   function customerLeavesAngry(customer) {
     if (customer.state === 'leaving') return;
     console.log("Customer leaving angry:", customer.id);
@@ -340,7 +339,7 @@ document.addEventListener('DOMContentLoaded', () => {
       customer.state = 'remove';
     }, 500);
   }
-
+  
   function movePlayerToElement(targetElement, callback = null) {
     if (isPaused || !targetElement) return;
     const targetRect = targetElement.getBoundingClientRect();
@@ -350,7 +349,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const targetY = targetRect.top - restaurantRect.top + yOffset;
     movePlayerToCoordinates(targetX, targetY, callback);
   }
-
+  
   function movePlayerToCoordinates(targetX, targetY, callback = null) {
     if (isPaused || isMoving) return;
     isMoving = true;
@@ -397,12 +396,12 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     animationFrameId = requestAnimationFrame(step);
   }
-
+  
   function stopPlayerMovement() {
     isMoving = false;
     console.log("Requested move stop / Marked as not moving");
   }
-
+  
   function updatePlayerPosition() {
     const kitchenHeight = document.querySelector('.kitchen').offsetHeight;
     const playerWidthHalf = player.offsetWidth / 2;
@@ -418,7 +417,7 @@ document.addEventListener('DOMContentLoaded', () => {
     deliveryRadius.style.left = `${playerPosition.x}px`;
     deliveryRadius.style.top = `${playerPosition.y}px`;
   }
-
+  
   function scheduleNextCustomer() {
     if (!gameRunning || isPaused) return;
     clearTimeout(customerSpawnTimeout);
@@ -428,7 +427,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const nextSpawnDelay = Math.max(minSpawnTime, baseSpawnTime - spawnTimeReduction);
     customerSpawnTimeout = setTimeout(spawnCustomer, nextSpawnDelay * (0.8 + Math.random() * 0.4));
   }
-
+  
   function spawnCustomer() {
     if (!gameRunning || isPaused) return;
     const availableTables = Array.from(tables).filter(table => !customers.some(c => c.tableElement === table && c.state !== 'leaving' && c.state !== 'remove'));
@@ -479,7 +478,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     scheduleNextCustomer();
   }
-
+  
   function serveCustomer(customer) {
     if (!customer || customer.state !== 'waiting') return;
     console.log("Serving customer:", customer.id);
@@ -515,7 +514,7 @@ document.addEventListener('DOMContentLoaded', () => {
       customer.state = 'remove';
     }, 2000);
   }
-
+  
   function updateCustomerMood(customer) {
     const patienceRatio = Math.max(0, customer.patienceCurrent) / customer.patienceTotal;
     let mood = moodEmojis.happy;
@@ -524,7 +523,7 @@ document.addEventListener('DOMContentLoaded', () => {
     else if (patienceRatio <= 0.8) mood = moodEmojis.neutral;
     customer.moodIndicator.textContent = mood;
   }
-
+  
   function checkLevelUp() {
     const nextLevel = level;
     if (nextLevel >= levelThresholds.length) return;
@@ -538,7 +537,7 @@ document.addEventListener('DOMContentLoaded', () => {
       console.log("Level Up! Reached level", level);
     }
   }
-
+  
   function clearCustomersAndIndicators() {
     console.log("Clearing customers and indicators...");
     customers.forEach(customer => {
@@ -548,7 +547,7 @@ document.addEventListener('DOMContentLoaded', () => {
     document.querySelectorAll('.money-indicator, .feedback-indicator').forEach(el => el.remove());
     tables.forEach(table => table.classList.remove('table-highlight'));
   }
-
+  
   function showFeedbackIndicator(targetElement, text, type = "info", duration = 1800) {
     const indicator = document.createElement('div');
     indicator.className = 'feedback-indicator';
@@ -564,7 +563,7 @@ document.addEventListener('DOMContentLoaded', () => {
     indicator.style.top = `${targetRect.top - containerRect.top + targetRect.height * 0.1}px`;
     setTimeout(() => indicator.remove(), duration);
   }
-
+  
   function triggerRandomEvent() {
     if (!gameRunning || isPaused || !eventModal.classList.contains('hidden')) return;
     console.log("Triggering random event...");
@@ -584,6 +583,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
     eventModal.classList.remove('hidden');
   }
+  
   function handleEventChoice(e) {
     const button = e.target;
     const moneyEffect = parseInt(button.dataset.effectMoney || '0');
@@ -600,7 +600,7 @@ document.addEventListener('DOMContentLoaded', () => {
     eventModal.classList.add('hidden');
     resumeGame();
   }
-
+  
   function initializeGame() {
     console.log("Initializing game UI...");
     playerPosition.x = restaurantArea.offsetWidth / 2;
@@ -613,13 +613,13 @@ document.addEventListener('DOMContentLoaded', () => {
     eventModal.classList.add('hidden');
     debugInfo.classList.toggle('hidden', !debugMode);
     startBtn.style.display = 'inline-block';
-
+  
     restaurantArea.style.backgroundImage = `url('${BACKGROUND_IMAGE_URL}')`;
-    if (!BACKGROUND_IMAGE_URL) console.warn("BACKGROUND_IMAGE_URL is empty!");
+    if (!BACKGROUND_IMAGE_URL) console.warn("BACKGROUND_IMAGE_URL is not set!");
     else console.log("Attempting to load background:", BACKGROUND_IMAGE_URL);
-
+  
     console.log("Initialization complete. Ready to start.");
   }
-
+  
   initializeGame();
 });
