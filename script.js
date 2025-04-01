@@ -48,12 +48,8 @@ document.addEventListener('DOMContentLoaded', () => {
     let animationFrameId = null; // For player movement
     let debugMode = false;
     let levelThresholds = [0, 75, 180, 300, 450, 650, 900, 1200, 1600];
-    const BACKGROUND_IMAGE_URL = 'assets/backdrop.png'; // <<< UPDATED PATH
-    let currentPrep = { // Tracks the actively preparing item
-        timeoutId: null,
-        cancelAnimation: null,
-        stationElement: null
-    };
+    const BACKGROUND_IMAGE_URL = 'assets/backdrop.png'; // <<< Using backdrop.png
+    // Removed currentPrep object - no longer needed for single active prep tracking
     let readyItemsOnPass = []; // Tracks { id: uniqueId, foodId: '...', element: DOMElement }
 
     // --- Game Configuration ---
@@ -84,6 +80,7 @@ document.addEventListener('DOMContentLoaded', () => {
              progressBarElement.style.backgroundColor = '#ffcc00'; // Prep color
              animationFrameId = requestAnimationFrame(step);
         } else { return () => {}; }
+        // Return a function to cancel the animation (though we might not use it now)
         return () => {
             cancelAnimationFrame(animationFrameId);
             if (progressBarElement) {
@@ -93,20 +90,7 @@ document.addEventListener('DOMContentLoaded', () => {
         };
     }
 
-    function clearActivePreparation() {
-        if (currentPrep.timeoutId) { clearTimeout(currentPrep.timeoutId); }
-        if (currentPrep.cancelAnimation) { currentPrep.cancelAnimation(); }
-        if (currentPrep.stationElement) {
-            currentPrep.stationElement.classList.remove('preparing');
-            currentPrep.stationElement.style.pointerEvents = 'auto';
-            const oldProgressBar = currentPrep.stationElement.querySelector('.prep-progress-bar');
-            if (oldProgressBar) {
-                 oldProgressBar.style.transform = 'scaleX(0)';
-                 oldProgressBar.style.backgroundColor = 'rgba(0, 0, 0, 0.2)';
-            }
-        }
-        currentPrep = { timeoutId: null, cancelAnimation: null, stationElement: null };
-    }
+    // Removed clearActivePreparation function
 
     function addFoodToPass(foodId) {
         const foodData = foodItems[foodId];
@@ -116,8 +100,8 @@ document.addEventListener('DOMContentLoaded', () => {
         const itemElement = document.createElement('div');
         itemElement.className = 'ready-food-item';
         itemElement.textContent = foodData.emoji;
-        itemElement.dataset.foodId = foodId; // Store food ID
-        itemElement.dataset.passId = uniqueId; // Store unique ID
+        itemElement.dataset.foodId = foodId;
+        itemElement.dataset.passId = uniqueId;
 
         deliveryStation.appendChild(itemElement);
         readyItemsOnPass.push({ id: uniqueId, foodId: foodId, element: itemElement });
@@ -129,38 +113,20 @@ document.addEventListener('DOMContentLoaded', () => {
     startBtn.addEventListener('click', startGame);
     restartBtn.addEventListener('click', () => { gameOverScreen.classList.add('hidden'); startGame(); });
     menuBtn.addEventListener('click', () => {
-        pauseGame();
-        populateMenuModal();
-        menuModal.classList.remove('hidden');
-        // Activate the first tab
+        pauseGame(); populateMenuModal(); menuModal.classList.remove('hidden');
         const allSections = menuSectionsContainer.querySelectorAll('.menu-section');
-        if (tabBtns.length > 0) {
-            tabBtns.forEach(t => t.classList.remove('active'));
-            allSections.forEach(s => s.classList.remove('active'));
-            tabBtns[0].classList.add('active');
-            const firstTabId = tabBtns[0].getAttribute('data-tab');
-            const firstSection = menuSectionsContainer.querySelector(`.menu-section[data-section="${firstTabId}"]`);
-            if (firstSection) firstSection.classList.add('active');
-        }
+        if (tabBtns.length > 0) { tabBtns.forEach(t => t.classList.remove('active')); allSections.forEach(s => s.classList.remove('active')); tabBtns[0].classList.add('active'); const firstTabId = tabBtns[0].getAttribute('data-tab'); const firstSection = menuSectionsContainer.querySelector(`.menu-section[data-section="${firstTabId}"]`); if (firstSection) firstSection.classList.add('active'); }
     });
     closeMenuBtn.addEventListener('click', () => { menuModal.classList.add('hidden'); resumeGame(); });
     tabBtns.forEach(btn => {
         btn.addEventListener('click', () => {
-            const allSections = menuSectionsContainer.querySelectorAll('.menu-section');
-            tabBtns.forEach(tab => tab.classList.remove('active'));
-            allSections.forEach(section => section.classList.remove('active'));
-            btn.classList.add('active');
-            const tabId = btn.getAttribute('data-tab');
-            const targetSection = menuSectionsContainer.querySelector(`.menu-section[data-section="${tabId}"]`);
-            if (targetSection) { targetSection.classList.add('active'); }
+            const allSections = menuSectionsContainer.querySelectorAll('.menu-section'); tabBtns.forEach(tab => tab.classList.remove('active')); allSections.forEach(section => section.classList.remove('active')); btn.classList.add('active'); const tabId = btn.getAttribute('data-tab'); const targetSection = menuSectionsContainer.querySelector(`.menu-section[data-section="${tabId}"]`); if (targetSection) { targetSection.classList.add('active'); }
         });
     });
-    keysPressed = []; document.addEventListener('keydown', (e) => {
-        keysPressed.push(e.key.toLowerCase()); keysPressed = keysPressed.slice(-5);
-        if (keysPressed.join('') === 'debug') { debugMode = !debugMode; debugInfo.classList.toggle('hidden', !debugMode); console.log('Debug mode:', debugMode); }
-    });
+    keysPressed = []; document.addEventListener('keydown', (e) => { keysPressed.push(e.key.toLowerCase()); keysPressed = keysPressed.slice(-5); if (keysPressed.join('') === 'debug') { debugMode = !debugMode; debugInfo.classList.toggle('hidden', !debugMode); console.log('Debug mode:', debugMode); } });
 
-    // --- REVISED Food Station Click Listener (Fire and Forget) ---
+
+    // --- REVISED Food Station Click Listener (Concurrent Cooking) ---
     foodStations.forEach(station => {
         const progressBar = station.querySelector('.prep-progress-bar');
         if (!progressBar) { console.error("Progress bar missing", station); return; }
@@ -175,9 +141,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
 
-            // Cannot start prep if this station is already preparing
+            // Cannot start prep if THIS station is already preparing
             if (station.classList.contains('preparing')) {
-                // Optional feedback: showFeedbackIndicator(station, "Already preparing...", "info", 1000);
                 return;
             }
 
@@ -187,98 +152,82 @@ document.addEventListener('DOMContentLoaded', () => {
             const foodData = foodItems[foodId];
             const prepTime = foodData.prepTime * 1000; // ms
 
-            // Clear any OTHER active preparation before starting this one
-            clearActivePreparation();
+            // --- No longer clearing other preparations ---
 
             // Mark this station as preparing
             station.classList.add('preparing');
-            station.style.pointerEvents = 'none'; // Disable clicks ONLY while preparing
-            currentPrep.stationElement = station; // Track this as the active one
+            station.style.pointerEvents = 'none'; // Disable clicks ONLY while preparing this station
 
             // Start visual progress bar animation immediately
-            currentPrep.cancelAnimation = animatePrepProgress(progressBar, prepTime, () => {});
+            const cancelThisAnimation = animatePrepProgress(progressBar, prepTime, () => {});
 
             // Start the logic timer immediately
-            currentPrep.timeoutId = setTimeout(() => {
-                // --- PREPARATION COMPLETE (Timer finished) ---
+            const thisTimeoutId = setTimeout(() => {
+                // --- PREPARATION COMPLETE (Timer finished for THIS station) ---
 
-                // Check if this specific prep is still the 'current' one.
-                // If stationElement is different, it means this timeout is stale (was cancelled).
-                if (currentPrep.stationElement !== station) {
-                    console.log("Stale timeout ignored for:", foodId);
-                    // Reset this station's visuals just in case cancel didn't catch it
-                    station.classList.remove('preparing');
-                    station.style.pointerEvents = 'auto';
+                // Check if the station is still marked as preparing.
+                if (!station.classList.contains('preparing')) {
+                    console.log("Prep timeout finished, but station", foodId, "was no longer preparing.");
                     if (progressBar) { progressBar.style.transform = 'scaleX(0)'; progressBar.style.backgroundColor = 'rgba(0,0,0, 0.2)';}
-                    return; // Do nothing, prep was cancelled
+                    return; // Do nothing more for this timeout
                 }
 
-                // Prep Complete: Add to Pass, Reset Station
+                // Prep Complete: Add to Pass, Reset THIS Station
                 addFoodToPass(foodId); // Add item to delivery station
 
                 station.classList.remove('preparing');
-                station.style.pointerEvents = 'auto'; // Re-enable clicks
-                 if (progressBar) { // Reset bar (animation should be done, but be sure)
+                station.style.pointerEvents = 'auto'; // Re-enable clicks for this station
+                 if (progressBar) { // Reset bar
                     progressBar.style.transform = 'scaleX(0)';
                     progressBar.style.backgroundColor = 'rgba(0,0,0, 0.2)';
                  }
 
-                // This station is no longer the 'actively preparing' one
-                currentPrep = { timeoutId: null, cancelAnimation: null, stationElement: null };
+                 // We don't need to clear a global 'currentPrep' anymore
 
             }, prepTime); // End setTimeout
+
+            // Optional: Store timeoutId on the element if needed later, e.g., station.dataset.prepTimeoutId = thisTimeoutId;
 
         }); // End station.addEventListener
     }); // End foodStations.forEach
 
 
-    // --- Delivery Station (Pass) Click --- (Event Delegation)
+    // --- Delivery Station (Pass) Click --- (No longer cancels prep)
     deliveryStation.addEventListener('click', (e) => {
         if (!gameRunning || isPaused || isMoving) return;
 
-        const clickedItemElement = e.target.closest('.ready-food-item'); // Find the clicked item
-        if (!clickedItemElement) return; // Clicked on pass background, not an item
+        const clickedItemElement = e.target.closest('.ready-food-item');
+        if (!clickedItemElement) return;
 
         if (carryingFood) {
             showFeedbackIndicator(player, "Hands full!", "negative");
             return;
         }
-         // If preparing, CANCEL the prep before picking up
-         if (currentPrep.stationElement) {
-             console.log("Clicked pass, cancelling active preparation.");
-             clearActivePreparation();
-         }
+        // --- NO LONGER CANCELLING PREP ---
 
         const passId = clickedItemElement.dataset.passId;
         const itemIndex = readyItemsOnPass.findIndex(item => item.id === passId);
 
         if (itemIndex === -1) {
-            console.error("Clicked item not found in readyItemsOnPass state", passId);
+            console.error("Clicked item not found", passId);
             clickedItemElement.remove();
             return;
         }
 
         const itemToPickup = readyItemsOnPass[itemIndex];
 
-        // Move player to the pass to pick up
         movePlayerToElement(deliveryStation, () => {
-            if (carryingFood || isMoving) { // Re-verify state after movement
-                 if (carryingFood) showFeedbackIndicator(player, "Hands full!", "negative");
-                 return;
-            }
-
+            if (carryingFood || isMoving) { if(carryingFood) showFeedbackIndicator(player, "Hands full!", "negative"); return; }
             const currentItemIndex = readyItemsOnPass.findIndex(item => item.id === passId);
-            if (currentItemIndex === -1) { console.log("Item was already picked up or removed."); return; }
+            if (currentItemIndex === -1) { return; }
             const currentItem = readyItemsOnPass[currentItemIndex];
 
-            // Pick up the food
             carryingFood = currentItem.foodId;
             carryingFoodEmoji = foodItems[currentItem.foodId].emoji;
             carryingDisplay.textContent = carryingFoodEmoji;
             deliveryRadius.classList.add('active');
             if (debugMode) debugFood.textContent = carryingFood;
 
-            // Remove from state and UI
             readyItemsOnPass.splice(currentItemIndex, 1);
             currentItem.element.remove();
 
@@ -286,7 +235,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // --- Trash Can Click ---
+    // --- Trash Can Click --- (No longer cancels prep)
     trashCan.addEventListener('click', () => {
         if (!gameRunning || isPaused || isMoving) return;
 
@@ -294,15 +243,9 @@ document.addEventListener('DOMContentLoaded', () => {
             showFeedbackIndicator(trashCan, "Hands empty!", "info", 1200);
             return;
         }
-         // If preparing, CANCEL the prep
-         if (currentPrep.stationElement) {
-             console.log("Clicked trash, cancelling active preparation.");
-             clearActivePreparation();
-         }
+        // --- NO LONGER CANCELLING PREP ---
 
-        // Move player to trash can
         movePlayerToElement(trashCan, () => {
-            // After movement, trash item if still holding it
             if (carryingFood) {
                 const trashedEmoji = carryingFoodEmoji;
                 carryingFood = null;
@@ -315,17 +258,12 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // --- Dining Area Click --- (Cancel Prep Added)
+    // --- Dining Area Click Listener --- (No longer cancels prep)
     diningArea.addEventListener('click', (e) => {
         if (!gameRunning || isPaused || isMoving) return;
-        // Ignore clicks on interactive elements within dining area
         if (e.target.closest('.customer') || e.target.closest('.table') || e.target.closest('.player') || e.target.closest('.delivery-station') || e.target.closest('.trash-can')) return;
 
-        // If clicking background WHILE preparing, CANCEL the prep
-         if (currentPrep.stationElement) {
-             console.log("Clicked background, cancelling active preparation.");
-             clearActivePreparation();
-         }
+        // Clicking background no longer cancels active prep
 
         const rect = diningArea.getBoundingClientRect();
         const targetX = e.clientX - rect.left;
@@ -333,35 +271,20 @@ document.addEventListener('DOMContentLoaded', () => {
         movePlayerToCoordinates(targetX, targetY);
     });
 
-    // --- Table Click --- (Cancel Prep Added)
+    // --- Table Click Listener --- (No longer cancels prep)
     tables.forEach(table => {
         table.addEventListener('click', (e) => {
             if (!gameRunning || isPaused || isMoving) return;
             if (e.target.classList.contains('money-indicator') || e.target.classList.contains('feedback-indicator')) return;
 
-             // If clicking table WHILE preparing, CANCEL the prep
-             if (currentPrep.stationElement) {
-                 console.log("Clicked table, cancelling active preparation.");
-                 clearActivePreparation();
-             }
+             // Clicking table no longer cancels active prep
 
             const customerObj = customers.find(c => c.tableElement === table && c.state === 'waiting');
 
-            movePlayerToElement(table, () => { // Move player first
+            movePlayerToElement(table, () => {
                 if (customerObj) {
-                    if (carryingFood) {
-                        if (carryingFood === customerObj.order) {
-                            serveCustomer(customerObj);
-                        } else {
-                            showFeedbackIndicator(table, "Wrong Order!", "negative");
-                            if (debugMode) console.log(`Wrong! Have: ${carryingFood}, Want: ${customerObj.order}`);
-                            customerObj.patienceCurrent = Math.max(0, customerObj.patienceCurrent - 5);
-                            updateCustomerMood(customerObj);
-                        }
-                    }
-                } else if (carryingFood) {
-                    showFeedbackIndicator(table, "No one waiting!", "negative");
-                }
+                    if (carryingFood) { if (carryingFood === customerObj.order) { serveCustomer(customerObj); } else { showFeedbackIndicator(table, "Wrong Order!", "negative"); if (debugMode) console.log(`Wrong! Have: ${carryingFood}, Want: ${customerObj.order}`); customerObj.patienceCurrent = Math.max(0, customerObj.patienceCurrent - 5); updateCustomerMood(customerObj); } }
+                } else if (carryingFood) { showFeedbackIndicator(table, "No one waiting!", "negative"); }
             });
         });
     });
@@ -373,7 +296,7 @@ document.addEventListener('DOMContentLoaded', () => {
         console.log("--- startGame: Function called ---");
         money = 0; level = 1; timeLeft = 180; gameRunning = true; isPaused = false;
         carryingFood = null; carryingFoodEmoji = null; customers = []; isMoving = false;
-        clearActivePreparation(); // Clear active prep
+        // Removed clearActivePreparation call
         readyItemsOnPass = []; // Clear pass state
         deliveryStation.innerHTML = '<div class="delivery-station-label">PASS</div>'; // Clear pass UI
 
@@ -394,12 +317,9 @@ document.addEventListener('DOMContentLoaded', () => {
         console.log("--- startGame: Cleared dynamic elements & stations ---");
         console.log("--- startGame: Attempting to set background ---");
         try {
-            restaurantArea.style.backgroundImage = `url('${BACKGROUND_IMAGE_URL}')`; // Uses the constant
-             if (!BACKGROUND_IMAGE_URL || BACKGROUND_IMAGE_URL === 'assets/your-widescreen-backdrop.png') {
-                 console.warn("BG URL missing or default placeholder!");
-             } else {
-                 console.log("Set background to:", BACKGROUND_IMAGE_URL);
-             }
+            restaurantArea.style.backgroundImage = `url('${BACKGROUND_IMAGE_URL}')`; // Uses constant
+             if (!BACKGROUND_IMAGE_URL) { console.warn("BG URL missing!"); }
+             else { console.log("Set background to:", BACKGROUND_IMAGE_URL); }
         } catch (e) { console.error("--- startGame: ERROR setting background ---", e); }
         console.log("--- startGame: Background set (or attempted) ---");
         console.log("--- startGame: Initializing visuals ---");
@@ -414,7 +334,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function endGame() {
         console.log("Ending game...");
         gameRunning = false; isPaused = true; clearInterval(timerInterval); clearTimeout(customerSpawnTimeout);
-        stopPlayerMovement(); clearActivePreparation();
+        stopPlayerMovement(); // Removed clearActivePreparation call
         readyItemsOnPass = []; // Clear pass state
         deliveryStation.innerHTML = '<div class="delivery-station-label">PASS</div>'; // Clear pass UI
 
@@ -423,12 +343,15 @@ document.addEventListener('DOMContentLoaded', () => {
         console.log("Game ended. Final Score:", money);
     }
 
+    // --- Other Core Functions (pause, resume, tick, customers, move, updatePos, etc.) ---
+    // Keep the latest versions of these functions from the previous complete script.
+    // They don't need further changes for concurrent cooking logic.
     function pauseGame() { if (!gameRunning || isPaused) return; isPaused = true; clearInterval(timerInterval); stopPlayerMovement(); console.log("Game Paused"); }
     function resumeGame() { if (!gameRunning || !isPaused) return; isPaused = false; clearInterval(timerInterval); timerInterval = setInterval(gameTick, 1000); console.log("Game Resumed"); }
     function gameTick() { if (!gameRunning || isPaused) { clearInterval(timerInterval); return; } timeLeft--; timerDisplay.textContent = timeLeft; updateCustomers(); if (timeLeft <= 0) { endGame(); return; } if (Math.random() < 0.01) { triggerRandomEvent(); } }
     function updateCustomers() { if (isPaused) return; const now = Date.now(); customers.forEach((c) => { if (c.state === 'leaving' || c.state === 'served' || c.state === 'remove') return; const elapsed = (now - c.spawnTime) / 1000; c.patienceCurrent = Math.max(0, c.patienceTotal - elapsed); updateCustomerMood(c); if (c.patienceCurrent <= 0 && c.state === 'waiting') { customerLeavesAngry(c); } }); customers = customers.filter(c => c.state !== 'remove'); }
     function customerLeavesAngry(c) { if (c.state === 'leaving') return; console.log("Customer leaving angry:", c.id); c.state = 'leaving'; c.tableElement.classList.remove('table-highlight'); showFeedbackIndicator(c.tableElement, "Left Angry! 😡", "negative"); if (c.element) { c.element.style.transition = 'opacity 0.5s ease'; c.element.style.opacity = '0'; } setTimeout(() => { if (c.element && c.element.parentNode) c.element.remove(); c.state = 'remove'; }, 500); }
-    function movePlayerToElement(targetEl, callback = null) { if (isPaused || !targetEl) return; const restRect = restaurantArea.getBoundingClientRect(); const plyH = player.offsetHeight / 2 || 35; const plyW = player.offsetWidth / 2 || 25; let tX, tY; if (targetEl.closest('.kitchen-row')) { const sI = targetEl.closest('.food-station') || targetEl; const tR = sI.getBoundingClientRect(); const sCX_v = tR.left + tR.width / 2; tX = sCX_v - restRect.left; tY = restaurantArea.offsetHeight - plyH - 10; const minX = plyW + 5; const maxX = restaurantArea.offsetWidth - plyW - 5; tX = Math.max(minX, Math.min(maxX, tX)); } else if (targetEl.closest('.table') || targetEl === deliveryStation || targetEl === trashCan) { const tE = targetEl.closest('.table') || deliveryStation || trashCan; const tR = tE.getBoundingClientRect(); tX = tR.left - restRect.left + tR.width / 2; tY = tR.top - restRect.top + tR.height / 2; } else { console.warn("Move target unknown:", targetEl); return; } movePlayerToCoordinates(tX, tY, callback); }
+    function movePlayerToElement(targetEl, callback = null) { if (isPaused || !targetEl) return; const restRect = restaurantArea.getBoundingClientRect(); const plyH = player.offsetHeight / 2 || 35; const plyW = player.offsetWidth / 2 || 25; let tX, tY; if (targetEl.closest('.kitchen-row')) { const sI = targetEl.closest('.food-station') || targetEl; const tR = sI.getBoundingClientRect(); const sCX_v = tR.left + tR.width / 2; tX = sCX_v - restRect.left; tY = restaurantArea.offsetHeight - plyH - 10; const minX = plyW + 5; const maxX = restaurantArea.offsetWidth - plyW - 5; tX = Math.max(minX, Math.min(maxX, tX)); } else if (targetEl.closest('.table') || targetEl === deliveryStation || targetEl === trashCan) { const tE = targetEl.closest('.table') || (targetEl === deliveryStation ? deliveryStation : trashCan); const tR = tE.getBoundingClientRect(); tX = tR.left - restRect.left + tR.width / 2; tY = tR.top - restRect.top + tR.height / 2; } else { console.warn("Move target unknown:", targetEl); return; } movePlayerToCoordinates(tX, tY, callback); }
     function movePlayerToCoordinates(tX, tY, callback = null) { if (isPaused || isMoving) { return; }; isMoving = true; const sX = playerPosition.x; const sY = playerPosition.y; const dist = Math.hypot(tX - sX, tY - sY); if (dist < 1) { isMoving = false; if (callback) callback(); return; } const speed = 400; const dur = (dist / speed) * 1000; let startT = null; function step(time) { if (isPaused) { cancelAnimationFrame(animationFrameId); animationFrameId = null; isMoving = false; return; } if (!isMoving) { cancelAnimationFrame(animationFrameId); animationFrameId = null; return; } if (!startT) startT = time; const elap = time - startT; const prog = Math.min(1, elap / dur); playerPosition.x = sX + (tX - sX) * prog; playerPosition.y = sY + (tY - sY) * prog; updatePlayerPosition(); if (prog < 1) { animationFrameId = requestAnimationFrame(step); } else { playerPosition.x = tX; playerPosition.y = tY; updatePlayerPosition(); isMoving = false; animationFrameId = null; if (callback) { try { callback(); } catch (e) { console.error("Move CB Error:", e); } } } } cancelAnimationFrame(animationFrameId); animationFrameId = requestAnimationFrame(step); }
     function stopPlayerMovement() { if (animationFrameId) { cancelAnimationFrame(animationFrameId); animationFrameId = null; } isMoving = false; }
     function updatePlayerPosition() { const plyW = player.offsetWidth / 2 || 25; const plyH = player.offsetHeight / 2 || 35; const minX = plyW + 5; const maxX = restaurantArea.offsetWidth - plyW - 5; const minY = plyH + 5; const maxY = restaurantArea.offsetHeight - plyH - 5; playerPosition.x = Math.max(minX, Math.min(maxX, playerPosition.x)); playerPosition.y = Math.max(minY, Math.min(maxY, playerPosition.y)); player.style.transform = `translate(${playerPosition.x - plyW}px, ${playerPosition.y - plyH}px)`; deliveryRadius.style.left = `${playerPosition.x}px`; deliveryRadius.style.top = `${playerPosition.y}px`; }
@@ -443,7 +366,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function handleEventChoice(e) { const btn = e.target; const mE = parseInt(btn.dataset.effectMoney || '0'); const tE = parseInt(btn.dataset.effectTime || '0'); const fb = btn.dataset.feedback || "Okay."; money += mE; timeLeft += tE; money = Math.max(0, money); timeLeft = Math.max(0, timeLeft); moneyDisplay.textContent = money; timerDisplay.textContent = timeLeft; showFeedbackIndicator(player, fb, (mE < 0 || tE < 0) ? "negative" : "info"); eventModal.classList.add('hidden'); if (timeLeft > 0 && gameRunning) { resumeGame(); } else if (timeLeft <= 0) { endGame(); } }
     function populateMenuModal() { menuSectionsContainer.innerHTML = ''; const cats = {}; for (const iN in foodItems) { const i = foodItems[iN]; if (!cats[i.category]) cats[i.category] = []; cats[i.category].push({ name: iN, ...i }); } const tOrd = Array.from(tabBtns).map(b => b.getAttribute('data-tab')); tOrd.forEach(tK => { let catN = getCategoryNameFromTabKey(tK); let items = []; if (tK === 'mains') { items = [...(cats['Mains'] || []), ...(cats['Sides'] || [])]; if (!items.length) catN = null; } else { items = cats[catN]; } if (items && items.length > 0) { const sDiv = document.createElement('div'); sDiv.className = 'menu-section'; sDiv.setAttribute('data-section', tK); items.forEach(it => { const iDiv = document.createElement('div'); iDiv.className = 'menu-item'; iDiv.innerHTML = `<h5>${it.name} ${it.emoji} - $${it.price}</h5><p>Prep Time: ${it.prepTime}s</p>`; sDiv.appendChild(iDiv); }); menuSectionsContainer.appendChild(sDiv); } }); }
     function getCategoryNameFromTabKey(tK) { switch(tK) { case 'appetizers': return 'Appetizers'; case 'salads': return 'Salads'; case 'pasta': return 'Pasta'; case 'pizza': return 'Pizza'; case 'mains': return 'Mains'; case 'sides': return 'Sides'; case 'drinks': return 'Drinks'; default: return tK.charAt(0).toUpperCase() + tK.slice(1); } }
-    function initializeGameVisuals() { if (restaurantArea.offsetWidth > 0) { const plyH = player.offsetHeight / 2 || 35; const plyW = player.offsetWidth / 2 || 25; playerPosition.x = restaurantArea.offsetWidth / 2; playerPosition.y = restaurantArea.offsetHeight - plyH - 10; updatePlayerPosition(); player.style.opacity = '1'; player.style.display = 'flex'; } else { setTimeout(initializeGameVisuals, 100); return; } gameOverScreen.classList.add('hidden'); menuModal.classList.add('hidden'); eventModal.classList.add('hidden'); debugInfo.classList.toggle('hidden', !debugMode); startBtn.style.display = 'inline-block'; try { restaurantArea.style.backgroundImage = `url('${BACKGROUND_IMAGE_URL}')`; if (!BACKGROUND_IMAGE_URL || BACKGROUND_IMAGE_URL === 'assets/your-widescreen-backdrop.png') { console.warn("BG URL missing/default!"); } else { console.log("Set background to:", BACKGROUND_IMAGE_URL);} } catch(e) { console.error("Error setting BG in init:", e)} console.log("Initial visuals set."); }
+    function initializeGameVisuals() { if (restaurantArea.offsetWidth > 0) { const plyH = player.offsetHeight / 2 || 35; const plyW = player.offsetWidth / 2 || 25; playerPosition.x = restaurantArea.offsetWidth / 2; playerPosition.y = restaurantArea.offsetHeight - plyH - 10; updatePlayerPosition(); player.style.opacity = '1'; player.style.display = 'flex'; } else { setTimeout(initializeGameVisuals, 100); return; } gameOverScreen.classList.add('hidden'); menuModal.classList.add('hidden'); eventModal.classList.add('hidden'); debugInfo.classList.toggle('hidden', !debugMode); startBtn.style.display = 'inline-block'; try { restaurantArea.style.backgroundImage = `url('${BACKGROUND_IMAGE_URL}')`; if (!BACKGROUND_IMAGE_URL) { console.warn("BG URL missing!"); } else { console.log("Set background to:", BACKGROUND_IMAGE_URL);} } catch(e) { console.error("Error setting BG in init:", e)} console.log("Initial visuals set."); }
 
     // Run initial visual setup
     initializeGameVisuals();
