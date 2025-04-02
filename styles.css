@@ -62,8 +62,7 @@ button:active { transform: scale(0.98); } button:hover { background-color: #45a0
     z-index: 10;
     user-select: none;
     pointer-events: none;
-    width: 50px; /* Keep or adjust */
-    height: 70px; /* Keep or adjust based on how the image looks */
+    height: 90px; /* Keep or adjust based on how the image looks */
     opacity: 0;
 }
 .carrying { position: absolute; top: -15px; left: 50%; transform: translateX(-50%); font-size: 20px; /* Base size for emoji fallback */ height: 28px; /* Adjusted size */ width: 28px; /* Adjusted size */ background-color: rgba(255,255,255,0.8); border-radius: 50%; padding: 1px; box-shadow: 0 1px 3px rgba(0,0,0,0.2); display: flex; justify-content: center; align-items: center; z-index: 11; }
