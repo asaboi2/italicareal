@@ -1,112 +1,37 @@
 /* RESET & BASE */
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
-body {
-    font-family: 'Poppins', sans-serif;
-    background-color: #f5f0e8; /* Fallback */
-    color: #333;
-    overflow: hidden; /* Prevent scrolling the entire page */
-    height: 100vh;
-    width: 100vw;
-}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'Poppins', sans-serif; background-color: #f5f0e8; color: #333; overflow: hidden; height: 100vh; width: 100vw; }
 
 /* 3-ROW LAYOUT CONTAINER */
-.container {
-    display: flex;
-    flex-direction: column; /* Stack children vertically */
-    width: 100%;
-    height: 100%;
-    background-color: #e0d8cd; /* A slightly darker background */
-}
+.container { display: flex; flex-direction: column; width: 100%; height: 100%; background-color: #e0d8cd; }
 
 /* ROW 1: HEADER */
-.header {
-    background-color: #8d1f1f;
-    color: white;
-    padding: 8px 20px;
-    text-align: center;
-    border-bottom: 3px solid #5d4037;
-    z-index: 10;
-    flex-shrink: 0;
-    height: 95px;
-}
-.score-container {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 5px;
-    font-size: 15px;
-    font-weight: 600;
-}
-.header h1 {
-    font-size: 20px;
-    margin-bottom: 5px;
-    letter-spacing: 1px;
-    font-weight: 600;
-}
-.controls {
-    display: flex;
-    justify-content: center;
-    gap: 15px;
-    margin-top: 5px; /* Added small margin */
-}
-button {
-    background-color: #4CAF50; /* Start Day Green */
-    color: white;
-    border: none;
-    padding: 7px 14px;
-    font-size: 13px;
-    cursor: pointer;
-    border-radius: 5px;
-    transition: background-color 0.3s, transform 0.1s;
-    font-weight: 600;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-}
-button:active { transform: scale(0.98); }
-button:hover { background-color: #45a049; }
-/* #menu-btn related styles removed */
-#restart-btn { background-color: #5bc0de; } /* Restart Blue */
-#restart-btn:hover { background-color: #31b0d5; }
-#close-menu-btn { background-color: #d9534f; margin-top: 15px;} /* Close Red */
+.header { background-color: #8d1f1f; color: white; padding: 8px 20px; text-align: center; border-bottom: 3px solid #5d4037; z-index: 10; flex-shrink: 0; height: 95px; }
+.score-container { display: flex; justify-content: space-between; margin-bottom: 5px; font-size: 15px; font-weight: 600; }
+.header h1 { font-size: 20px; margin-bottom: 5px; letter-spacing: 1px; font-weight: 600; }
+.controls { display: flex; justify-content: center; gap: 15px; margin-top: 5px; height: 0; overflow: hidden; } /* Hide controls div content */
+button { background-color: #4CAF50; color: white; border: none; padding: 7px 14px; font-size: 13px; cursor: pointer; border-radius: 5px; transition: background-color 0.3s, transform 0.1s; font-weight: 600; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
+button:active { transform: scale(0.98); } button:hover { background-color: #45a049; }
+/* Specific button colors */
+#next-level-btn { background-color: #4CAF50; } /* Green for next */
+#next-level-btn:hover { background-color: #45a049; }
+#retry-level-btn { background-color: #f4a261; } /* Orange for retry */
+#retry-level-btn:hover { background-color: #e76f51; }
+#play-again-btn { background-color: #5bc0de; } /* Blue for play again */
+#play-again-btn:hover { background-color: #31b0d5; }
+#close-menu-btn { background-color: #d9534f; margin-top: 15px;} /* Red for close */
 #close-menu-btn:hover { background-color: #c9302c; }
 
 /* ROW 2: RESTAURANT (GAME AREA) */
-.restaurant {
-    flex-grow: 1;
-    position: relative;
-    /* Using 'assets/backdrop.png' as confirmed */
-    background: url('assets/backdrop.png') center center no-repeat;
-    background-size: contain; /* Adjust cover/contain as needed */
-    overflow: hidden;
-    border-bottom: 5px solid #5d4037;
-    min-height: 200px;
-}
+.restaurant { flex-grow: 1; position: relative; background: url('assets/backdrop.png') center center no-repeat; background-size: cover; overflow: hidden; width: 100%; border-bottom: 5px solid #5d4037; min-height: 200px; }
 
 /* --- Elements within Restaurant --- */
 .debug-info { position: absolute; top: 5px; right: 5px; background: rgba(0,0,0,0.75); color: #0f0; padding: 5px 8px; font-size: 11px; font-family: 'Courier New', Courier, monospace; border-radius: 4px; z-index: 101; opacity: 0.9; }
 .debug-info.hidden { display: none; }
 .dining-area { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; }
 
-/* --- Table Styles with Pixel Art Positions --- */
-.table {
-    position: absolute;
-    width: 90px; /* Adjust width */
-    height: 75px;/* Adjust height */
-    /* background-color: rgba(0, 255, 0, 0.2); */ /* TEMP: Uncomment to see hitboxes */
-    border-radius: 5px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    cursor: pointer;
-    z-index: 2;
-}
-/* Positions adjusted for pixel art background */
-#table1 { top: 38%; left: 18%; transform: translate(-50%, -50%); }
-#table2 { top: 38%; left: 82%; transform: translate(-50%, -50%); }
-#table3 { top: 80%; left: 18%; transform: translate(-50%, -50%); }
-#table4 { top: 80%; left: 82%; transform: translate(-50%, -50%); }
+/* --- Dynamic Table Styles --- */
+.table { position: absolute; width: 60px; height: 60px; background-color: #8B4513; border: 3px solid #5d4037; border-radius: 4px; display: flex; justify-content: center; align-items: center; cursor: pointer; z-index: 2; }
 .seat { width: 100%; height: 100%; position: relative; }
 
 /* --- Player & Customer Styles --- */
@@ -130,8 +55,8 @@ button:hover { background-color: #45a049; }
 .ready-food-item { width: 40px; height: 40px; font-size: 28px; background-color: #fff; border: 2px solid #4CAF50; border-radius: 5px; display: flex; justify-content: center; align-items: center; cursor: pointer; flex-shrink: 0; box-shadow: 0 0 8px rgba(76, 175, 80, 0.6); transition: transform 0.2s ease; }
 .ready-food-item:hover { transform: scale(1.1); }
 
-/* --- Trash Can --- */
-.trash-can { position: absolute; bottom: 10px; right: 10px; width: 50px; height: 50px; font-size: 35px; background-color: rgba(100, 100, 100, 0.7); border: 2px solid #333; border-radius: 50%; display: flex; justify-content: center; align-items: center; cursor: pointer; z-index: 4; transition: transform 0.2s, background-color 0.2s; }
+/* --- Trash Can (Moved) --- */
+.trash-can { position: absolute; bottom: 10px; left: 325px; /* Next to pass */ width: 50px; height: 50px; font-size: 35px; background-color: rgba(100, 100, 100, 0.7); border: 2px solid #333; border-radius: 50%; display: flex; justify-content: center; align-items: center; cursor: pointer; z-index: 4; transition: transform 0.2s, background-color 0.2s; }
 .trash-can:hover { transform: scale(1.1); background-color: rgba(150, 100, 100, 0.8); }
 
 /* ROW 3: KITCHEN */
@@ -146,7 +71,7 @@ button:hover { background-color: #45a049; }
 
 /* Preparation Progress & State */
 .prep-progress-bar { position: absolute; bottom: 0; left: 0; width: 100%; height: 5px; background-color: rgba(0, 0, 0, 0.2); z-index: 1; transform: scaleX(0); transform-origin: left; }
-.food-station.preparing .prep-progress-bar { background-color: #ffcc00; /* Yellow while preparing */ }
+.food-station.preparing .prep-progress-bar { background-color: #ffcc00; }
 .preparing { animation: preparing-pulse 0.6s infinite alternate ease-in-out; cursor: not-allowed !important; }
 @keyframes preparing-pulse { from { transform: scale(1); box-shadow: 0 0 5px rgba(255, 204, 0, 0.5); border-color: #ffcc00; } to { transform: scale(1.1); box-shadow: 0 0 15px rgba(255, 204, 0, 1); border-color: #ffaa00; } }
 
@@ -158,6 +83,10 @@ button:hover { background-color: #45a049; }
 .modal:not(.hidden) .modal-content { transform: scale(1); }
 .modal-content h2 { margin-bottom: 15px; color: #8d1f1f; }
 .modal-content p { margin-bottom: 20px; font-size: 16px; color: #555; }
+/* Add class for modal buttons container */
+.modal-buttons button { margin: 5px; }
+.modal-buttons button.hidden { display: none; } /* Hide buttons dynamically */
+
 .menu-content { width: 800px; max-width: 95%; max-height: 85vh; overflow-y: auto; text-align: left; }
 .menu-content::-webkit-scrollbar { width: 8px; } .menu-content::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 4px; } .menu-content::-webkit-scrollbar-thumb { background: #a1887f; border-radius: 4px; } .menu-content::-webkit-scrollbar-thumb:hover { background: #8d6e63; }
 .menu-tabs { display: flex; justify-content: center; gap: 10px; margin: 15px 0 25px 0; flex-wrap: wrap; }
@@ -170,5 +99,10 @@ button:hover { background-color: #45a049; }
 .money-indicator, .feedback-indicator { position: absolute; left: 50%; top: 50%; transform: translateX(-50%); font-size: 16px; color: gold; font-weight: bold; animation: float-up-fade 1.8s forwards ease-out; z-index: 20; text-shadow: 1px 1px 2px rgba(0,0,0,0.5); pointer-events: none; text-align: center; line-height: 1.2; }
 .feedback-indicator.negative { color: #e74c3c; } .feedback-indicator.positive { color: #2ecc71; }
 @keyframes float-up-fade { from { opacity: 1; transform: translate(-50%, 0); } to { opacity: 0; transform: translate(-50%, -60px); } }
+
+/* --- Customer Leaving Warning --- */
 .table-highlight .seat::before { content: ''; position: absolute; width: 110%; height: 110%; top: 50%; left: 50%; transform: translate(-50%, -50%); border: 3px solid gold; border-radius: 10px; box-shadow: 0 0 15px 5px gold; animation: pulse 1.2s infinite ease-in-out; z-index: 0; pointer-events: none; }
+.table-leaving-soon .seat::before { border-color: red !important; box-shadow: 0 0 20px 8px red !important; animation: flash-red 0.5s infinite alternate !important; }
 @keyframes pulse { 0% { box-shadow: 0 0 10px 3px gold; opacity: 0.7; } 50% { box-shadow: 0 0 20px 6px gold; opacity: 1; } 100% { box-shadow: 0 0 10px 3px gold; opacity: 0.7; } }
+@keyframes flash-red { from { opacity: 1; box-shadow: 0 0 20px 8px red; } to { opacity: 0.4; box-shadow: 0 0 10px 4px darkred; } }
+/* --- End Customer Leaving Warning --- */
