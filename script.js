@@ -1,4 +1,4 @@
-// <<< START OF UPDATED full.js >>>
+// <<< START OF UPDATED full.js (Pickup Sound Removed) >>>
 document.addEventListener('DOMContentLoaded', () => {
     // --- DOM Elements ---
     const player = document.getElementById('player');
@@ -41,10 +41,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const sfxServe = document.getElementById('sfx-serve');
     const sfxAngryLeft = document.getElementById('sfx-angry-left');
     const sfxTrash = document.getElementById('sfx-trash');
-    const sfxPickup = document.getElementById('sfx-pickup');
+    // const sfxPickup = document.getElementById('sfx-pickup'); // Pickup sound element reference (can be kept or removed)
     const sfxClick = document.getElementById('sfx-click');
     const sfxCook = document.getElementById('sfx-cook');
-    const sfxReady = document.getElementById('sfx-ready');
+    const sfxReady = document.getElementById('sfx-ready'); // The "ding" sound
     const sfxLevelWin = document.getElementById('sfx-level-win');
     const sfxLevelLose = document.getElementById('sfx-level-lose');
 
@@ -254,6 +254,8 @@ document.addEventListener('DOMContentLoaded', () => {
         const existingLabel = deliveryStation.querySelector('.delivery-station-label');
         if (existingLabel) existingLabel.remove();
         deliveryStation.appendChild(itemDiv);
+
+        // Play the "ready" sound when food appears on the pass
         playSound(sfxReady);
     }
 
@@ -273,7 +275,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const cellWidth = numCols > 0 ? usableWidth / numCols : usableWidth;
         const gridTopOffset = containerHeight * gridPaddingTopFraction;
         const gridLeftOffset = containerWidth * gridPaddingHorizontalFraction;
-        console.log(`Generating ${numTables} tables in a ${numRows}x${numCols} grid.`);
+        // console.log(`Generating ${numTables} tables in a ${numRows}x${numCols} grid.`); // Optional debug
         for (let i = 0; i < numTables; i++) {
             const table = document.createElement('div');
             table.classList.add('table');
@@ -323,7 +325,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     foodStations.forEach(station => {
          station.addEventListener('click', () => {
-             playSound(sfxClick);
+             playSound(sfxClick); // Play general click sound
              const foodId = station.dataset.item;
              const item = foodItems[foodId];
              if (!item) return;
@@ -343,11 +345,12 @@ document.addEventListener('DOMContentLoaded', () => {
                  progressBar.style.backgroundColor = '#ffcc00';
                  progressBar.style.transform = 'scaleX(0)';
                  const prepTimeMs = item.prepTime * 1000;
-                 playSound(sfxCook);
+                 playSound(sfxCook); // Play cooking sound
                  animatePrepProgress(progressBar, prepTimeMs, () => {
+                    // This callback runs when cooking is complete
                     progressBar.style.backgroundColor = '#4CAF50';
                     station.classList.remove('preparing');
-                    addFoodToPass(foodId);
+                    addFoodToPass(foodId); // Add food to pass (this will play sfxReady)
                     setTimeout(() => {
                          progressBar.style.transform = 'scaleX(0)';
                          progressBar.style.backgroundColor = 'rgba(0, 0, 0, 0.2)';
@@ -355,8 +358,9 @@ document.addEventListener('DOMContentLoaded', () => {
                     }, 200);
                  });
             } else {
+                 // Handle stations without a visual progress bar (uses timeout)
                  console.warn("Progress bar not found for station:", foodId);
-                 playSound(sfxCook);
+                 playSound(sfxCook); // Play cooking sound
                  const prepTimeMs = (item.prepTime || 0.1) * 1000;
                  setTimeout(() => {
                      if (!gameRunning || isPaused) {
@@ -365,8 +369,9 @@ document.addEventListener('DOMContentLoaded', () => {
                          station.style.pointerEvents = 'auto';
                          return;
                      }
+                     // This runs when the timeout (cooking) is complete
                      station.classList.remove('preparing');
-                     addFoodToPass(foodId);
+                     addFoodToPass(foodId); // Add food to pass (this will play sfxReady)
                      station.style.pointerEvents = 'auto';
                  }, prepTimeMs);
              }
@@ -374,7 +379,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     deliveryStation.addEventListener('click', (e) => {
-        playSound(sfxClick);
+        playSound(sfxClick); // Play general click sound
         if (isPaused) return;
         const clickedItem = e.target.closest('.ready-food-item');
         if (carryingFood) {
@@ -392,7 +397,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 carryingDisplay.innerHTML = '';
                 carryingDisplay.appendChild(createIconElement(carryingFoodIcon, carryingFood));
                 deliveryRadius.classList.add('active');
-                playSound(sfxPickup);
+
+                // REMOVED: playSound(sfxPickup); // <<< No sound on pickup anymore
+
                 if (readyItemsOnPass.length === 0 && !deliveryStation.querySelector('.delivery-station-label')) {
                     const label = document.createElement('div');
                     label.className = 'delivery-station-label';
@@ -422,7 +429,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     diningArea.addEventListener('click', (e) => {
-        playSound(sfxClick);
+        playSound(sfxClick); // Play general click sound
         if (isPaused) return;
         const targetTable = e.target.closest('.table');
         if (targetTable) {
@@ -450,11 +457,13 @@ document.addEventListener('DOMContentLoaded', () => {
                  movePlayerToElement(targetTable);
             }
         } else {
+             // Clicked on dining area floor, not a table
              if (!isMoving) {
                 const rect = restaurantArea.getBoundingClientRect();
                 const clickX = e.clientX - rect.left;
                 const clickY = e.clientY - rect.top;
-                const kitchenLineY = restaurantArea.offsetHeight * 0.90;
+                // Prevent player from going too far into the kitchen area by clicking floor
+                const kitchenLineY = restaurantArea.offsetHeight * 0.90; // Adjust as needed
                 const targetY = Math.min(clickY, kitchenLineY);
                 movePlayerToCoordinates(clickX, targetY);
              }
@@ -531,17 +540,19 @@ document.addEventListener('DOMContentLoaded', () => {
         console.log("Ending game/day...");
         gameRunning = false; isPaused = true; clearInterval(timerInterval);
         clearTimeout(customerSpawnTimeout); stopPlayerMovement();
-        readyItemsOnPass = [];
-        deliveryStation.innerHTML = '<div class="delivery-station-label">PASS</div>';
+        readyItemsOnPass = []; // Clear any leftover items on pass
+        deliveryStation.innerHTML = '<div class="delivery-station-label">PASS</div>'; // Reset pass label
         diningArea.querySelectorAll('.table').forEach(table => table.classList.remove('table-highlight', 'table-leaving-soon'));
-        deliveryRadius.classList.remove('active');
+        deliveryRadius.classList.remove('active'); // Hide delivery radius if active
         stopLoopingSound(bgmAudio); stopLoopingSound(ambienceAudio);
         backgroundSoundsStarted = false;
+        // Stop any ongoing prep animations
         foodStations.forEach(s => { const pb = s.querySelector('.prep-progress-bar'); if (pb) delete pb._animation; });
-        const moneyTarget = levelThresholds[level] || 99999;
+        // Determine win/loss
+        const moneyTarget = levelThresholds[level] || 99999; // Use thresholds or a high number if undefined
         const levelWon = money >= moneyTarget;
         const isFinalLevel = level >= maxLevel;
-        finalScoreDisplay.textContent = money;
+        finalScoreDisplay.textContent = money; // Show score on game over screen regardless
         if (levelWon && isFinalLevel) {
             console.log("Overall Game Won!");
             finalWinScoreDisplay.textContent = money;
@@ -579,22 +590,24 @@ document.addEventListener('DOMContentLoaded', () => {
          isPaused = false;
          if (gameRunning && timeLeft > 0) {
             if (backgroundSoundsStarted) {
-                console.log("[resumeGame] backgroundSoundsStarted is true, attempting to resume sounds."); // MUSIC DEBUG
-                console.log("Calling playLoopingSound(bgmAudio)..."); // MUSIC DEBUG
+                // Resume background sounds if they were playing
                 playLoopingSound(bgmAudio, 0.3);
-                console.log("Called playLoopingSound(bgmAudio)."); // MUSIC DEBUG
-                console.log("Calling playLoopingSound(ambienceAudio)..."); // MUSIC DEBUG
                 playLoopingSound(ambienceAudio, 0.4);
-                console.log("Called playLoopingSound(ambienceAudio)."); // MUSIC DEBUG
-            } else {
-                 console.log("[resumeGame] backgroundSoundsStarted is false, skipping sound resume."); // MUSIC DEBUG
             }
             clearInterval(timerInterval); timerInterval = setInterval(gameTick, 1000);
+            // Reschedule customer if one was pending
             scheduleNextCustomer();
+            // Resume any cooking animations that were paused
+            foodStations.forEach(station => {
+                const progressBar = station.querySelector('.prep-progress-bar');
+                if (progressBar && progressBar._animation && progressBar._animation.pauseTime !== null) {
+                    requestAnimationFrame(progressBar._animation.reqId); // Re-initiate the animation loop
+                }
+            });
             console.log("Game Resumed");
          } else {
               console.log("Game NOT Resumed (already ended or time up)");
-              if (timeLeft <= 0 && gameRunning) { endGame(); }
+              if (timeLeft <= 0 && gameRunning) { endGame(); } // End game if time ran out while paused
          }
      }
 
@@ -602,57 +615,75 @@ document.addEventListener('DOMContentLoaded', () => {
          if (!gameRunning || isPaused) { clearInterval(timerInterval); return; }
          timeLeft--;
          timerDisplay.textContent = timeLeft;
-         updateCustomers();
+         updateCustomers(); // Update patience, mood, check for angry leavers
 
+         // Check for game end condition
          if (timeLeft <= 0) {
              endGame();
-             return;
+             return; // Important: stop further processing in this tick
          }
 
+         // Check for triggering a random event
          if (customersSpawnedThisLevel >= RANDOM_EVENT_MIN_CUSTOMERS && Math.random() < 0.02 && eventModal.classList.contains('hidden')) {
              triggerRandomEvent();
          }
      }
 
     function updateCustomers() {
-        if (isPaused) return;
+        if (isPaused) return; // Don't update if paused
         const now = Date.now();
-        const LEAVING_SOON_THRESHOLD = 5;
+        const LEAVING_SOON_THRESHOLD = 5; // Seconds before leaving angry
+
         customers.forEach((c) => {
-            if (c.state === 'leaving' || c.state === 'served' || c.state === 'remove') return;
+            if (c.state === 'leaving' || c.state === 'served' || c.state === 'remove') return; // Skip already handled customers
+
             const elapsedSinceSpawn = (now - c.spawnTime) / 1000;
             const oldPatienceRatio = c.patienceCurrent / c.patienceTotal;
-            c.patienceCurrent = Math.max(0, c.patienceTotal - elapsedSinceSpawn);
+            c.patienceCurrent = Math.max(0, c.patienceTotal - elapsedSinceSpawn); // Decrease patience
             const newPatienceRatio = c.patienceCurrent / c.patienceTotal;
+
+            // Play impatient sound only once when crossing the threshold
             if (oldPatienceRatio > 0.5 && newPatienceRatio <= 0.5) { playSound(sfxImpatient); }
-            updateCustomerMood(c);
+
+            updateCustomerMood(c); // Update visual mood indicator
+
             const tableEl = diningArea.querySelector(`#${c.tableElement.id}`);
-            if (!tableEl) { c.state = 'remove'; return; }
+            if (!tableEl) { c.state = 'remove'; return; } // Safety check if table disappeared
+
+            // Visual cue for nearly angry customer
             if (c.patienceCurrent <= LEAVING_SOON_THRESHOLD && c.patienceCurrent > 0) { tableEl.classList.add('table-leaving-soon'); }
             else { tableEl.classList.remove('table-leaving-soon'); }
+
+            // Customer runs out of patience
             if (c.patienceCurrent <= 0 && c.state === 'waiting') { customerLeavesAngry(c); }
         });
+
+        // Clean up customers marked for removal
         customers = customers.filter(c => c.state !== 'remove');
     }
 
     function customerLeavesAngry(c) {
-        if (!c || c.state === 'leaving' || c.state === 'remove') return;
+        if (!c || c.state === 'leaving' || c.state === 'remove') return; // Already handled
         playSound(sfxAngryLeft);
         console.log("Customer leaving angry:", c.id, "from table:", c.tableElement.id);
-        c.state = 'leaving';
+        c.state = 'leaving'; // Mark as leaving
+
         const tableEl = diningArea.querySelector(`#${c.tableElement.id}`);
         showFeedbackIndicator(c.element || tableEl || player, "Left Angry! 😡", "negative");
+
         if (tableEl) {
-            tableEl.classList.remove('table-highlight', 'table-leaving-soon');
+            tableEl.classList.remove('table-highlight', 'table-leaving-soon'); // Clear table state
         }
+        // Fade out the customer element
         if (c.element) {
             c.element.style.transition = 'opacity 0.5s ease';
             c.element.style.opacity = '0';
         }
+        // Schedule removal from the game state and DOM after fade out
         setTimeout(() => {
             if (c.element && c.element.parentNode) { c.element.remove(); }
-            c.state = 'remove';
-        }, 500);
+            c.state = 'remove'; // Mark for filtering out
+        }, 500); // Should match CSS transition time
     }
 
     function movePlayerToElement(targetEl, callback = null) {
@@ -661,255 +692,469 @@ document.addEventListener('DOMContentLoaded', () => {
         const plyH = player.offsetHeight / 2 || 35;
         const plyW = player.offsetWidth / 2 || 25;
         let targetX, targetY;
-        if (targetEl.closest('.kitchen-row')) {
+
+        // Determine target coordinates based on element type
+        if (targetEl.closest('.kitchen-row')) { // Moving to a kitchen station/trash
             const stationInteractionPoint = targetEl.closest('.food-station, #trash-can');
             const targetRect = stationInteractionPoint.getBoundingClientRect();
             const stationCenterXViewport = targetRect.left + targetRect.width / 2;
             targetX = stationCenterXViewport - restRect.left;
-            targetY = restaurantArea.offsetHeight - plyH - 10;
+            targetY = restaurantArea.offsetHeight - plyH - 10; // Position just above the kitchen row
+             // Clamp X to stay within restaurant bounds
              const minX = plyW + 5; const maxX = restaurantArea.offsetWidth - plyW - 5;
              targetX = Math.max(minX, Math.min(maxX, targetX));
-        } else if (targetEl.closest('.table') || targetEl === deliveryStation) {
+        } else if (targetEl.closest('.table') || targetEl === deliveryStation) { // Moving to a table or pass
             const interactionElement = targetEl.closest('.table') || deliveryStation;
             const targetRect = interactionElement.getBoundingClientRect();
-            targetX = targetRect.left - restRect.left + targetRect.width / 2;
-            targetY = targetRect.top - restRect.top + targetRect.height / 2;
-        } else { return; }
+            targetX = targetRect.left - restRect.left + targetRect.width / 2; // Center of the element
+            targetY = targetRect.top - restRect.top + targetRect.height / 2; // Center of the element
+        } else {
+            // Clicked on something invalid to move to
+            return;
+        }
         movePlayerToCoordinates(targetX, targetY, callback);
     }
 
     function movePlayerToCoordinates(targetX, targetY, callback = null) {
-        if (isPaused || isMoving) { return; };
+        if (isPaused || isMoving) { return; }; // Don't move if paused or already moving
         isMoving = true;
         const startX = playerPosition.x; const startY = playerPosition.y;
         const distance = Math.hypot(targetX - startX, targetY - startY);
+
+        // If already very close, snap and call callback immediately
         if (distance < 1) {
+            playerPosition.x = targetX; playerPosition.y = targetY; updatePlayerPosition();
             isMoving = false;
             if (callback) { try { callback(); } catch (e) { console.error("Move CB Error (near):", e); } }
             return;
         }
-        const playerSpeed = 400; const durationMs = (distance / playerSpeed) * 1000;
+
+        const playerSpeed = 400; // Pixels per second
+        const durationMs = (distance / playerSpeed) * 1000;
         let startTime = null;
+
         function step(timestamp) {
+            // Check if movement was cancelled (paused or stopped externally)
             if (isPaused) { cancelAnimationFrame(animationFrameId); animationFrameId = null; isMoving = false; return; }
             if (!isMoving) { cancelAnimationFrame(animationFrameId); animationFrameId = null; return; }
+
             if (!startTime) startTime = timestamp;
             const elapsed = timestamp - startTime;
-            const progress = Math.min(1, elapsed / durationMs);
+            const progress = Math.min(1, elapsed / durationMs); // Ensure progress doesn't exceed 1
+
+            // Calculate current position based on progress
             playerPosition.x = startX + (targetX - startX) * progress;
             playerPosition.y = startY + (targetY - startY) * progress;
-            updatePlayerPosition();
-            if (progress < 1) { animationFrameId = requestAnimationFrame(step); }
-            else {
-                playerPosition.x = targetX; playerPosition.y = targetY; updatePlayerPosition();
-                isMoving = false; animationFrameId = null;
+            updatePlayerPosition(); // Update visual position
+
+            if (progress < 1) {
+                // Continue animation if not finished
+                animationFrameId = requestAnimationFrame(step);
+            } else {
+                // Movement finished
+                playerPosition.x = targetX; playerPosition.y = targetY; updatePlayerPosition(); // Ensure exact final position
+                isMoving = false;
+                animationFrameId = null;
+                // Execute callback if provided
                 if (callback) { try { callback(); } catch (e) { console.error("Move CB Error (end):", e); } }
             }
         }
-        cancelAnimationFrame(animationFrameId); animationFrameId = requestAnimationFrame(step);
+        // Cancel any previous animation frame before starting a new one
+        cancelAnimationFrame(animationFrameId);
+        animationFrameId = requestAnimationFrame(step);
     }
 
     function stopPlayerMovement() {
-        if (animationFrameId) { cancelAnimationFrame(animationFrameId); animationFrameId = null; }
-        isMoving = false;
+        if (animationFrameId) {
+            cancelAnimationFrame(animationFrameId);
+            animationFrameId = null;
+        }
+        isMoving = false; // Ensure movement state is reset
     }
 
     function updatePlayerPosition() {
-        const playerHalfWidth = player.offsetWidth / 2 || 25; const playerHalfHeight = player.offsetHeight / 2 || 35;
-        const minX = playerHalfWidth + 5; const maxX = restaurantArea.offsetWidth - playerHalfWidth - 5;
-        const minY = playerHalfHeight + 5; const maxY = restaurantArea.offsetHeight - playerHalfHeight - 5;
+        // Calculate bounds considering player size
+        const playerHalfWidth = player.offsetWidth / 2 || 25;
+        const playerHalfHeight = player.offsetHeight / 2 || 35;
+        const minX = playerHalfWidth + 5; // Add small buffer from edge
+        const maxX = restaurantArea.offsetWidth - playerHalfWidth - 5;
+        const minY = playerHalfHeight + 5;
+        const maxY = restaurantArea.offsetHeight - playerHalfHeight - 5;
+
+        // Clamp position within bounds
         playerPosition.x = Math.max(minX, Math.min(maxX, playerPosition.x));
         playerPosition.y = Math.max(minY, Math.min(maxY, playerPosition.y));
+
+        // Apply transform for centering
         player.style.transform = `translate(${playerPosition.x - playerHalfWidth}px, ${playerPosition.y - playerHalfHeight}px)`;
-        deliveryRadius.style.left = `${playerPosition.x}px`; deliveryRadius.style.top = `${playerPosition.y}px`;
+
+        // Update delivery radius position (centered on player)
+        deliveryRadius.style.left = `${playerPosition.x}px`;
+        deliveryRadius.style.top = `${playerPosition.y}px`;
     }
 
     function scheduleNextCustomer() {
-        if (!gameRunning || isPaused) { clearTimeout(customerSpawnTimeout); return; }
-        clearTimeout(customerSpawnTimeout);
-        const baseDelay = Math.max( CUSTOMER_SPAWN_MIN_TIME, CUSTOMER_SPAWN_BASE_TIME - (level - 1) * CUSTOMER_SPAWN_LEVEL_REDUCTION );
+        if (!gameRunning || isPaused) {
+            clearTimeout(customerSpawnTimeout); // Clear any pending spawn if game stopped/paused
+            return;
+        }
+        clearTimeout(customerSpawnTimeout); // Clear previous timeout just in case
+
+        // Calculate spawn delay based on level, with randomness
+        const baseDelay = Math.max(
+            CUSTOMER_SPAWN_MIN_TIME,
+            CUSTOMER_SPAWN_BASE_TIME - (level - 1) * CUSTOMER_SPAWN_LEVEL_REDUCTION
+        );
         const randomMultiplier = CUSTOMER_SPAWN_RANDOM_FACTOR_MIN + Math.random() * (CUSTOMER_SPAWN_RANDOM_FACTOR_MAX - CUSTOMER_SPAWN_RANDOM_FACTOR_MIN);
         const finalDelay = baseDelay * randomMultiplier;
+
+        // Schedule the next spawn
         customerSpawnTimeout = setTimeout(spawnCustomer, finalDelay);
     }
 
     function spawnCustomer() {
-        if (!gameRunning || isPaused) { scheduleNextCustomer(); return; }
+        // Only spawn if game is running and not paused
+        if (!gameRunning || isPaused) {
+            scheduleNextCustomer(); // Reschedule for when game resumes
+            return;
+        }
         try {
             const allTables = Array.from(diningArea.querySelectorAll('.table'));
-            if (allTables.length === 0) { scheduleNextCustomer(); return; }
+            if (allTables.length === 0) {
+                console.warn("No tables found to spawn customer.");
+                scheduleNextCustomer(); // Try again later
+                return;
+            }
+
+            // Find available tables (not occupied by waiting/served customers)
             const potentialTables = allTables.filter(table => {
-                const isOccupied = customers.some(c => c.tableElement.id === table.id && c.state !== 'leaving' && c.state !== 'remove');
+                const isOccupied = customers.some(c =>
+                    c.tableElement.id === table.id &&
+                    c.state !== 'leaving' && // Allow spawning if previous customer is leaving
+                    c.state !== 'remove'   // Allow spawning if previous customer is fully removed
+                );
                 return !isOccupied;
             });
-            if (potentialTables.length > 0) {
-                 // --- Music Trigger Logging ---
-                 console.log(`[spawnCustomer] Checking backgroundSoundsStarted: ${backgroundSoundsStarted}`); // MUSIC DEBUG
-                 if (!backgroundSoundsStarted) {
-                     console.log("First customer spawning, attempting to start background sounds."); // MUSIC DEBUG
-                     console.log("Calling playLoopingSound(bgmAudio)..."); // MUSIC DEBUG
-                     playLoopingSound(bgmAudio, 0.3);
-                     console.log("Called playLoopingSound(bgmAudio)."); // MUSIC DEBUG
-                     console.log("Calling playLoopingSound(ambienceAudio)..."); // MUSIC DEBUG
-                     playLoopingSound(ambienceAudio, 0.4);
-                     console.log("Called playLoopingSound(ambienceAudio)."); // MUSIC DEBUG
-                     backgroundSoundsStarted = true;
-                     console.log(`[spawnCustomer] backgroundSoundsStarted set to true.`); // MUSIC DEBUG
-                 } else {
-                    // console.log("[spawnCustomer] backgroundSoundsStarted is already true, skipping sound start."); // MUSIC DEBUG
-                 }
-                 // --- End Music Trigger Logging ---
 
-                playSound(sfxOrdered);
+            if (potentialTables.length > 0) {
+                 // --- Start Background Music/Ambience on First Customer ---
+                 if (!backgroundSoundsStarted) {
+                     console.log("First customer spawning, starting background sounds.");
+                     playLoopingSound(bgmAudio, 0.3);
+                     playLoopingSound(ambienceAudio, 0.4);
+                     backgroundSoundsStarted = true;
+                 }
+                 // --- End Background Music Trigger ---
+
+                playSound(sfxOrdered); // Play the order sound
+
+                // Select a random available table
                 const tableElement = potentialTables[Math.floor(Math.random() * potentialTables.length)];
                 const seatElement = tableElement.querySelector('.seat');
-                if (!seatElement) { scheduleNextCustomer(); return; }
+                if (!seatElement) {
+                    console.error("Table found, but seat element is missing:", tableElement.id);
+                    scheduleNextCustomer(); return;
+                }
+
+                // Create customer element
                 const custEl = document.createElement('div'); custEl.className = 'customer';
-                custEl.textContent = customerEmojis[Math.floor(Math.random() * customerEmojis.length)]; custEl.style.opacity = '0';
+                custEl.textContent = customerEmojis[Math.floor(Math.random() * customerEmojis.length)]; custEl.style.opacity = '0'; // Start invisible for fade-in
+
+                // Determine order
                 const foods = Object.keys(foodItems); const order = foods[Math.floor(Math.random() * foods.length)];
                 const foodData = foodItems[order]; const orderIcon = getFoodIcon(order);
+
+                // Create speech bubble
                 const bubble = document.createElement('div'); bubble.className = 'speech-bubble';
                 bubble.innerHTML = `<div class="dish-name">${order}</div><div class="dish-price">$${foodData.price}</div><div class="dish-emoji"></div>`;
                 const dishEmojiContainer = bubble.querySelector('.dish-emoji'); dishEmojiContainer.appendChild(createIconElement(orderIcon, order));
-                bubble.style.opacity = '0'; const moodIndicator = document.createElement('div'); moodIndicator.className = 'mood-indicator';
-                moodIndicator.textContent = moodEmojis.happy; custEl.appendChild(moodIndicator); custEl.appendChild(bubble);
+                bubble.style.opacity = '0'; // Start invisible
+
+                // Create mood indicator
+                const moodIndicator = document.createElement('div'); moodIndicator.className = 'mood-indicator';
+                moodIndicator.textContent = moodEmojis.happy; // Start happy
+
+                // Assemble and add to DOM
+                custEl.appendChild(moodIndicator); custEl.appendChild(bubble);
                 seatElement.appendChild(custEl);
+
+                // Trigger fade-in animation
                 requestAnimationFrame(() => {
                     custEl.style.transition = 'opacity 0.3s ease-in'; bubble.style.transition = 'opacity 0.3s ease-in 0.1s';
                     custEl.style.opacity = '1'; bubble.style.opacity = '1';
                 });
+
+                // Create customer data object
                 const customerId = `cust-${Date.now()}-${Math.random().toString(16).slice(2)}`;
-                const patienceTotal = Math.max(15, customerPatienceBase - (level - 1) * 2);
+                const patienceTotal = Math.max(15, customerPatienceBase - (level - 1) * 2); // Patience decreases with level
                 const newCustomer = {
                     id: customerId, element: custEl, tableElement: tableElement, order: order, orderPrice: foodData.price,
                     spawnTime: Date.now(), patienceTotal: patienceTotal, patienceCurrent: patienceTotal,
-                    moodIndicator: moodIndicator, state: 'waiting'
+                    moodIndicator: moodIndicator, state: 'waiting' // Initial state
                 };
-                customers.push(newCustomer);
-                customersSpawnedThisLevel++; // <<< Increment counter
-                // console.log(`Customer ${customersSpawnedThisLevel} spawned this level.`); // Optional debug
+                customers.push(newCustomer); // Add to active customer list
+                customersSpawnedThisLevel++; // Increment counter for events
 
-                tableElement.classList.add('table-highlight');
-            } else { }
+                tableElement.classList.add('table-highlight'); // Highlight the table
+
+            } else {
+                // console.log("No available tables currently."); // Optional debug
+            }
         } catch (error) { console.error("Error during spawnCustomer:", error); }
+
+        // Always schedule the next customer attempt
         scheduleNextCustomer();
     }
 
     function serveCustomer(cust) {
-        if (!cust || cust.state !== 'waiting') return;
-        playSound(sfxServe); cust.state = 'served';
+        if (!cust || cust.state !== 'waiting') return; // Can only serve waiting customers
+        playSound(sfxServe); // Play serving sound
+        cust.state = 'served'; // Update state
+
         const tableEl = diningArea.querySelector(`#${cust.tableElement.id}`);
-        const basePrice = cust.orderPrice; const patienceRatio = Math.max(0, cust.patienceCurrent) / cust.patienceTotal;
-        let tipMultiplier = 0.05; if (patienceRatio > 0.8) tipMultiplier = 0.20; else if (patienceRatio > 0.5) tipMultiplier = 0.15; else if (patienceRatio > 0.2) tipMultiplier = 0.10;
-        const tipAmount = Math.ceil(basePrice * tipMultiplier); const totalEarned = basePrice + tipAmount;
-        money += totalEarned; moneyDisplay.textContent = money;
+
+        // Calculate earnings (base price + tip based on patience)
+        const basePrice = cust.orderPrice;
+        const patienceRatio = Math.max(0, cust.patienceCurrent) / cust.patienceTotal;
+        let tipMultiplier = 0.05; // Base tip
+        if (patienceRatio > 0.8) tipMultiplier = 0.20;      // High patience = big tip
+        else if (patienceRatio > 0.5) tipMultiplier = 0.15; // Medium patience = medium tip
+        else if (patienceRatio > 0.2) tipMultiplier = 0.10; // Low patience = small tip
+                                                            // Very low/zero patience = base tip only
+        const tipAmount = Math.ceil(basePrice * tipMultiplier); // Round tip up
+        const totalEarned = basePrice + tipAmount;
+
+        money += totalEarned; moneyDisplay.textContent = money; // Update money
+
+        // Show feedback indicator
         showFeedbackIndicator(cust.element || tableEl || player, `+ $${basePrice}<br/>+ $${tipAmount} tip!`, "positive");
-        cust.moodIndicator.textContent = '😋'; const bubble = cust.element.querySelector('.speech-bubble');
-        if (bubble) bubble.innerHTML = "Grazie! 👌";
-        carryingFood = null; carryingFoodIcon = null; carryingDisplay.innerHTML = ''; deliveryRadius.classList.remove('active'); if (debugMode) debugFood.textContent = "None";
+
+        // Update customer visual appearance
+        cust.moodIndicator.textContent = '😋'; // Happy face
+        const bubble = cust.element.querySelector('.speech-bubble');
+        if (bubble) bubble.innerHTML = "Grazie! 👌"; // Thank you message
+
+        // Clear player's hands
+        carryingFood = null; carryingFoodIcon = null; carryingDisplay.innerHTML = '';
+        deliveryRadius.classList.remove('active');
+        if (debugMode) debugFood.textContent = "None";
+
+        // Clear table state
         if (tableEl) { tableEl.classList.remove('table-highlight', 'table-leaving-soon'); }
-        if (cust.element) { cust.element.style.transition = 'opacity 1s ease 0.5s'; cust.element.style.opacity = '0'; }
-        setTimeout(() => { if (cust.element && cust.element.parentNode) { cust.element.remove(); } cust.state = 'remove'; }, 1500);
+
+        // Fade out customer element after a short delay
+        if (cust.element) {
+            cust.element.style.transition = 'opacity 1s ease 0.5s'; // Fade out over 1 second, starting after 0.5s
+            cust.element.style.opacity = '0';
+        }
+
+        // Schedule final removal after fade out
+        setTimeout(() => {
+            if (cust.element && cust.element.parentNode) { cust.element.remove(); }
+            cust.state = 'remove'; // Mark for removal from the customers array
+        }, 1500); // Delay should be >= fade out start delay + fade out duration
     }
 
     function updateCustomerMood(cust) {
-        if (!cust.moodIndicator || cust.state !== 'waiting') return;
+        if (!cust.moodIndicator || cust.state !== 'waiting') return; // Only update waiting customers
+
         const patienceRatio = Math.max(0, cust.patienceCurrent) / cust.patienceTotal;
         let newMoodEmoji = moodEmojis.happy;
+
+        // Determine mood based on patience ratio
         if (patienceRatio <= 0.2) newMoodEmoji = moodEmojis.angry;
         else if (patienceRatio <= 0.5) newMoodEmoji = moodEmojis.impatient;
         else if (patienceRatio <= 0.8) newMoodEmoji = moodEmojis.neutral;
-        if (cust.moodIndicator.textContent !== newMoodEmoji) { cust.moodIndicator.textContent = newMoodEmoji; }
+        // else it stays happy (default)
+
+        // Update the emoji only if it changed
+        if (cust.moodIndicator.textContent !== newMoodEmoji) {
+            cust.moodIndicator.textContent = newMoodEmoji;
+        }
     }
 
     function clearCustomersAndIndicators() {
+        // Remove all customer elements from the DOM
         customers.forEach(c => { if (c.element && c.element.parentNode) { c.element.remove(); } });
-        customers = [];
+        customers = []; // Clear the customer array
+
+        // Remove any floating feedback indicators
         document.querySelectorAll('.money-indicator, .feedback-indicator').forEach(el => el.remove());
+
+        // Reset all tables visually
         diningArea.querySelectorAll('.table').forEach(t => {
             t.classList.remove('table-highlight', 'table-leaving-soon');
-            const seat = t.querySelector('.seat'); if(seat) seat.innerHTML = '';
+            const seat = t.querySelector('.seat'); if(seat) seat.innerHTML = ''; // Clear seats
         });
     }
 
     function showFeedbackIndicator(targetElement, text, type = "info", duration = 1800) {
+        // Fallback to player if target is invalid or not in DOM
         if (!targetElement || !restaurantArea.contains(targetElement)) { targetElement = player; }
-        const indicator = document.createElement('div'); indicator.className = 'feedback-indicator';
+
+        const indicator = document.createElement('div');
+        indicator.className = 'feedback-indicator';
         if (type === "negative") indicator.classList.add('negative');
         else if (type === "positive") indicator.classList.add('positive');
-        indicator.innerHTML = text;
-        restaurantArea.appendChild(indicator);
-        const targetRect = targetElement.getBoundingClientRect(); const containerRect = restaurantArea.getBoundingClientRect();
-        const indicatorX = targetRect.left - containerRect.left + targetRect.width / 2;
-        const indicatorY = targetRect.top - containerRect.top - 30;
-        indicator.style.position = 'absolute'; indicator.style.left = `${indicatorX}px`;
-        indicator.style.top = `${indicatorY}px`; indicator.style.transform = 'translateX(-50%)';
-        indicator.style.animation = `float-up-fade ${duration / 1000}s forwards ease-out`;
-        setTimeout(() => { if (indicator.parentNode) { indicator.remove(); } }, duration);
+        indicator.innerHTML = text; // Use innerHTML to allow line breaks (<br/>)
+
+        restaurantArea.appendChild(indicator); // Add to the main game area
+
+        // Calculate position above the target element
+        const targetRect = targetElement.getBoundingClientRect();
+        const containerRect = restaurantArea.getBoundingClientRect();
+        const indicatorX = targetRect.left - containerRect.left + targetRect.width / 2; // Center horizontally
+        const indicatorY = targetRect.top - containerRect.top - 30; // Position above the target
+
+        indicator.style.position = 'absolute';
+        indicator.style.left = `${indicatorX}px`;
+        indicator.style.top = `${indicatorY}px`;
+        indicator.style.transform = 'translateX(-50%)'; // Center align
+        indicator.style.animation = `float-up-fade ${duration / 1000}s forwards ease-out`; // Apply CSS animation
+
+        // Remove the indicator after the animation finishes
+        setTimeout(() => {
+            if (indicator.parentNode) { indicator.remove(); }
+        }, duration);
     }
 
     // --- Event Logic ---
     function triggerRandomEvent() {
         if (!gameRunning || isPaused || !eventModal.classList.contains('hidden') || randomEvents.length === 0) { return; }
+
         let eventIndex;
-        if (randomEvents.length > 1) { do { eventIndex = Math.floor(Math.random() * randomEvents.length); } while (eventIndex === lastEventIndex); }
-        else { eventIndex = 0; }
-        lastEventIndex = eventIndex; const event = randomEvents[eventIndex];
-        console.log("Triggering random event:", event.title); pauseGame();
-        eventTitle.textContent = event.title; eventDescription.textContent = event.description;
-        eventOptionsContainer.innerHTML = '';
+        // Avoid repeating the last event if possible
+        if (randomEvents.length > 1) {
+            do { eventIndex = Math.floor(Math.random() * randomEvents.length); }
+            while (eventIndex === lastEventIndex);
+        } else { eventIndex = 0; } // Only one event available
+        lastEventIndex = eventIndex;
+
+        const event = randomEvents[eventIndex];
+        console.log("Triggering random event:", event.title);
+        pauseGame(); // Pause the game during the event
+
+        eventTitle.textContent = event.title;
+        eventDescription.textContent = event.description;
+        eventOptionsContainer.innerHTML = ''; // Clear previous options
+
+        // Create buttons for each option
         event.options.forEach(opt => {
-            const btn = document.createElement('button'); btn.textContent = opt.text;
-            btn.dataset.effectMoney = opt.effect.money || '0'; btn.dataset.effectTime = opt.effect.time || '0';
+            const btn = document.createElement('button');
+            btn.textContent = opt.text;
+            // Store effect data on the button itself
+            btn.dataset.effectMoney = opt.effect.money || '0';
+            btn.dataset.effectTime = opt.effect.time || '0';
             btn.dataset.feedback = opt.feedback || "Okay.";
-            if (event.title === "Kitchen Emergency!" && opt.text.includes("Work Around It")) { btn.dataset.stateChange = 'ovenBroken'; }
-            btn.addEventListener('click', handleEventChoice); eventOptionsContainer.appendChild(btn);
+            // Special handling for oven breaking
+            if (event.title === "Kitchen Emergency!" && opt.text.includes("Work Around It")) {
+                btn.dataset.stateChange = 'ovenBroken';
+            }
+            btn.addEventListener('click', handleEventChoice);
+            eventOptionsContainer.appendChild(btn);
         });
-        eventModal.classList.remove('hidden');
+
+        eventModal.classList.remove('hidden'); // Show the modal
     }
+
     function handleEventChoice(e) {
-        playSound(sfxClick); const btn = e.target;
-        const moneyEffect = parseInt(btn.dataset.effectMoney || '0'); const timeEffect = parseInt(btn.dataset.effectTime || '0');
-        const feedbackText = btn.dataset.feedback || "Okay."; const stateChange = btn.dataset.stateChange;
-        money += moneyEffect; timeLeft += timeEffect; money = Math.max(0, money); timeLeft = Math.max(0, timeLeft);
-        moneyDisplay.textContent = money; timerDisplay.textContent = timeLeft;
+        playSound(sfxClick); // Play click sound for choice
+        const btn = e.target;
+        // Retrieve effect data from the button
+        const moneyEffect = parseInt(btn.dataset.effectMoney || '0');
+        const timeEffect = parseInt(btn.dataset.effectTime || '0');
+        const feedbackText = btn.dataset.feedback || "Okay.";
+        const stateChange = btn.dataset.stateChange;
+
+        // Apply effects
+        money += moneyEffect;
+        timeLeft += timeEffect;
+        money = Math.max(0, money); // Prevent negative money
+        timeLeft = Math.max(0, timeLeft); // Prevent negative time
+        moneyDisplay.textContent = money; timerDisplay.textContent = timeLeft; // Update UI
+
+        // Show feedback for the choice
         showFeedbackIndicator(player, feedbackText, (moneyEffect < 0 || timeEffect < 0) ? "negative" : "info");
-        if (stateChange === 'ovenBroken') { isOvenBroken = true; console.log("EVENT: Oven is now broken!"); disableOvenStations(true); }
-        eventModal.classList.add('hidden');
-        if (timeLeft > 0 && gameRunning) { resumeGame(); }
-        else if (timeLeft <= 0) { console.log("Event caused time to run out."); endGame(); }
+
+        // Handle specific state changes like broken oven
+        if (stateChange === 'ovenBroken') {
+            isOvenBroken = true;
+            console.log("EVENT: Oven is now broken!");
+            disableOvenStations(true); // Visually disable oven stations
+        }
+
+        eventModal.classList.add('hidden'); // Hide the modal
+
+        // Resume game or end if time ran out
+        if (timeLeft > 0 && gameRunning) {
+            resumeGame();
+        } else if (timeLeft <= 0) {
+            console.log("Event caused time to run out.");
+            endGame(); // End the game immediately if time is 0 or less
+        }
     }
+
     function disableOvenStations(disable) {
         console.log(`Setting oven stations disabled state: ${disable}`);
         foodStations.forEach(station => {
             const foodId = station.dataset.item;
             if (OVEN_ITEMS.includes(foodId)) {
-                station.style.opacity = disable ? '0.5' : '1'; station.style.cursor = disable ? 'not-allowed' : 'pointer';
-                if (disable) { station.title = "Oven is Broken!"; } else { station.title = ""; }
+                station.style.opacity = disable ? '0.5' : '1';
+                station.style.cursor = disable ? 'not-allowed' : 'pointer';
+                // Add/remove tooltip indicating the oven issue
+                if (disable) {
+                    station.title = "Oven is Broken!";
+                } else {
+                    station.title = ""; // Remove tooltip if oven is fixed/working
+                }
             }
         });
     }
 
     // --- Initialization ---
     function initializeGameVisuals() {
+        // Ensure restaurant area has dimensions before positioning player
         if (restaurantArea.offsetWidth > 0) {
-            const playerHalfHeight = player.offsetHeight / 2 || 35; const playerHalfWidth = player.offsetWidth / 2 || 25;
-            playerPosition.x = restaurantArea.offsetWidth / 2; playerPosition.y = restaurantArea.offsetHeight - playerHalfHeight - 10;
-            updatePlayerPosition(); player.style.opacity = '1'; player.style.display = 'flex';
-        } else { setTimeout(initializeGameVisuals, 50); return; }
-        gameOverScreen.classList.add('hidden'); menuModal.classList.add('hidden');
-        eventModal.classList.add('hidden'); gameWonModal.classList.add('hidden');
-        debugInfo.classList.toggle('hidden', !debugMode); debugFood.textContent = 'None';
+            const playerHalfHeight = player.offsetHeight / 2 || 35;
+            const playerHalfWidth = player.offsetWidth / 2 || 25;
+            // Initial player position (bottom center)
+            playerPosition.x = restaurantArea.offsetWidth / 2;
+            playerPosition.y = restaurantArea.offsetHeight - playerHalfHeight - 10;
+            updatePlayerPosition();
+            player.style.opacity = '1'; // Make player visible
+            player.style.display = 'flex'; // Ensure display is correct
+        } else {
+            // If dimensions aren't ready, try again shortly
+            setTimeout(initializeGameVisuals, 50);
+            return;
+        }
+
+        // Hide modals and reset debug info
+        gameOverScreen.classList.add('hidden');
+        menuModal.classList.add('hidden');
+        eventModal.classList.add('hidden');
+        gameWonModal.classList.add('hidden');
+        debugInfo.classList.toggle('hidden', !debugMode);
+        debugFood.textContent = 'None';
+
+        // Set background image
         try {
              restaurantArea.style.backgroundImage = `url('${BACKGROUND_IMAGE_URL}')`;
-             restaurantArea.style.backgroundSize = 'cover'; restaurantArea.style.backgroundPosition = 'center';
+             restaurantArea.style.backgroundSize = 'cover';
+             restaurantArea.style.backgroundPosition = 'center';
         } catch(e) { console.error("Error setting background in init:", e)}
         console.log("Initial game visuals set.");
     }
 
     // --- Game Start Trigger ---
+    // Initialize visuals first
     initializeGameVisuals();
-    setTimeout(() => { if (!gameRunning) { startGame(); } }, 150);
+    // Small delay before starting the game logic to ensure everything is rendered
+    setTimeout(() => {
+        if (!gameRunning) { // Prevent starting if somehow already running
+            startGame();
+        }
+    }, 150);
 
 }); // End DOMContentLoaded
-// <<< END OF UPDATED full.js >>>
+// <<< END OF UPDATED full.js (Pickup Sound Removed) >>>
