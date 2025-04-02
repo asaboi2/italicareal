@@ -17,7 +17,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const restaurantArea = document.querySelector('.restaurant');
     const diningArea = restaurantArea.querySelector('.dining-area');
     const kitchenRow = document.querySelector('.kitchen-row');
-    const foodStations = kitchenRow.querySelectorAll('.food-station'); // Get all stations initially
+    const foodStations = kitchenRow.querySelectorAll('.food-station');
     const menuModal = document.getElementById('menu-modal');
     const closeMenuBtn = document.getElementById('close-menu-btn');
     const debugInfo = document.getElementById('debug-info');
@@ -32,14 +32,20 @@ document.addEventListener('DOMContentLoaded', () => {
     deliveryRadius.className = 'delivery-radius';
     restaurantArea.appendChild(deliveryRadius);
 
-    // --- Audio Elements ---
+    // --- NEW/UPDATED Audio Elements ---
     const bgmAudio = document.getElementById('bgm');
+    const ambienceAudio = document.getElementById('ambience'); // New looping sound
+    const sfxOrdered = document.getElementById('sfx-ordered'); // New
+    const sfxImpatient = document.getElementById('sfx-impatient'); // New
+    const sfxServe = document.getElementById('sfx-serve'); // Updated src via HTML
+    const sfxAngryLeft = document.getElementById('sfx-angry-left'); // New
+    const sfxTrash = document.getElementById('sfx-trash'); // Updated src via HTML
+    const sfxPickup = document.getElementById('sfx-pickup'); // New
+
+    // --- Old SFX variables (will be null if elements removed/commented) ---
     const sfxClick = document.getElementById('sfx-click');
     const sfxCook = document.getElementById('sfx-cook');
     const sfxReady = document.getElementById('sfx-ready');
-    const sfxServe = document.getElementById('sfx-serve');
-    const sfxAngry = document.getElementById('sfx-angry');
-    const sfxTrash = document.getElementById('sfx-trash');
     const sfxLevelWin = document.getElementById('sfx-level-win');
     const sfxLevelLose = document.getElementById('sfx-level-lose');
 
@@ -64,52 +70,39 @@ document.addEventListener('DOMContentLoaded', () => {
     const BACKGROUND_IMAGE_URL = 'assets/backdrop.png';
     let readyItemsOnPass = [];
     let lastEventIndex = -1;
-    let isOvenBroken = false; // <<< NEW: Tracks oven status
+    let isOvenBroken = false;
 
     // --- Game Configuration ---
-    // Define items that require the oven
     const OVEN_ITEMS = [
-        'Tomato Pie Slice', 'Tre Sale Slice', 'Garlic Girl', 'Toni Roni', // Pizzas
-        'Roasted Half-Chicken' // Main
-        // Add others if applicable (e.g. Crispy Baked Polenta?)
-        // 'Crispy Baked Polenta' // Uncomment if needed
+        'Tomato Pie Slice', 'Tre Sale Slice', 'Garlic Girl', 'Toni Roni',
+        'Roasted Half-Chicken'
+        // 'Crispy Baked Polenta' // Add if this also needs oven
     ];
-    const foodItems = { // Using the fully updated list from previous step
-        // Appetizers / For the Table / Small Plates (Combined for game category)
+    const foodItems = { // Full menu from previous step
         'Bread Basket': { image: 'assets/bread basket.png', price: 5, category: 'Appetizers', prepTime: 1 },
         'Cherry Tomato & Garlic Confit': { image: 'assets/cherry confit.png', price: 12, category: 'Appetizers', prepTime: 2 },
         'Ahi Crudo': { image: 'assets/ahi crudo.png', price: 20, category: 'Appetizers', prepTime: 3 },
         'Whipped Ricotta': { image: 'assets/ricotta.png', price: 14, category: 'Appetizers', prepTime: 2 },
         'Raviolo al Uovo': { image: 'assets/raviolo.png', price: 8, category: 'Appetizers', prepTime: 2.5 },
-        'Prosciutto e Melone': { image: 'assets/prosciutto-e-melone.png', price: 10, category: 'Appetizers', prepTime: 1.5 }, // Using hyphenated name
+        'Prosciutto e Melone': { image: 'assets/prosciutto-e-melone.png', price: 10, category: 'Appetizers', prepTime: 1.5 },
         'Crispy Gnudi': { image: 'assets/crispy gnudi.png', price: 12, category: 'Appetizers', prepTime: 3.5 },
         'Marinated Olives': { image: 'assets/olives.png', price: 6, category: 'Appetizers', prepTime: 1 },
-
-        // Salads
         'House Salad': { image: 'assets/house salad.png', price: 12, category: 'Salads', prepTime: 2.5 },
         'Spicy Caesar Salad': { image: 'assets/spicy caesar.png', price: 14, category: 'Salads', prepTime: 3 },
         'Mean Green Salad': { image: 'assets/mean green salad.png', price: 12, category: 'Salads', prepTime: 2.5 },
         'Summer Tomato Panzanella': { image: 'assets/tomato panzanella.png', price: 10, category: 'Salads', prepTime: 2 },
-
-        // Pasta
         'Cacio e Pepe': { image: 'assets/Cacio e pepe.png', price: 20, category: 'Pasta', prepTime: 4 },
         'Seeing Red Pesto': { image: 'assets/seeing red.png', price: 24, category: 'Pasta', prepTime: 4 },
         'Short Rib Agnolotti': { image: 'assets/agnolotti.png', price: 32, category: 'Pasta', prepTime: 5 },
         'Pomodoro': { image: 'assets/pomodoro.png', price: 26, category: 'Pasta', prepTime: 3.5 },
-
-        // Pizza
         'Tre Sale Slice': { image: 'assets/tresale.png', price: 6, category: 'Pizza', prepTime: 3.5 },
         'Tomato Pie Slice': { image: 'assets/tomato pie.png', price: 5, category: 'Pizza', prepTime: 3 },
         'Garlic Girl': { image: 'assets/garlic girl-Photoroom.png', price: 25, category: 'Pizza', prepTime: 4.5 },
         'Toni Roni': { image: 'assets/toni roni.png', price: 26, category: 'Pizza', prepTime: 5 },
-
-        // Mains
         'Sweet & Spicy Chicken Cutlets': { image: 'assets/cutlets.png', price: 28, category: 'Mains', prepTime: 5 },
         'Roasted Half-Chicken': { image: 'assets/half chicken.png', price: 34, category: 'Mains', prepTime: 7 },
         'Grilled Sockeye Salmon': { image: 'assets/salmon.png', price: 36, category: 'Mains', prepTime: 4.5 },
         'Seared Hanger Steak': { image: 'assets/hangar steak.png', price: 38, category: 'Mains', prepTime: 6 },
-
-        // Sides / A La Carte
         'Mushroom Risotto': { image: 'assets/mushroom risotto.png', price: 12, category: 'Sides', prepTime: 5 },
         'Crispy Baked Polenta': { image: 'assets/polenta.png', price: 10, category: 'Sides', prepTime: 4 },
         'Garlic Confit Mashed Potatoes': { image: 'assets/mashed potatoes.png', price: 10, category: 'Sides', prepTime: 3 },
@@ -118,15 +111,13 @@ document.addEventListener('DOMContentLoaded', () => {
         'Blackened Eggplant': { image: 'assets/eggplant.png', price: 8, category: 'Sides', prepTime: 2.5 },
         'Sauteed Rainbow Chard': { image: 'assets/rainbow chard.png', price: 6, category: 'Sides', prepTime: 2 },
         'Grilled Asparagus': { image: 'assets/grilled asparagus.png', price: 8, category: 'Sides', prepTime: 3 },
-
-        // Drinks (Kept for gameplay)
         'Water': { emoji: '💧', price: 0, category: 'Drinks', prepTime: 0.5 },
         'Wine': { emoji: '🍷', price: 12, category: 'Drinks', prepTime: 0.5 },
         'Soda': { emoji: '🥤', price: 3, category: 'Drinks', prepTime: 0.5 }
     };
     const customerEmojis = ['👩','👨','👵','👴','👱‍♀️','👱','👩‍🦰','👨‍🦰','👩‍🦱','👨‍🦱','🧑‍🎄','👸','👨‍🎨','👩‍🔬','💂','🕵️'];
     const moodEmojis = { happy: '😊', neutral: '😐', impatient: '😠', angry: '😡' };
-    const randomEvents = [ // No changes needed here
+    const randomEvents = [ // Same as before
          { title: "Customer Complaint!", description: "A customer says their Cacio e Pepe is too peppery!", options: [ { text: "Apologize & Offer free drink (-$3)", effect: { money: -3, time: 0 }, feedback: "Comped a soda." }, { text: "Remake the dish (Lose time)", effect: { money: 0, time: -10 }, feedback: "Remade the pasta (-10s)." }, { text: "Argue politely (Risk anger)", effect: { money: 0, time: 0 }, feedback: "Defended the chef!" } ] },
          { title: "Kitchen Emergency!", description: "The oven suddenly stopped working!", options: [ { text: "Quick Fix Attempt (-$20, -15s)", effect: { money: -20, time: -15 }, feedback: "Paid for quick fix (-$20, -15s)." }, { text: "Work Around It (No Pizza/Roast)", effect: { money: 0, time: 0 }, feedback: "No oven dishes for now..." }, { text: "Ignore It (Riskier)", effect: { money: 0, time: 0 }, feedback: "Ignored the oven..." } ] },
          { title: "Ingredient Shortage", description: "Oh no! We're running low on fresh basil for Pomodoro!", options: [ { text: "Buy Emergency Basil (-$15)", effect: { money: -15, time: 0 }, feedback: "Bought expensive basil (-$15)." }, { text: "Improvise (Use dried herbs)", effect: { money: 0, time: 0 }, feedback: "Substituted herbs..." }, { text: "Stop serving Pomodoro", effect: { money: 0, time: 0 }, feedback: "Took Pomodoro off menu." } ] },
@@ -138,15 +129,33 @@ document.addEventListener('DOMContentLoaded', () => {
     ];
 
     // --- Helper Functions ---
-    function playSound(audioElement) { // Combined audio helper
-        if (!audioElement) return;
-        // Optional: Set volume for SFX
-        // audioElement.volume = 0.7;
-        audioElement.currentTime = 0; // Rewind to start
+    function playSound(audioElement, volume = 0.7) {
+        if (!audioElement) {
+            // console.log("Attempted to play null audio element");
+            return;
+        }
+        audioElement.volume = volume;
+        audioElement.currentTime = 0;
         audioElement.play().catch(error => {
-            // Autoplay might be blocked initially, user interaction needed
-            // console.log("Audio play failed (maybe user interaction needed):", error);
+            // console.log(`Audio play failed for ${audioElement.id}:`, error);
         });
+    }
+
+    function playLoopingSound(audioElement, volume = 0.3) { // Helper for looping sounds
+        if (!audioElement) return;
+        audioElement.volume = volume;
+        // Only play if it's not already playing (or paused at the very start)
+        if (audioElement.paused) {
+             audioElement.play().catch(error => {
+                 // console.log(`Looping audio play failed for ${audioElement.id}:`, error);
+             });
+        }
+    }
+
+    function stopLoopingSound(audioElement) { // Helper to stop loops
+         if (!audioElement) return;
+         audioElement.pause();
+         audioElement.currentTime = 0; // Rewind
     }
 
     function getFoodIcon(foodId) {
@@ -185,34 +194,27 @@ document.addEventListener('DOMContentLoaded', () => {
         requestAnimationFrame(step);
     }
 
-    // --- STARTING HERE ---
     function addFoodToPass(foodId) {
         const itemData = foodItems[foodId];
         if (!itemData) return;
-
         const icon = getFoodIcon(foodId);
-        readyItemsOnPass.push({ foodId: foodId, icon: icon }); // Store the icon info
-
-        // Create visual element for the pass
+        readyItemsOnPass.push({ foodId: foodId, icon: icon });
         const itemDiv = document.createElement('div');
         itemDiv.className = 'ready-food-item';
         itemDiv.dataset.food = foodId;
-        itemDiv.appendChild(createIconElement(icon, foodId)); // Use helper
-        itemDiv.title = foodId; // Tooltip
-
-        // Remove label if it's the first item
+        itemDiv.appendChild(createIconElement(icon, foodId));
+        itemDiv.title = foodId;
         const existingLabel = deliveryStation.querySelector('.delivery-station-label');
         if (existingLabel) existingLabel.remove();
-
         deliveryStation.appendChild(itemDiv);
+        playSound(sfxReady); // Play optional 'ready' sound if available
     }
 
     function generateTables(container, numTables) {
-        container.innerHTML = ''; // Clear existing tables
+        container.innerHTML = '';
         const numCols = 3;
-        const rowPositions = [60, 85]; // Place tables only in bottom half
-        const colPositions = [18, 50, 82]; // Left percentages
-
+        const rowPositions = [60, 85];
+        const colPositions = [18, 50, 82];
         for (let i = 0; i < numTables; i++) {
             const table = document.createElement('div');
             table.classList.add('table');
@@ -220,10 +222,8 @@ document.addEventListener('DOMContentLoaded', () => {
             table.id = `table-${tableIdNum}`;
             table.dataset.table = tableIdNum;
             const seat = document.createElement('div'); seat.classList.add('seat'); table.appendChild(seat);
-
             const row = Math.floor(i / numCols);
             const col = i % numCols;
-
             if (row < rowPositions.length && col < colPositions.length) {
                 table.style.top = `${rowPositions[row]}%`;
                 table.style.left = `${colPositions[col]}%`;
@@ -236,7 +236,6 @@ document.addEventListener('DOMContentLoaded', () => {
             }
             container.appendChild(table);
         }
-        // console.log(`Generated ${numTables} tables for level ${level}. Positions: ${JSON.stringify(rowPositions)} / ${JSON.stringify(colPositions)}`);
     }
 
     // --- Event Listeners ---
@@ -267,21 +266,19 @@ document.addEventListener('DOMContentLoaded', () => {
 
     foodStations.forEach(station => {
          station.addEventListener('click', () => {
-             playSound(sfxClick); // Play click sound first
+             playSound(sfxClick);
 
              const foodId = station.dataset.item;
              const item = foodItems[foodId];
-             if (!item) return; // Exit if item data not found
+             if (!item) return;
 
-             // --- NEW: Check for broken oven ---
              if (isOvenBroken && OVEN_ITEMS.includes(foodId)) {
                  showFeedbackIndicator(station, "Oven is broken!", "negative", 1500);
                  console.log(`Prevented cooking ${foodId} - oven broken.`);
-                 return; // Stop cooking process
+                 return;
              }
-             // --- END OVEN CHECK ---
 
-             if (isPaused || station.classList.contains('preparing')) return; // Standard checks
+             if (isPaused || station.classList.contains('preparing')) return;
              if (carryingFood) {
                  showFeedbackIndicator(station, "Hands full!", "negative", 1000);
                  return;
@@ -295,25 +292,21 @@ document.addEventListener('DOMContentLoaded', () => {
                  progressBar.style.backgroundColor = '#ffcc00';
                  progressBar.style.transform = 'scaleX(0)';
                  const prepTimeMs = item.prepTime * 1000;
-                 playSound(sfxCook); // Play cooking sound when prep starts
+                 playSound(sfxCook);
 
                  animatePrepProgress(progressBar, prepTimeMs, () => {
-                    // On Completion
                     progressBar.style.backgroundColor = '#4CAF50';
                     station.classList.remove('preparing');
-                    addFoodToPass(foodId);
-                    playSound(sfxReady); // Play food ready sound
+                    addFoodToPass(foodId); // Plays sfxReady internally if available
                     progressBar.style.transform = 'scaleX(0)';
                     progressBar.style.backgroundColor = 'rgba(0, 0, 0, 0.2)';
                     station.style.pointerEvents = 'auto';
                  });
             } else {
-                 // Fallback if no progress bar
                  playSound(sfxCook);
                  setTimeout(() => {
                      station.classList.remove('preparing');
-                     addFoodToPass(foodId);
-                     playSound(sfxReady);
+                     addFoodToPass(foodId); // Plays sfxReady internally if available
                      station.style.pointerEvents = 'auto';
                  }, (item.prepTime || 0.1) * 1000);
              }
@@ -333,24 +326,21 @@ document.addEventListener('DOMContentLoaded', () => {
         if (clickedItem) {
             const foodId = clickedItem.dataset.food;
             const itemIndex = readyItemsOnPass.findIndex(item => item.foodId === foodId);
-
             if (itemIndex !== -1) {
                 const itemToTake = readyItemsOnPass.splice(itemIndex, 1)[0];
                 clickedItem.remove();
-
                 carryingFood = itemToTake.foodId;
                 carryingFoodIcon = itemToTake.icon;
                 carryingDisplay.innerHTML = '';
                 carryingDisplay.appendChild(createIconElement(carryingFoodIcon, carryingFood));
                 deliveryRadius.classList.add('active');
-
+                playSound(sfxPickup); // <<< Play specific pickup sound
                 if (readyItemsOnPass.length === 0 && !deliveryStation.querySelector('.delivery-station-label')) {
                     const label = document.createElement('div');
                     label.className = 'delivery-station-label';
                     label.textContent = 'PASS';
                     deliveryStation.prepend(label);
                 }
-
                 if (debugMode) debugFood.textContent = carryingFood;
                 console.log("Picked up:", carryingFood);
             } else {
@@ -361,7 +351,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     trashCan.addEventListener('click', () => {
         if (isPaused || !carryingFood) return;
-        playSound(sfxTrash);
+        playSound(sfxTrash); // Play new trash sound
         showFeedbackIndicator(trashCan, `Trashed ${carryingFood}!`, "negative");
         carryingFood = null;
         carryingFoodIcon = null;
@@ -372,22 +362,18 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     diningArea.addEventListener('click', (e) => {
-        playSound(sfxClick); // Play click sound on dining area interaction
+        playSound(sfxClick);
         if (isPaused) return;
         const targetTable = e.target.closest('.table');
-
         if (targetTable) {
             const tableId = targetTable.id;
-            // Find customer *before* moving
             const customer = customers.find(c => c.tableElement.id === tableId && c.state === 'waiting');
-
             if (carryingFood) {
                 movePlayerToElement(targetTable, () => {
-                     if (!carryingFood) return; // Check if still carrying upon arrival
-                     // Re-find customer in case state changed during movement
+                     if (!carryingFood) return;
                      const currentCustomer = customers.find(c => c.tableElement.id === tableId && c.state === 'waiting');
                      if (currentCustomer && currentCustomer.order === carryingFood) {
-                         serveCustomer(currentCustomer);
+                         serveCustomer(currentCustomer); // Plays serve sound inside
                      } else if (currentCustomer) {
                          showFeedbackIndicator(targetTable, "Wrong order!", "negative");
                      } else {
@@ -409,6 +395,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
+    // Modal Button Clicks
     nextLevelBtn.addEventListener('click', () => {
         playSound(sfxClick);
         gameOverScreen.classList.add('hidden');
@@ -439,20 +426,16 @@ document.addEventListener('DOMContentLoaded', () => {
         const moneyTarget = levelThresholds[level] || 99999;
         console.log(`Level ${level}: Tables=${numTables}, Target=$${moneyTarget}`);
 
-        money = 0;
-        timeLeft = 180;
-        gameRunning = true; isPaused = false;
+        money = 0; timeLeft = 180; gameRunning = true; isPaused = false;
         carryingFood = null; carryingFoodIcon = null; customers = []; isMoving = false;
         readyItemsOnPass = [];
         deliveryStation.innerHTML = '<div class="delivery-station-label">PASS</div>';
-        lastEventIndex = -1;
-        isOvenBroken = false; // <<< RESET OVEN STATUS
-        disableOvenStations(false); // <<< RE-ENABLE STATIONS VISUALLY
+        lastEventIndex = -1; isOvenBroken = false;
+        disableOvenStations(false);
 
         console.log("--- startGame: State reset ---");
         moneyDisplay.textContent = money; levelDisplay.textContent = level; timerDisplay.textContent = timeLeft;
-        carryingDisplay.innerHTML = '';
-        deliveryRadius.classList.remove('active'); debugFood.textContent = 'None';
+        carryingDisplay.innerHTML = ''; deliveryRadius.classList.remove('active'); debugFood.textContent = 'None';
         gameOverScreen.classList.add('hidden'); menuModal.classList.add('hidden'); eventModal.classList.add('hidden'); gameWonModal.classList.add('hidden');
         console.log("--- startGame: UI reset ---");
 
@@ -471,10 +454,9 @@ document.addEventListener('DOMContentLoaded', () => {
         console.log("--- startGame: Visuals initialized (or attempted) ---");
 
         console.log("--- startGame: Starting timers & Audio ---");
-        if (bgmAudio) {
-            bgmAudio.volume = 0.3;
-            bgmAudio.play().catch(e => console.log("BGM failed to play:", e));
-        }
+        playLoopingSound(bgmAudio, 0.3); // Start BGM loop
+        playLoopingSound(ambienceAudio, 0.4); // Start Ambience loop
+
         clearInterval(timerInterval); timerInterval = setInterval(gameTick, 1000);
 
         console.log(`[startGame L${level}] Final state before scheduling: gameRunning=${gameRunning}, isPaused=${isPaused}`);
@@ -496,10 +478,8 @@ document.addEventListener('DOMContentLoaded', () => {
         deliveryStation.innerHTML = '<div class="delivery-station-label">PASS</div>';
         diningArea.querySelectorAll('.table').forEach(table => table.classList.remove('table-highlight', 'table-leaving-soon'));
 
-        if (bgmAudio) {
-            bgmAudio.pause();
-            bgmAudio.currentTime = 0;
-        }
+        stopLoopingSound(bgmAudio); // Stop loops
+        stopLoopingSound(ambienceAudio);
 
         const moneyTarget = levelThresholds[level] || 99999;
         const levelWon = money >= moneyTarget;
@@ -511,7 +491,7 @@ document.addEventListener('DOMContentLoaded', () => {
             console.log("Overall Game Won!");
             finalWinScoreDisplay.textContent = money;
             gameWonModal.classList.remove('hidden');
-            playSound(sfxLevelWin); // Play win sound here
+            playSound(sfxLevelWin); // Play win sound (if element exists)
 
         } else if (levelWon) {
             console.log(`Level ${level} Complete! Target: ${moneyTarget}, Earned: ${money}`);
@@ -520,7 +500,7 @@ document.addEventListener('DOMContentLoaded', () => {
             nextLevelBtn.classList.remove('hidden');
             retryLevelBtn.classList.add('hidden');
             gameOverScreen.classList.remove('hidden');
-            playSound(sfxLevelWin); // Play win sound here
+            playSound(sfxLevelWin); // Play win sound (if element exists)
 
         } else {
              console.log(`Level ${level} Failed! Target: ${moneyTarget}, Earned: ${money}`);
@@ -529,7 +509,7 @@ document.addEventListener('DOMContentLoaded', () => {
              nextLevelBtn.classList.add('hidden');
              retryLevelBtn.classList.remove('hidden');
              gameOverScreen.classList.remove('hidden');
-             playSound(sfxLevelLose); // Play lose sound here
+             playSound(sfxLevelLose); // Play lose sound (if element exists)
         }
 
         deliveryRadius.classList.remove('active');
@@ -541,7 +521,8 @@ document.addEventListener('DOMContentLoaded', () => {
          isPaused = true;
          clearInterval(timerInterval);
          stopPlayerMovement();
-         if(bgmAudio) bgmAudio.pause();
+         if(bgmAudio) bgmAudio.pause(); // Pause loops
+         if(ambienceAudio) ambienceAudio.pause();
          console.log("Game Paused");
      }
 
@@ -549,7 +530,8 @@ document.addEventListener('DOMContentLoaded', () => {
          if (!gameRunning || !isPaused) return;
          isPaused = false;
          if (gameRunning && timeLeft > 0) {
-            if(bgmAudio) bgmAudio.play().catch(e => console.log("BGM failed to resume:", e));
+            playLoopingSound(bgmAudio, 0.3); // Resume loops
+            playLoopingSound(ambienceAudio, 0.4);
             clearInterval(timerInterval);
             timerInterval = setInterval(gameTick, 1000);
             console.log("Game Resumed");
@@ -583,8 +565,21 @@ document.addEventListener('DOMContentLoaded', () => {
         customers.forEach((c) => {
             if (c.state === 'leaving' || c.state === 'served' || c.state === 'remove') return;
             const elapsed = (now - c.spawnTime) / 1000;
+            const oldPatienceRatio = c.patienceCurrent / c.patienceTotal; // Store old ratio
             c.patienceCurrent = Math.max(0, c.patienceTotal - elapsed);
-            updateCustomerMood(c);
+            const newPatienceRatio = c.patienceCurrent / c.patienceTotal; // Calculate new ratio
+
+            // Play impatient sound when crossing the threshold
+            if (oldPatienceRatio > 0.5 && newPatienceRatio <= 0.5) {
+                 playSound(sfxImpatient);
+            }
+             // Optionally play again when crossing into angry (uncomment if desired)
+             // if (oldPatienceRatio > 0.2 && newPatienceRatio <= 0.2) {
+             //     playSound(sfxImpatient);
+             // }
+
+            updateCustomerMood(c); // Update visual mood based on current patience
+
             const tableEl = diningArea.querySelector(`#${c.tableElement.id}`);
             if (!tableEl) {
                  console.warn("Customer's table element not found:", c.tableElement.id);
@@ -596,7 +591,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 tableEl.classList.remove('table-leaving-soon');
             }
             if (c.patienceCurrent <= 0 && c.state === 'waiting') {
-                customerLeavesAngry(c);
+                customerLeavesAngry(c); // Plays angry left sound inside
             }
         });
         customers = customers.filter(c => c.state !== 'remove');
@@ -604,7 +599,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function customerLeavesAngry(c) {
         if (!c || c.state === 'leaving' || c.state === 'remove') return;
-        playSound(sfxAngry);
+        playSound(sfxAngryLeft); // Play specific angry left sound
         console.log("Customer leaving angry:", c.id);
         c.state = 'leaving';
         const tableEl = diningArea.querySelector(`#${c.tableElement.id}`);
@@ -699,9 +694,8 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function scheduleNextCustomer() {
-        // console.log(`[scheduleNextCustomer L${level}] Check at top: gameRunning=${gameRunning}, isPaused=${isPaused}`);
         if (!gameRunning || isPaused) {
-            console.log(`[scheduleNextCustomer L${level}] Scheduling stopped (game not running or paused).`);
+            // console.log(`[scheduleNextCustomer L${level}] Scheduling stopped (game not running or paused).`);
             clearTimeout(customerSpawnTimeout);
             return;
         }
@@ -711,30 +705,23 @@ document.addEventListener('DOMContentLoaded', () => {
         const delay = Math.max(minT, baseT - reduc);
         const randF = 0.8 + Math.random() * 0.4;
         const finalDelay = delay * randF;
-        // console.log(`Scheduling next customer with delay: ${Math.round(finalDelay)}ms`);
         customerSpawnTimeout = setTimeout(spawnCustomer, finalDelay);
     }
 
     function spawnCustomer() {
-        // console.log("Attempting to spawn customer...");
-        // console.log(`[spawnCustomer L${level}] Check at top: gameRunning=${gameRunning}, isPaused=${isPaused}`);
         if (!gameRunning || isPaused) {
-           console.log(`[spawnCustomer L${level}] Spawn aborted (game not running or paused).`);
+           // console.log(`[spawnCustomer L${level}] Spawn aborted (game not running or paused).`);
            return;
         }
         try {
             const currentTables = Array.from(diningArea.querySelectorAll('.table'));
             const availT = currentTables.filter(t => !customers.some(c => c.tableElement.id === t.id && c.state !== 'leaving' && c.state !== 'remove'));
-            // console.log(`Found ${availT.length} available tables.`);
 
             if (availT.length > 0) {
+                playSound(sfxOrdered); // Play order sound when customer appears
                 const tableElement = availT[Math.floor(Math.random() * availT.length)];
                 const seat = tableElement.querySelector('.seat');
-                if (!seat) {
-                    console.warn("Seat not found in available table:", tableElement.id);
-                    scheduleNextCustomer();
-                    return;
-                }
+                if (!seat) { scheduleNextCustomer(); return; } // Skip if seat isn't found
                 const custEl = document.createElement('div');
                 custEl.className = 'customer';
                 custEl.textContent = customerEmojis[Math.floor(Math.random() * customerEmojis.length)];
@@ -772,20 +759,16 @@ document.addEventListener('DOMContentLoaded', () => {
                 };
                 customers.push(newCustomer);
                 tableElement.classList.add('table-highlight');
-                // console.log(`Spawned customer ${customerId} at table ${tableElement.id} ordering ${order}.`);
-            } else {
-                // console.log("No available tables found, scheduling next attempt.");
             }
         } catch (error) {
             console.error("Error during spawnCustomer:", error);
         }
-        // console.log("Scheduling next customer attempt from spawnCustomer.");
-        scheduleNextCustomer();
+        scheduleNextCustomer(); // Always schedule the next one
     }
 
     function serveCustomer(cust) {
         if (!cust || cust.state !== 'waiting') return;
-        playSound(sfxServe);
+        playSound(sfxServe); // Play happy served sound
         cust.state = 'served';
         const tableEl = diningArea.querySelector(`#${cust.tableElement.id}`);
         const basePrice = cust.orderPrice;
@@ -805,9 +788,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (tableEl) {
             tableEl.classList.remove('table-highlight', 'table-leaving-soon');
         }
-        carryingFood = null;
-        carryingFoodIcon = null;
-        carryingDisplay.innerHTML = '';
+        carryingFood = null; carryingFoodIcon = null; carryingDisplay.innerHTML = '';
         deliveryRadius.classList.remove('active');
         if (debugMode) debugFood.textContent = "None";
         if (cust.element) {
@@ -822,14 +803,23 @@ document.addEventListener('DOMContentLoaded', () => {
         }, 1500);
     }
 
-    function updateCustomerMood(cust) {
+    function updateCustomerMood(cust) { // Plays impatient sound now
         if (!cust.moodIndicator) return;
         const patienceRatio = Math.max(0, cust.patienceCurrent) / cust.patienceTotal;
-        let mood = moodEmojis.happy;
-        if (patienceRatio <= 0.2) mood = moodEmojis.angry;
-        else if (patienceRatio <= 0.5) mood = moodEmojis.impatient;
-        else if (patienceRatio <= 0.8) mood = moodEmojis.neutral;
-        cust.moodIndicator.textContent = mood;
+        let newMood = moodEmojis.happy;
+        if (patienceRatio <= 0.2) newMood = moodEmojis.angry;
+        else if (patienceRatio <= 0.5) newMood = moodEmojis.impatient;
+        else if (patienceRatio <= 0.8) newMood = moodEmojis.neutral;
+
+        // Only update and play sound if the mood actually changes to impatient/angry
+        const oldMood = cust.moodIndicator.textContent;
+        if (newMood !== oldMood) {
+             cust.moodIndicator.textContent = newMood;
+             // Play sound when becoming impatient or angry
+             if (newMood === moodEmojis.impatient || newMood === moodEmojis.angry) {
+                 playSound(sfxImpatient);
+             }
+        }
     }
 
     function clearCustomersAndIndicators() {
@@ -852,10 +842,8 @@ document.addEventListener('DOMContentLoaded', () => {
         if (typ === "negative") ind.classList.add('negative');
         else if (typ === "positive") ind.classList.add('positive');
         ind.innerHTML = txt;
-        const cont = restaurantArea;
-        cont.appendChild(ind);
-        const tR = tEl.getBoundingClientRect();
-        const cR = cont.getBoundingClientRect();
+        const cont = restaurantArea; cont.appendChild(ind);
+        const tR = tEl.getBoundingClientRect(); const cR = cont.getBoundingClientRect();
         ind.style.position = 'absolute';
         ind.style.left = `${tR.left - cR.left + tR.width / 2}px`;
         ind.style.top = `${tR.top - cR.top + tR.height / 2 - 20}px`;
@@ -874,18 +862,15 @@ document.addEventListener('DOMContentLoaded', () => {
         const event = randomEvents[eventIndex];
         console.log("Triggering random event:", event.title);
         pauseGame();
-        eventTitle.textContent = event.title;
-        eventDescription.textContent = event.description;
+        eventTitle.textContent = event.title; eventDescription.textContent = event.description;
         eventOptionsContainer.innerHTML = '';
         event.options.forEach(opt => {
             const btn = document.createElement('button');
             btn.textContent = opt.text;
-            btn.dataset.effectMoney = opt.effect.money;
-            btn.dataset.effectTime = opt.effect.time;
+            btn.dataset.effectMoney = opt.effect.money; btn.dataset.effectTime = opt.effect.time;
             btn.dataset.feedback = opt.feedback;
-            // Mark the specific button that breaks the oven
             if (event.title === "Kitchen Emergency!" && opt.text.includes("Work Around It")) {
-                btn.dataset.stateChange = 'ovenBroken'; // Add marker
+                btn.dataset.stateChange = 'ovenBroken';
             }
             btn.addEventListener('click', handleEventChoice);
             eventOptionsContainer.appendChild(btn);
@@ -894,26 +879,21 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function handleEventChoice(e) {
+        playSound(sfxClick); // Play generic click for button press
         const btn = e.target;
         const mE = parseInt(btn.dataset.effectMoney || '0');
         const tE = parseInt(btn.dataset.effectTime || '0');
         const fb = btn.dataset.feedback || "Okay.";
-        const stateChange = btn.dataset.stateChange; // Get the state change marker
+        const stateChange = btn.dataset.stateChange;
 
-        // Apply immediate effects
-        money += mE;
-        timeLeft += tE;
-        money = Math.max(0, money);
-        timeLeft = Math.max(0, timeLeft);
-        moneyDisplay.textContent = money;
-        timerDisplay.textContent = timeLeft;
+        money += mE; timeLeft += tE; money = Math.max(0, money); timeLeft = Math.max(0, timeLeft);
+        moneyDisplay.textContent = money; timerDisplay.textContent = timeLeft;
         showFeedbackIndicator(player, fb, (mE < 0 || tE < 0) ? "negative" : "info");
 
-        // Apply game state changes
         if (stateChange === 'ovenBroken') {
             isOvenBroken = true;
             console.log("EVENT: Oven is now broken!");
-            disableOvenStations(true); // Visually disable stations
+            disableOvenStations(true);
         }
 
         eventModal.classList.add('hidden');
@@ -924,7 +904,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // --- NEW: Helper to visually disable/enable oven stations ---
     function disableOvenStations(disable) {
         console.log(`Setting oven stations disabled state: ${disable}`);
         foodStations.forEach(station => {
@@ -932,51 +911,26 @@ document.addEventListener('DOMContentLoaded', () => {
             if (OVEN_ITEMS.includes(foodId)) {
                 station.style.opacity = disable ? '0.5' : '1';
                 station.style.cursor = disable ? 'not-allowed' : 'pointer';
-                // Optionally prevent pointer events entirely, though the click handler already checks
-                // station.style.pointerEvents = disable ? 'none' : 'auto';
-                if(disable) {
-                    station.title = "Oven Broken!"; // Add tooltip
-                } else {
-                     station.title = ""; // Remove tooltip
-                }
+                if(disable) { station.title = "Oven Broken!"; } else { station.title = ""; }
             }
         });
     }
 
-    // --- Menu Modal Logic (if needed) ---
-    function populateMenuModal() { /* ... as before ... */ }
-    function getCategoryNameFromTabKey(tK) { /* ... as before ... */ }
-
     // --- Initialization ---
     function initializeGameVisuals() {
         if (restaurantArea.offsetWidth > 0) {
-            const plyH = player.offsetHeight / 2 || 35;
-            const plyW = player.offsetWidth / 2 || 25;
-            playerPosition.x = restaurantArea.offsetWidth / 2;
-            playerPosition.y = restaurantArea.offsetHeight - plyH - 10;
-            updatePlayerPosition();
-            player.style.opacity = '1';
-            player.style.display = 'flex';
-        } else {
-            setTimeout(initializeGameVisuals, 100);
-            return;
-        }
-        gameOverScreen.classList.add('hidden');
-        menuModal.classList.add('hidden');
-        eventModal.classList.add('hidden');
-        gameWonModal.classList.add('hidden');
-        debugInfo.classList.toggle('hidden', !debugMode);
-        debugFood.textContent = 'None';
+            const plyH = player.offsetHeight / 2 || 35; const plyW = player.offsetWidth / 2 || 25;
+            playerPosition.x = restaurantArea.offsetWidth / 2; playerPosition.y = restaurantArea.offsetHeight - plyH - 10;
+            updatePlayerPosition(); player.style.opacity = '1'; player.style.display = 'flex';
+        } else { setTimeout(initializeGameVisuals, 100); return; }
+        gameOverScreen.classList.add('hidden'); menuModal.classList.add('hidden'); eventModal.classList.add('hidden'); gameWonModal.classList.add('hidden');
+        debugInfo.classList.toggle('hidden', !debugMode); debugFood.textContent = 'None';
         try { restaurantArea.style.backgroundImage = `url('${BACKGROUND_IMAGE_URL}')`; } catch(e) { console.error("Error setting BG in init:", e)}
         console.log("Initial game visuals set.");
     }
 
     // --- Start ---
     initializeGameVisuals();
-    setTimeout(() => {
-        if (!gameRunning) {
-             startGame();
-        }
-    }, 150);
+    setTimeout(() => { if (!gameRunning) { startGame(); } }, 150);
 
 }); // End DOMContentLoaded
