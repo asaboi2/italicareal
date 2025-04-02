@@ -50,7 +50,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- Game State Variables ---
     let money = 0;
-    let timeLeft = 180;
+    let timeLeft = 120;
     let gameRunning = false;
     let isPaused = false;
     let carryingFood = null;
@@ -65,7 +65,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let isMoving = false;
     let animationFrameId = null;
     let debugMode = false;
-    let levelThresholds = [0, 75, 180, 300, 450, 650];
+    let levelThresholds = [0, 200, 250, 300, 450, 650];
     const BACKGROUND_IMAGE_URL = 'assets/backdrop.png';
     let readyItemsOnPass = [];
     let lastEventIndex = -1;
@@ -487,7 +487,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function startGame() {
         if (gameRunning && !isPaused) return;
         console.log(`--- startGame: Starting Level ${level} ---`);
-        money = 0; timeLeft = 180; gameRunning = true; isPaused = false;
+        money = 0; timeLeft = 120; gameRunning = true; isPaused = false;
         carryingFood = null; carryingFoodIcon = null; customers = [];
         readyItemsOnPass = []; lastEventIndex = -1; isOvenBroken = false;
         disableOvenStations(false); backgroundSoundsStarted = false;
