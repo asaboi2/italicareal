@@ -50,7 +50,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- Game State Variables ---
     let money = 0;
-    let timeLeft = 120;
+    let timeLeft = 180; // Will be set to 120 in startGame
     let gameRunning = false;
     let isPaused = false;
     let carryingFood = null;
@@ -65,13 +65,13 @@ document.addEventListener('DOMContentLoaded', () => {
     let isMoving = false;
     let animationFrameId = null;
     let debugMode = false;
-    let levelThresholds = [0, 200, 250, 300, 450, 650];
+    let levelThresholds = [0, 75, 180, 300, 450, 650];
     const BACKGROUND_IMAGE_URL = 'assets/backdrop.png';
     let readyItemsOnPass = [];
     let lastEventIndex = -1;
     let isOvenBroken = false;
     let backgroundSoundsStarted = false;
-    let customersSpawnedThisLevel = 0; // <<< Counter for event delay
+    let customersSpawnedThisLevel = 0; // Counter for event delay
 
     // --- Game Configuration ---
     const CUSTOMER_SPAWN_BASE_TIME = 5500;
@@ -79,7 +79,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const CUSTOMER_SPAWN_LEVEL_REDUCTION = 300;
     const CUSTOMER_SPAWN_RANDOM_FACTOR_MIN = 0.9;
     const CUSTOMER_SPAWN_RANDOM_FACTOR_MAX = 1.1;
-    const RANDOM_EVENT_MIN_CUSTOMERS = 3; // <<< Min customers before events can start
+    const RANDOM_EVENT_MIN_CUSTOMERS = 3; // Min customers before events can start
 
     const OVEN_ITEMS = [
         'Tomato Pie Slice', 'Tre Sale Slice', 'Garlic Girl', 'Toni Roni',
@@ -487,11 +487,13 @@ document.addEventListener('DOMContentLoaded', () => {
     function startGame() {
         if (gameRunning && !isPaused) return;
         console.log(`--- startGame: Starting Level ${level} ---`);
-        money = 0; timeLeft = 120; gameRunning = true; isPaused = false;
+        money = 0;
+        timeLeft = 120; // <<< TIMER SET TO 120 >>>
+        gameRunning = true; isPaused = false;
         carryingFood = null; carryingFoodIcon = null; customers = [];
         readyItemsOnPass = []; lastEventIndex = -1; isOvenBroken = false;
         disableOvenStations(false); backgroundSoundsStarted = false;
-        customersSpawnedThisLevel = 0; // <<< Reset counter
+        customersSpawnedThisLevel = 0;
         console.log("--- startGame: State reset ---");
         moneyDisplay.textContent = money; levelDisplay.textContent = level;
         timerDisplay.textContent = timeLeft; carryingDisplay.innerHTML = '';
@@ -577,10 +579,18 @@ document.addEventListener('DOMContentLoaded', () => {
          isPaused = false;
          if (gameRunning && timeLeft > 0) {
             if (backgroundSoundsStarted) {
-                playLoopingSound(bgmAudio, 0.3); playLoopingSound(ambienceAudio, 0.4);
+                console.log("[resumeGame] backgroundSoundsStarted is true, attempting to resume sounds."); // MUSIC DEBUG
+                console.log("Calling playLoopingSound(bgmAudio)..."); // MUSIC DEBUG
+                playLoopingSound(bgmAudio, 0.3);
+                console.log("Called playLoopingSound(bgmAudio)."); // MUSIC DEBUG
+                console.log("Calling playLoopingSound(ambienceAudio)..."); // MUSIC DEBUG
+                playLoopingSound(ambienceAudio, 0.4);
+                console.log("Called playLoopingSound(ambienceAudio)."); // MUSIC DEBUG
+            } else {
+                 console.log("[resumeGame] backgroundSoundsStarted is false, skipping sound resume."); // MUSIC DEBUG
             }
             clearInterval(timerInterval); timerInterval = setInterval(gameTick, 1000);
-            scheduleNextCustomer(); // Check if needs scheduling
+            scheduleNextCustomer();
             console.log("Game Resumed");
          } else {
               console.log("Game NOT Resumed (already ended or time up)");
@@ -599,11 +609,9 @@ document.addEventListener('DOMContentLoaded', () => {
              return;
          }
 
-         // --- MODIFIED: Check customer count before random event check ---
          if (customersSpawnedThisLevel >= RANDOM_EVENT_MIN_CUSTOMERS && Math.random() < 0.02 && eventModal.classList.contains('hidden')) {
              triggerRandomEvent();
          }
-         // --- END MODIFIED ---
      }
 
     function updateCustomers() {
@@ -735,11 +743,23 @@ document.addEventListener('DOMContentLoaded', () => {
                 return !isOccupied;
             });
             if (potentialTables.length > 0) {
+                 // --- Music Trigger Logging ---
+                 console.log(`[spawnCustomer] Checking backgroundSoundsStarted: ${backgroundSoundsStarted}`); // MUSIC DEBUG
                  if (!backgroundSoundsStarted) {
-                     console.log("First customer spawning, starting background sounds.");
-                     playLoopingSound(bgmAudio, 0.3); playLoopingSound(ambienceAudio, 0.4);
+                     console.log("First customer spawning, attempting to start background sounds."); // MUSIC DEBUG
+                     console.log("Calling playLoopingSound(bgmAudio)..."); // MUSIC DEBUG
+                     playLoopingSound(bgmAudio, 0.3);
+                     console.log("Called playLoopingSound(bgmAudio)."); // MUSIC DEBUG
+                     console.log("Calling playLoopingSound(ambienceAudio)..."); // MUSIC DEBUG
+                     playLoopingSound(ambienceAudio, 0.4);
+                     console.log("Called playLoopingSound(ambienceAudio)."); // MUSIC DEBUG
                      backgroundSoundsStarted = true;
+                     console.log(`[spawnCustomer] backgroundSoundsStarted set to true.`); // MUSIC DEBUG
+                 } else {
+                    // console.log("[spawnCustomer] backgroundSoundsStarted is already true, skipping sound start."); // MUSIC DEBUG
                  }
+                 // --- End Music Trigger Logging ---
+
                 playSound(sfxOrdered);
                 const tableElement = potentialTables[Math.floor(Math.random() * potentialTables.length)];
                 const seatElement = tableElement.querySelector('.seat');
