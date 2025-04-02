@@ -40,7 +40,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- Game State Variables ---
     let money = 0;
-    let timeLeft = 180;
+    let timeLeft = 120;
     let gameRunning = false;
     let isPaused = false;
     let carryingFood = null;
