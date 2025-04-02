@@ -303,37 +303,75 @@ document.addEventListener('DOMContentLoaded', () => {
         deliveryStation.appendChild(itemDiv);
         playSound(sfxReady);
     }
-
+// --- Table Generation (NEW Grid Layout) ---
     function generateTables(container, numTables) {
-        container.innerHTML = '';
-        const numCols = 3;
-        const rowPositions = [60, 85];
-        const colPositions = [18, 50, 82];
-        console.log(`Generating ${numTables} tables (1 seat per table).`);
+        container.innerHTML = ''; // Clear existing tables
+        const numCols = 3; // Define number of columns for the grid
+        const numRows = Math.ceil(numTables / numCols); // Calculate rows needed
+
+        const containerWidth = container.offsetWidth;
+        const containerHeight = container.offsetHeight;
+
+        // Safety check if container dimensions aren't available yet
+        if (containerWidth === 0 || containerHeight === 0) {
+            console.warn("Dining area has no dimensions yet. Table generation might be incorrect.");
+            // Could potentially add a setTimeout retry here if needed, but often okay on DOMContentLoaded
+        }
+
+        // --- Define the usable area for tables as fractions of container size ---
+        // Adjust these fractions to control where the grid appears
+        const gridPaddingTopFraction = 0.50; // Start grid 50% from the top edge
+        const gridPaddingBottomFraction = 0.15; // Leave 15% space below the grid
+        const gridPaddingHorizontalFraction = 0.15; // Leave 15% space on left AND right
+
+        // Calculate the pixel dimensions of the usable grid area
+        const usableHeight = containerHeight * (1 - gridPaddingTopFraction - gridPaddingBottomFraction);
+        const usableWidth = containerWidth * (1 - gridPaddingHorizontalFraction * 2);
+
+        // Calculate the size of each cell in the grid
+        const cellHeight = numRows > 0 ? usableHeight / numRows : usableHeight; // Avoid division by zero if no rows
+        const cellWidth = numCols > 0 ? usableWidth / numCols : usableWidth;   // Avoid division by zero if no columns
+
+        // Calculate the starting pixel offset for the grid area
+        const gridTopOffset = containerHeight * gridPaddingTopFraction;
+        const gridLeftOffset = containerWidth * gridPaddingHorizontalFraction;
+
+        console.log(`Generating ${numTables} tables in a ${numRows}x${numCols} grid.`);
+        // console.log(`Usable Area: ${usableWidth.toFixed(0)}x${usableHeight.toFixed(0)} starting at (${gridLeftOffset.toFixed(0)}, ${gridTopOffset.toFixed(0)})`);
+        // console.log(`Cell Size: ${cellWidth.toFixed(0)}x${cellHeight.toFixed(0)}`);
+
         for (let i = 0; i < numTables; i++) {
             const table = document.createElement('div');
             table.classList.add('table');
             const tableIdNum = i + 1;
             table.id = `table-${tableIdNum}`;
             table.dataset.table = tableIdNum;
+
+            // Create the single seat for the customer
             const seat = document.createElement('div');
             seat.classList.add('seat');
             table.appendChild(seat);
+
+            // Determine the row and column for the current table index
             const row = Math.floor(i / numCols);
             const col = i % numCols;
-            if (row < rowPositions.length && col < colPositions.length) {
-                table.style.top = `${rowPositions[row]}%`;
-                table.style.left = `${colPositions[col]}%`;
-                table.style.transform = 'translate(-50%, -50%)';
-            } else {
-                console.warn(`Table ${tableIdNum} exceeded defined positions.`);
-                table.style.top = `${55 + (row * 15)}%`;
-                table.style.left = `${15 + (col * 25)}%`;
-                table.style.transform = 'translate(-50%, -50%)';
-            }
+
+            // Calculate the center coordinates of the table's assigned cell
+            // Add half cell dimensions to the starting offset + row/col offsets
+            const cellCenterX = gridLeftOffset + (col * cellWidth) + (cellWidth / 2);
+            const cellCenterY = gridTopOffset + (row * cellHeight) + (cellHeight / 2);
+
+            // Apply the calculated position using pixels for precision
+            table.style.position = 'absolute'; // Ensure absolute positioning is set
+            table.style.top = `${cellCenterY}px`;
+            table.style.left = `${cellCenterX}px`;
+            // Use transform to center the table element itself on these coordinates
+            table.style.transform = 'translate(-50%, -50%)';
+
             container.appendChild(table);
         }
     }
+    // --- End NEW generateTables function ---
 
     // --- Event Listeners ---
     let keysPressed = {};
