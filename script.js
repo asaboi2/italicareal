@@ -54,7 +54,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let playerPosition = { x: 0, y: 0 };
     let isMoving = false;
     let animationFrameId = null;
-    let debugMode = false;
+    let debugMode = false; // Set to true to always show debug info initially
     // Use thresholds as WIN condition for PREVIOUS level
     // levelThresholds[0] = 0 (start)
     // To beat level 1, need >= levelThresholds[1] = $75
@@ -66,7 +66,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let lastEventIndex = -1;
 
     // --- Game Configuration ---
-    const foodItems = {
+    const foodItems = { // Same as previous version...
         // Appetizers
         'Bread Basket': { image: 'assets/bread basket.png', price: 5, category: 'Appetizers', prepTime: 1 },
         'Cherry Tomato & Garlic Confit': { image: 'assets/cherry confit.png', price: 12, category: 'Appetizers', prepTime: 2 },
@@ -104,19 +104,19 @@ document.addEventListener('DOMContentLoaded', () => {
     };
     const customerEmojis = ['👩','👨','👵','👴','👱‍♀️','👱','👩‍🦰','👨‍🦰','👩‍🦱','👨‍🦱','🧑‍🎄','👸','👨‍🎨','👩‍🔬','💂','🕵️'];
     const moodEmojis = { happy: '😊', neutral: '😐', impatient: '😠', angry: '😡' };
-    const randomEvents = [ /* ... (full randomEvents array including new ones - no changes needed here) ... */
+    const randomEvents = [ // Same as previous version...
          { title: "Customer Complaint!", description: "A customer says their Cacio e Pepe is too peppery!", options: [ { text: "Apologize & Offer free drink (-$3)", effect: { money: -3, time: 0 }, feedback: "Comped a soda." }, { text: "Remake the dish (Lose time)", effect: { money: 0, time: -10 }, feedback: "Remade the pasta (-10s)." }, { text: "Argue politely (Risk anger)", effect: { money: 0, time: 0 }, feedback: "Defended the chef!" } ] }, { title: "Kitchen Emergency!", description: "The oven suddenly stopped working!", options: [ { text: "Quick Fix Attempt (-$20, -15s)", effect: { money: -20, time: -15 }, feedback: "Paid for quick fix (-$20, -15s)." }, { text: "Work Around It (No Pizza/Roast)", effect: { money: 0, time: 0 }, feedback: "No oven dishes for now..." }, { text: "Ignore It (Riskier)", effect: { money: 0, time: 0 }, feedback: "Ignored the oven..." } ] }, { title: "Ingredient Shortage", description: "Oh no! We're running low on fresh basil for Pomodoro!", options: [ { text: "Buy Emergency Basil (-$15)", effect: { money: -15, time: 0 }, feedback: "Bought expensive basil (-$15)." }, { text: "Improvise (Use dried herbs)", effect: { money: 0, time: 0 }, feedback: "Substituted herbs..." }, { text: "Stop serving Pomodoro", effect: { money: 0, time: 0 }, feedback: "Took Pomodoro off menu." } ] }, { title: "VIP Guest", description: "A famous food critic just sat down!", options: [ { text: "Offer Free Appetizer (-$10)", effect: { money: -10, time: 0 }, feedback: "Comped critic appetizer (-$10)." }, { text: "Chef's Special Attention (-10s)", effect: { money: 0, time: -10 }, feedback: "Chef gave extra attention (-10s)." }, { text: "Treat Like Normal", effect: { money: 0, time: 0 }, feedback: "Treated critic normally." } ] }, { title: "Sudden Rush!", description: "A big group just walked in! Faster service needed!", options: [ { text: "Work Faster! (Bonus Time)", effect: { money: 0, time: +15 }, feedback: "Rush handled! (+15s)" }, { text: "Stay Calm (Risk Anger)", effect: { money: 0, time: 0 }, feedback: "Kept cool under pressure." } ] }, { title: "Generous Tipper", description: "A customer was so impressed they left a huge tip!", options: [ { text: "Awesome! (+$25)", effect: { money: +25, time: 0 }, feedback: "Wow! +$25 Tip!" } ] }, { title: "Spill in the Kitchen!", description: "Someone dropped a tray of sauce!", options: [ { text: "Clean it Up (-10s)", effect: { money: 0, time: -10 }, feedback: "Cleaned up the mess (-10s)." }, { text: "Work Around It (Carefully!)", effect: { money: 0, time: 0 }, feedback: "Carefully avoiding the spill..." } ] }, { title: "Health Inspector!", description: "A surprise visit! Everything needs to be perfect.", options: [ { text: "Brief Pause & Tidy (-5s)", effect: { money: 0, time: -5 }, feedback: "Quick tidy for inspector (-5s)." }, { text: "Bribe? (-$50, Risky)", effect: { money: -50, time: 0}, feedback: "Attempted a 'tip' (-$50)..."} ]}
     ];
 
 
     // --- Helper Functions ---
-    function getFoodIcon(foodId) {
+    function getFoodIcon(foodId) { // Same as previous version...
         const item = foodItems[foodId];
         if (!item) return '?'; // Fallback
         return item.image || item.emoji || '?'; // Prefer image, then emoji, then fallback
     }
 
-    function createIconElement(iconSrcOrEmoji, altText = 'Food item') {
+    function createIconElement(iconSrcOrEmoji, altText = 'Food item') { // Same as previous version...
         if (iconSrcOrEmoji.includes('/')) { // It's an image path
             const img = document.createElement('img');
             img.src = iconSrcOrEmoji;
@@ -129,7 +129,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    function animatePrepProgress(progressBarElement, durationMs, onComplete) {
+    function animatePrepProgress(progressBarElement, durationMs, onComplete) { // Same as previous version...
         if (!progressBarElement) return;
         let start = null;
         function step(timestamp) {
@@ -147,7 +147,7 @@ document.addEventListener('DOMContentLoaded', () => {
         requestAnimationFrame(step);
     }
 
-    function addFoodToPass(foodId) {
+    function addFoodToPass(foodId) { // Same as previous version...
         const itemData = foodItems[foodId];
         if (!itemData) return;
 
@@ -169,11 +169,12 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
 
-    // --- NEW: Generate Tables Function ---
+    // --- Generate Tables Function (MODIFIED FOR POSITIONING) ---
     function generateTables(container, numTables) {
         container.innerHTML = ''; // Clear existing tables
         const numCols = 3;
-        const rowPositions = [38, 80]; // Top percentages
+        // ***** MODIFIED: Place tables only in bottom half (top >= 50%) *****
+        const rowPositions = [60, 85]; // Adjusted: Top percentages (e.g., 60% and 85% from the top)
         const colPositions = [18, 50, 82]; // Left percentages
 
         for (let i = 0; i < numTables; i++) {
@@ -184,20 +185,29 @@ document.addEventListener('DOMContentLoaded', () => {
             table.dataset.table = tableIdNum;
             const seat = document.createElement('div'); seat.classList.add('seat'); table.appendChild(seat);
 
-            const row = Math.floor(i / numCols); const col = i % numCols;
+            const row = Math.floor(i / numCols);
+            const col = i % numCols;
+
+            // Ensure we don't go out of bounds for the defined positions
             if (row < rowPositions.length && col < colPositions.length) {
                 table.style.top = `${rowPositions[row]}%`;
                 table.style.left = `${colPositions[col]}%`;
+                table.style.transform = 'translate(-50%, -50%)'; // Center on the point
+            } else {
+                // Fallback for too many tables (shouldn't happen with current limits)
+                console.warn(`Table ${tableIdNum} exceeded defined positions.`);
+                table.style.top = `${55 + (row * 15)}%`; // Basic fallback layout
+                table.style.left = `${15 + (col * 25)}%`;
                 table.style.transform = 'translate(-50%, -50%)';
-            } else { table.style.top = '10px'; table.style.left = '10px'; } // Fallback
+            }
             container.appendChild(table);
         }
-        console.log(`Generated ${numTables} tables for level ${level}.`);
+        console.log(`Generated ${numTables} tables for level ${level}. Positions: ${JSON.stringify(rowPositions)} / ${JSON.stringify(colPositions)}`);
     }
 
     // --- Event Listeners ---
     let keysPressed = {}; // Keep track of pressed keys for debug toggle
-    document.addEventListener('keydown', (e) => {
+    document.addEventListener('keydown', (e) => { // Same as previous version...
         keysPressed[e.key.toLowerCase()] = true;
         // Toggle debug mode with D+E+B+U+G
         if (keysPressed['d'] && keysPressed['e'] && keysPressed['b'] && keysPressed['u'] && keysPressed['g']) {
@@ -211,17 +221,16 @@ document.addEventListener('DOMContentLoaded', () => {
              keysPressed = {};
          }
     });
-    document.addEventListener('keyup', (e) => {
+    document.addEventListener('keyup', (e) => { // Same as previous version...
         delete keysPressed[e.key.toLowerCase()];
     });
 
 
-    if (closeMenuBtn) { // Check if menu elements exist
+    if (closeMenuBtn) { // Same as previous version...
         closeMenuBtn.addEventListener('click', () => { menuModal.classList.add('hidden'); resumeGame(); });
-        // Add tab logic back if menu is used
     }
 
-    foodStations.forEach(station => {
+    foodStations.forEach(station => { // Same as previous version...
          station.addEventListener('click', () => {
             if (isPaused || station.classList.contains('preparing')) return;
             if (carryingFood) {
@@ -262,7 +271,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    deliveryStation.addEventListener('click', (e) => {
+    deliveryStation.addEventListener('click', (e) => { // Same as previous version...
         if (isPaused) return;
         const clickedItem = e.target.closest('.ready-food-item');
 
@@ -304,7 +313,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // Clicked on empty pass area - do nothing
     });
 
-    trashCan.addEventListener('click', () => {
+    trashCan.addEventListener('click', () => { // Same as previous version...
         if (isPaused || !carryingFood) return;
 
         showFeedbackIndicator(trashCan, `Trashed ${carryingFood}!`, "negative");
@@ -316,7 +325,7 @@ document.addEventListener('DOMContentLoaded', () => {
         console.log("Trashed carried food");
     });
 
-    diningArea.addEventListener('click', (e) => {
+    diningArea.addEventListener('click', (e) => { // Same as previous version...
         if (isPaused) return;
         const targetTable = e.target.closest('.table');
 
@@ -354,8 +363,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 const clickY = e.clientY - rect.top;
 
                 // Ensure Y-coordinate stays above the kitchen line roughly
-                const kitchenLineY = restaurantArea.offsetHeight * 0.85; // Adjust percentage as needed
-                const targetY = Math.min(clickY, kitchenLineY);
+                // No change needed here, player should still be able to move higher
+                // than the tables to reach the top ones (in the bottom half)
+                const kitchenLineY = restaurantArea.offsetHeight * 0.90; // Adjust slightly if needed
+                const targetY = Math.min(clickY, kitchenLineY); // Prevent going *into* kitchen visually
 
                 movePlayerToCoordinates(clickX, targetY);
              }
@@ -364,19 +375,19 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
     // --- NEW Listeners for Modal Buttons ---
-    nextLevelBtn.addEventListener('click', () => {
+    nextLevelBtn.addEventListener('click', () => { // Same as previous version...
         gameOverScreen.classList.add('hidden');
         level++; // Increment level
         startGame(); // Start the next level
     });
 
-    retryLevelBtn.addEventListener('click', () => {
+    retryLevelBtn.addEventListener('click', () => { // Same as previous version...
         gameOverScreen.classList.add('hidden');
         // Don't change level, just restart
         startGame();
     });
 
-    playAgainBtn.addEventListener('click', () => {
+    playAgainBtn.addEventListener('click', () => { // Same as previous version...
         gameWonModal.classList.add('hidden');
         level = 1; // Reset to level 1
         startGame();
@@ -385,7 +396,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- Core Functions ---
 
-    function startGame() {
+    function startGame() { // Same as previous version...
         if (gameRunning && !isPaused) return; // Prevent starting if running
          console.log(`--- startGame: Starting Level ${level} ---`);
 
@@ -428,11 +439,11 @@ document.addEventListener('DOMContentLoaded', () => {
         console.log("--- startGame: Visuals initialized (or attempted) ---");
         console.log("--- startGame: Starting timers ---");
         clearInterval(timerInterval); timerInterval = setInterval(gameTick, 1000);
-        clearTimeout(customerSpawnTimeout); scheduleNextCustomer();
+        clearTimeout(customerSpawnTimeout); scheduleNextCustomer(); // Start customer spawning
         console.log(`--- startGame: Level ${level} Started ---`);
     }
 
-    function endGame() { // UPDATED for win/loss conditions
+    function endGame() { // Same as previous version...
         console.log("Ending game/day...");
         gameRunning = false; isPaused = true; clearInterval(timerInterval); clearTimeout(customerSpawnTimeout);
         stopPlayerMovement();
@@ -480,9 +491,18 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // ... (pauseGame, resumeGame as before) ...
      function pauseGame() { if (!gameRunning || isPaused) return; isPaused = true; clearInterval(timerInterval); stopPlayerMovement(); console.log("Game Paused"); }
-     function resumeGame() { if (!gameRunning || !isPaused) return; isPaused = false; clearInterval(timerInterval); timerInterval = setInterval(gameTick, 1000); console.log("Game Resumed"); }
+     function resumeGame() { if (!gameRunning || !isPaused) return; isPaused = false; // Set back to false
+         // Restart the main timer ONLY if the game should still be running (time > 0)
+         if (gameRunning && timeLeft > 0) {
+             clearInterval(timerInterval); // Clear just in case
+             timerInterval = setInterval(gameTick, 1000);
+             console.log("Game Resumed");
+         } else {
+              console.log("Game NOT Resumed (already ended or time up)");
+         }
+     }
 
-     function gameTick() {
+     function gameTick() { // Same as previous version...
          if (!gameRunning || isPaused) {
              // Ensure timer stops if paused or not running
              clearInterval(timerInterval);
@@ -502,8 +522,8 @@ document.addEventListener('DOMContentLoaded', () => {
          }
      }
 
-    // ... (updateCustomers with leaving soon logic as before) ...
-    function updateCustomers() {
+    // ... (updateCustomers, customerLeavesAngry as before) ...
+    function updateCustomers() { // Same as previous version...
         if (isPaused) return;
         const now = Date.now();
         const LEAVING_SOON_THRESHOLD = 5; // seconds
@@ -540,7 +560,7 @@ document.addEventListener('DOMContentLoaded', () => {
         customers = customers.filter(c => c.state !== 'remove');
     }
 
-    function customerLeavesAngry(c) {
+    function customerLeavesAngry(c) { // Same as previous version...
         if (!c || c.state === 'leaving' || c.state === 'remove') return; // Prevent multiple triggers
 
         console.log("Customer leaving angry:", c.id);
@@ -574,91 +594,127 @@ document.addEventListener('DOMContentLoaded', () => {
       function stopPlayerMovement() { if (animationFrameId) { cancelAnimationFrame(animationFrameId); animationFrameId = null; } isMoving = false; }
       function updatePlayerPosition() { const plyW = player.offsetWidth / 2 || 25; const plyH = player.offsetHeight / 2 || 35; const minX = plyW + 5; const maxX = restaurantArea.offsetWidth - plyW - 5; const minY = plyH + 5; const maxY = restaurantArea.offsetHeight - plyH - 5; playerPosition.x = Math.max(minX, Math.min(maxX, playerPosition.x)); playerPosition.y = Math.max(minY, Math.min(maxY, playerPosition.y)); player.style.transform = `translate(${playerPosition.x - plyW}px, ${playerPosition.y - plyH}px)`; deliveryRadius.style.left = `${playerPosition.x}px`; deliveryRadius.style.top = `${playerPosition.y}px`; }
 
-    // ... (scheduleNextCustomer - minor change) ...
+    // --- Customer Spawning Logic (ADDED LOGGING) ---
       function scheduleNextCustomer() {
-          if (!gameRunning || isPaused) return;
-          clearTimeout(customerSpawnTimeout);
+          if (!gameRunning || isPaused) {
+              // console.log("Customer scheduling stopped (game not running or paused).");
+              return; // Stop scheduling if game ended or paused
+          }
+          clearTimeout(customerSpawnTimeout); // Clear previous timeout
+
           const baseT = 6000; // Base spawn time (ms)
           const minT = 2500; // Minimum spawn time (ms)
           const reduc = (level - 1) * 350; // Reduction per level
           const delay = Math.max(minT, baseT - reduc);
           const randF = 0.8 + Math.random() * 0.4; // Random factor (80% to 120%)
-          customerSpawnTimeout = setTimeout(spawnCustomer, delay * randF);
+          const finalDelay = delay * randF;
+
+          // ***** DEBUG LOGGING *****
+          console.log(`Scheduling next customer with delay: ${Math.round(finalDelay)}ms`);
+
+          customerSpawnTimeout = setTimeout(spawnCustomer, finalDelay);
       }
 
       function spawnCustomer() {
-          if (!gameRunning || isPaused) return;
+          // ***** DEBUG LOGGING *****
+          console.log("Attempting to spawn customer...");
 
-          const currentTables = Array.from(diningArea.querySelectorAll('.table'));
-          const availT = currentTables.filter(t => !customers.some(c => c.tableElement.id === t.id && c.state !== 'leaving' && c.state !== 'remove'));
-
-          if (availT.length > 0) {
-              const tableElement = availT[Math.floor(Math.random() * availT.length)];
-              const seat = tableElement.querySelector('.seat');
-              if (!seat) {
-                  console.warn("Seat not found in available table:", tableElement.id);
-                  scheduleNextCustomer(); // Try again soon
-                  return;
-              }
-
-              const custEl = document.createElement('div');
-              custEl.className = 'customer';
-              custEl.textContent = customerEmojis[Math.floor(Math.random() * customerEmojis.length)];
-              custEl.style.opacity = '0'; // Start invisible for fade-in
-
-              const foods = Object.keys(foodItems);
-              const order = foods[Math.floor(Math.random() * foods.length)];
-              const foodData = foodItems[order];
-              const orderIcon = getFoodIcon(order); // Get image src or emoji
-
-              const bubble = document.createElement('div');
-              bubble.className = 'speech-bubble';
-              bubble.innerHTML = `
-                  <div class="dish-name">${order}</div>
-                  <div class="dish-price">$${foodData.price}</div>
-                  <div class="dish-emoji"></div> // Container for icon
-              `;
-              const dishEmojiContainer = bubble.querySelector('.dish-emoji');
-              dishEmojiContainer.appendChild(createIconElement(orderIcon, order)); // Add icon
-              bubble.style.opacity = '0'; // Start invisible
-
-              const moodIndicator = document.createElement('div');
-              moodIndicator.className = 'mood-indicator';
-              moodIndicator.textContent = moodEmojis.happy;
-
-              custEl.appendChild(moodIndicator);
-              custEl.appendChild(bubble);
-              seat.appendChild(custEl);
-
-              // Force reflow before adding class for transition
-              requestAnimationFrame(() => {
-                  custEl.style.opacity = '1';
-                  bubble.style.opacity = '1';
-              });
-
-              const customerId = `cust-${Date.now()}-${Math.random().toString(16).slice(2)}`;
-              const patienceTotal = Math.max(15, customerPatienceBase - (level - 1) * 2); // Decrease patience with levels
-
-              const newCustomer = {
-                  id: customerId,
-                  element: custEl,
-                  tableElement: tableElement, // Store the element itself
-                  order: order,
-                  orderPrice: foodData.price,
-                  spawnTime: Date.now(),
-                  patienceTotal: patienceTotal,
-                  patienceCurrent: patienceTotal,
-                  moodIndicator: moodIndicator,
-                  state: 'waiting' // Initial state
-              };
-
-              customers.push(newCustomer);
-              tableElement.classList.add('table-highlight'); // Highlight the occupied table
+          // Ensure game is still running and not paused before proceeding
+          if (!gameRunning || isPaused) {
+             console.log("Spawn aborted (game not running or paused).");
+             return; // Don't spawn or reschedule if game stopped/paused during timeout
           }
-          scheduleNextCustomer(); // Schedule the next one regardless
+
+          try { // Wrap in try...catch to prevent errors stopping the loop
+            const currentTables = Array.from(diningArea.querySelectorAll('.table'));
+            // Find tables that DON'T have an active customer (not leaving or removed)
+            const availT = currentTables.filter(t => !customers.some(c => c.tableElement.id === t.id && c.state !== 'leaving' && c.state !== 'remove'));
+
+            // ***** DEBUG LOGGING *****
+            console.log(`Found ${availT.length} available tables.`);
+
+            if (availT.length > 0) {
+                const tableElement = availT[Math.floor(Math.random() * availT.length)];
+                const seat = tableElement.querySelector('.seat');
+                if (!seat) {
+                    console.warn("Seat not found in available table:", tableElement.id);
+                    scheduleNextCustomer(); // Try again soon
+                    return;
+                }
+
+                const custEl = document.createElement('div');
+                custEl.className = 'customer';
+                custEl.textContent = customerEmojis[Math.floor(Math.random() * customerEmojis.length)];
+                custEl.style.opacity = '0'; // Start invisible for fade-in
+
+                const foods = Object.keys(foodItems);
+                const order = foods[Math.floor(Math.random() * foods.length)];
+                const foodData = foodItems[order];
+                const orderIcon = getFoodIcon(order); // Get image src or emoji
+
+                const bubble = document.createElement('div');
+                bubble.className = 'speech-bubble';
+                bubble.innerHTML = `
+                    <div class="dish-name">${order}</div>
+                    <div class="dish-price">$${foodData.price}</div>
+                    <div class="dish-emoji"></div> // Container for icon
+                `;
+                const dishEmojiContainer = bubble.querySelector('.dish-emoji');
+                dishEmojiContainer.appendChild(createIconElement(orderIcon, order)); // Add icon
+                bubble.style.opacity = '0'; // Start invisible
+
+                const moodIndicator = document.createElement('div');
+                moodIndicator.className = 'mood-indicator';
+                moodIndicator.textContent = moodEmojis.happy;
+
+                custEl.appendChild(moodIndicator);
+                custEl.appendChild(bubble);
+                seat.appendChild(custEl);
+
+                // Force reflow before adding class for transition
+                requestAnimationFrame(() => {
+                    custEl.style.opacity = '1';
+                    bubble.style.opacity = '1';
+                });
+
+                const customerId = `cust-${Date.now()}-${Math.random().toString(16).slice(2)}`;
+                const patienceTotal = Math.max(15, customerPatienceBase - (level - 1) * 2); // Decrease patience with levels
+
+                const newCustomer = {
+                    id: customerId,
+                    element: custEl,
+                    tableElement: tableElement, // Store the element itself
+                    order: order,
+                    orderPrice: foodData.price,
+                    spawnTime: Date.now(),
+                    patienceTotal: patienceTotal,
+                    patienceCurrent: patienceTotal,
+                    moodIndicator: moodIndicator,
+                    state: 'waiting' // Initial state
+                };
+
+                customers.push(newCustomer);
+                tableElement.classList.add('table-highlight'); // Highlight the occupied table
+
+                // ***** DEBUG LOGGING *****
+                console.log(`Spawned customer ${customerId} at table ${tableElement.id} ordering ${order}.`);
+
+            } else {
+                // ***** DEBUG LOGGING *****
+                console.log("No available tables found, scheduling next attempt.");
+            }
+
+          } catch (error) {
+              console.error("Error during spawnCustomer:", error);
+              // Still try to reschedule even if an error occurred
+          }
+
+          // ***** IMPORTANT: Schedule the *next* attempt *****
+          console.log("Scheduling next customer attempt from spawnCustomer.");
+          scheduleNextCustomer();
       }
 
-      function serveCustomer(cust) {
+      function serveCustomer(cust) { // Same as previous version...
           if (!cust || cust.state !== 'waiting') return;
 
           cust.state = 'served'; // Update state
@@ -718,7 +774,7 @@ document.addEventListener('DOMContentLoaded', () => {
           }, 1500); // Remove after fade out + thank you visible time
       }
 
-      function updateCustomerMood(cust) {
+      function updateCustomerMood(cust) { // Same as previous version...
           if (!cust.moodIndicator) return;
           const patienceRatio = Math.max(0, cust.patienceCurrent) / cust.patienceTotal;
           let mood = moodEmojis.happy;
@@ -730,7 +786,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
       function checkLevelUp() { /* Removed level up logic - handled by endGame now */ }
 
-      function clearCustomersAndIndicators() {
+      function clearCustomersAndIndicators() { // Same as previous version...
           customers.forEach(c => {
               if (c.element && c.element.parentNode) {
                   c.element.remove();
@@ -756,7 +812,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function getCategoryNameFromTabKey(tK) { /* ... as before ... */ }
 
     // ... (Keep initializeGameVisuals - sets initial player pos, hides modals, ensures no startBtn) ...
-    function initializeGameVisuals() {
+    function initializeGameVisuals() { // Same as previous version...
         // Wait for layout calculation if needed
         if (restaurantArea.offsetWidth > 0) {
             const plyH = player.offsetHeight / 2 || 35;
