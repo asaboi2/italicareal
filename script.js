@@ -671,7 +671,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 bubble.innerHTML = `
                     <div class="dish-name">${order}</div>
                     <div class="dish-price">$${foodData.price}</div>
-                    <div class="dish-emoji"></div> // Container for icon
+                    <div class="dish-emoji"></div>
                 `;
                 const dishEmojiContainer = bubble.querySelector('.dish-emoji');
                 dishEmojiContainer.appendChild(createIconElement(orderIcon, order)); // Add icon
