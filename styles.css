@@ -1,3 +1,4 @@
+/* <<< START OF UPDATED style.css >>> */
 /* RESET & BASE */
 * {
     margin: 0;
@@ -7,9 +8,9 @@
 
 body {
     font-family: 'Poppins', sans-serif;
-    background-color: #f5f0e8; /* Light parchment */
+    background-color: #f5f0e8;
     color: #333;
-    overflow: hidden; /* Prevent scrollbars on the body */
+    overflow: hidden;
     height: 100vh;
     width: 100vw;
 }
@@ -20,19 +21,19 @@ body {
     flex-direction: column;
     width: 100%;
     height: 100%;
-    background-color: #e0d8cd; /* Slightly darker background */
+    background-color: #e0d8cd;
 }
 
 /* ROW 1: HEADER */
 .header {
-    background-color: #8d1f1f; /* Deep red */
+    background-color: #8d1f1f;
     color: white;
     padding: 8px 20px;
     text-align: center;
-    border-bottom: 3px solid #5d4037; /* Dark brown border */
+    border-bottom: 3px solid #5d4037;
     z-index: 10;
-    flex-shrink: 0; /* Prevent header from shrinking */
-    height: auto; /* Adjust height based on content */
+    flex-shrink: 0;
+    height: auto;
 }
 
 .score-container {
@@ -50,756 +51,186 @@ body {
     font-weight: 600;
 }
 
-/* Hide the original controls div content - buttons are shown in modals now */
-.controls {
-    display: flex;
-    justify-content: center;
-    gap: 15px;
-    margin-top: 5px;
-    height: 0;
-    overflow: hidden;
-}
-
-/* Base Button Style (used in modals mostly) */
-button {
-    background-color: #4CAF50; /* Green */
-    color: white;
-    border: none;
-    padding: 7px 14px;
-    font-size: 13px;
-    cursor: pointer;
-    border-radius: 5px;
-    transition: background-color 0.3s, transform 0.1s;
-    font-weight: 600;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-}
-
-button:active {
-    transform: scale(0.98);
-}
-
-button:hover {
-    background-color: #45a049; /* Darker green */
-}
-
-/* Specific button colors (used in modals) */
-#next-level-btn { background-color: #4CAF50; }
-#next-level-btn:hover { background-color: #45a049; }
-#retry-level-btn { background-color: #f4a261; } /* Orange */
-#retry-level-btn:hover { background-color: #e76f51; } /* Darker orange */
-#play-again-btn { background-color: #5bc0de; } /* Blue */
-#play-again-btn:hover { background-color: #31b0d5; } /* Darker blue */
-#close-menu-btn { background-color: #d9534f; margin-top: 15px; } /* Red */
-#close-menu-btn:hover { background-color: #c9302c; } /* Darker red */
+.controls { display: flex; justify-content: center; gap: 15px; margin-top: 5px; height: 0; overflow: hidden; }
+button { background-color: #4CAF50; color: white; border: none; padding: 7px 14px; font-size: 13px; cursor: pointer; border-radius: 5px; transition: background-color 0.3s, transform 0.1s; font-weight: 600; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
+button:active { transform: scale(0.98); } button:hover { background-color: #45a049; }
+#next-level-btn { background-color: #4CAF50; } #next-level-btn:hover { background-color: #45a049; }
+#retry-level-btn { background-color: #f4a261; } #retry-level-btn:hover { background-color: #e76f51; }
+#play-again-btn { background-color: #5bc0de; } #play-again-btn:hover { background-color: #31b0d5; }
+#close-menu-btn { background-color: #d9534f; margin-top: 15px;} #close-menu-btn:hover { background-color: #c9302c; }
 
 /* ROW 2: RESTAURANT (GAME AREA) */
 .restaurant {
-    flex-grow: 1; /* Take remaining vertical space */
-    position: relative; /* For absolute positioning of children */
+    flex-grow: 1;
+    position: relative;
     background: url('assets/backdrop.png') top center no-repeat;
     margin: auto;
-    overflow: hidden; /* Hide anything that goes outside */
-    background-size: contain; /* Scale background image within container */
+    overflow: hidden;
+    background-size: contain; /* Changed back from cover for potential aspect ratio reasons */
     width: 100%;
-    border-bottom: 5px solid #5d4037; /* Dark brown bottom border */
-    min-height: 200px; /* Ensure minimum height */
+    border-bottom: 5px solid #5d4037;
+    min-height: 200px;
 }
 
 /* --- Elements within Restaurant --- */
-.debug-info {
-    position: absolute;
-    top: 5px;
-    right: 5px;
-    background: rgba(0,0,0,0.75);
-    color: #0f0; /* Bright green */
-    padding: 5px 8px;
-    font-size: 11px;
-    font-family: 'Courier New', Courier, monospace;
-    border-radius: 4px;
-    z-index: 101; /* Above most things */
-    opacity: 0.9;
-}
+.debug-info { position: absolute; top: 5px; right: 5px; background: rgba(0,0,0,0.75); color: #0f0; padding: 5px 8px; font-size: 11px; font-family: 'Courier New', Courier, monospace; border-radius: 4px; z-index: 101; opacity: 0.9; }
+.debug-info.hidden { display: none; }
+.dining-area { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; }
 
-.debug-info.hidden {
-    display: none;
-}
-
-.dining-area {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: 1; /* Base layer for tables/customers */
-}
-
-/* --- Dynamic Table Styles --- */
+/* --- Dynamic Table Styles (Reverted) --- */
 .table {
-    position: absolute; /* Positioned based on JS */
-    width: 70px; /* Slightly larger table */
-    height: 70px;
-    background-color: #8B4513; /* Saddle brown */
-    border: 3px solid #5d4037; /* Dark brown */
-    border-radius: 6px;
-    display: flex; /* Using flexbox for seats might conflict, removing */
+    position: absolute;
+    width: 60px; /* Back to original size */
+    height: 60px;
+    background-color: #8B4513;
+    border: 3px solid #5d4037;
+    border-radius: 4px;
+    /* display: flex; */ /* Removed flex */
     /* justify-content: center; */
     /* align-items: center; */
     cursor: pointer;
     z-index: 2;
-    /* Added relative positioning for absolute seats */
-    position: relative;
+    position: relative; /* Keep for seat positioning */
 }
 
-/* --- Seat Styles --- */
+/* --- Seat Style (Simplified) --- */
 .seat {
-    position: absolute; /* Position seats relative to the table */
-    width: 90%;    /* Seat takes up most of the table width */
-    height: 45%;   /* Seat takes up slightly less than half the height */
-    left: 5%;      /* Center horizontally */
-    /* background-color: rgba(0, 0, 255, 0.1); */ /* Optional: Visual debug */
-    /* border: 1px dashed rgba(0,0,0,0.2); */   /* Optional: Visual debug */
-    border-radius: 4px;
-    /* Added relative positioning for absolute customer */
-    position: relative; /* Customer will be positioned inside this */
+    width: 100%; /* Seat fills the table */
+    height: 100%;
+    position: relative; /* Customer positioned within this */
+    display: flex; /* Use flex to help center customer */
+    justify-content: center;
+    align-items: center;
 }
 
-.seat-1 {
-    top: 3%; /* Position seat 1 near the top */
-}
-
-.seat-2 {
-    bottom: 3%; /* Position seat 2 near the bottom */
-}
+/* <<< REVERT: REMOVED .seat-1, .seat-2 specific rules >>> */
 
 /* --- Player Style --- */
-.player {
-    position: absolute;
-    display: flex; /* Use flex for internal alignment if needed */
-    flex-direction: column;
-    align-items: center;
-    transition: transform 0.1s linear; /* Smooth movement */
-    z-index: 10; /* Above tables/customers */
-    user-select: none; /* Prevent text selection */
-    pointer-events: none; /* Clicks go through player */
-    /* --- Player dimensions (Adjust to match your image/visuals) --- */
-    width: 80px;
-    height: 100px;
-    opacity: 0; /* Start hidden, fade in via JS */
-    overflow: visible; /* Allow carrying icon to show above */
-}
-
-.player-image {
-    width: 100%;
-    height: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    filter: drop-shadow(0 2px 3px rgba(0,0,0,0.3)); /* Soft shadow */
-}
-
-.player-image img {
-    display: block;
-    width: 100%;
-    height: 100%;
-    object-fit: contain; /* Scale image nicely */
-}
+.player { position: absolute; display: flex; flex-direction: column; align-items: center; transition: transform 0.1s linear; z-index: 10; user-select: none; pointer-events: none; width: 80px; height: 100px; opacity: 0; overflow: visible; }
+.player-image { width: 100%; height: 100%; display: flex; justify-content: center; align-items: center; filter: drop-shadow(0 2px 3px rgba(0,0,0,0.3)); }
+.player-image img { display: block; width: 100%; height: 100%; object-fit: contain; }
 
 /* --- Player Carrying Food Indicator --- */
-.carrying {
-    position: absolute;
-    top: -15px; /* Position above the player image */
-    left: 50%;
-    transform: translateX(-50%); /* Center horizontally */
-    font-size: 30px; /* Base size for emoji fallback */
-    height: 38px;
-    width: 38px;
-    background-color: rgba(255,255,255,0.8); /* Semi-transparent white */
-    border-radius: 50%; /* Circle */
-    padding: 1px;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.2);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 11; /* Above player */
-}
-
-.carrying img {
-    max-width: 100%;
-    max-height: 100%;
-    object-fit: contain; /* Scale image within circle */
-}
+.carrying { position: absolute; top: -15px; left: 50%; transform: translateX(-50%); font-size: 30px; height: 38px; width: 38px; background-color: rgba(255,255,255,0.8); border-radius: 50%; padding: 1px; box-shadow: 0 1px 3px rgba(0,0,0,0.2); display: flex; justify-content: center; align-items: center; z-index: 11; }
+.carrying img { max-width: 100%; max-height: 100%; object-fit: contain; }
 
 /* --- Player Delivery Radius --- */
-.delivery-radius {
-    position: absolute;
-    width: 80px; /* Size of the radius */
-    height: 80px;
-    border-radius: 50%;
-    border: 2px dashed rgba(0,0,0,0.3);
-    transform: translate(-50%, -50%); /* Center on player's position */
-    pointer-events: none;
-    opacity: 0; /* Hidden by default */
-    transition: opacity 0.3s;
-    z-index: 9; /* Below player but above tables */
-}
+.delivery-radius { position: absolute; width: 80px; height: 80px; border-radius: 50%; border: 2px dashed rgba(0,0,0,0.3); transform: translate(-50%, -50%); pointer-events: none; opacity: 0; transition: opacity 0.3s; z-index: 9; }
+.delivery-radius.active { opacity: 0.5; }
 
-.delivery-radius.active {
-    opacity: 0.5; /* Visible when carrying food */
-}
-
-/* --- Customer Styles --- */
+/* --- Customer Styles (Positioned within .seat) --- */
 .customer {
-    position: absolute; /* Positioned relative to the PARENT (.seat) */
-    top: 50%;          /* Center vertically */
-    left: 50%;         /* Center horizontally */
-    transform: translate(-50%, -50%); /* Fine-tune centering */
-    font-size: 30px;   /* Adjust emoji size */
-    z-index: 5;        /* Above seat, below player */
+    position: absolute; /* Position relative to parent (.seat) */
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%); /* Center in seat */
+    font-size: 30px;
+    z-index: 5;
     cursor: pointer;
-    transition: transform 0.3s ease, opacity 0.5s ease; /* Smooth animations */
-    /* transform: translateY(0); REMOVED - Use translate for centering */
-    opacity: 0; /* Start invisible, fade in via JS */
-    width: 100%; /* Take full width of seat */
-    height: 100%; /* Take full height of seat */
-    display: flex; /* Center content if needed (like emoji) */
-    justify-content: center;
-    align-items: center;
+    transition: transform 0.3s ease, opacity 0.5s ease;
+    opacity: 0;
+    /* width: 100%; */ /* No longer need 100% width/height */
+    /* height: 100%; */
+    /* display: flex; */ /* Flex is now on .seat */
+    /* justify-content: center; */
+    /* align-items: center; */
 }
 
 .speech-bubble {
     position: absolute;
     background-color: rgba(255,255,255,0.9);
-    border: 2px solid #5d4037; /* Dark brown border */
+    border: 2px solid #5d4037;
     border-radius: 10px;
     padding: 6px 8px;
     font-size: 11px;
-    top: -65px; /* Adjust position relative to customer (was -100px) */
+    /* Adjust vertical position relative to customer */
+    bottom: 110%; /* Position above customer */
     left: 50%;
-    transform: translateX(-50%); /* Center bubble */
-    width: 100px; /* Smaller bubble */
-    min-height: 55px; /* Ensure space for content */
-    z-index: 6; /* Above customer */
+    transform: translateX(-50%);
+    width: 100px;
+    min-height: 55px;
+    z-index: 6;
     text-align: center;
     box-shadow: 0 2px 5px rgba(0,0,0,0.15);
-    opacity: 0; /* Fade in via JS */
-    transition: opacity 0.3s ease 0.2s; /* Delayed fade-in */
-    display: flex; /* Use flex for better internal layout */
+    opacity: 0;
+    transition: opacity 0.3s ease 0.2s;
+    display: flex;
     flex-direction: column;
     justify-content: center;
 }
 
-/* Speech bubble tail */
-.speech-bubble::after {
-    content: '';
-    position: absolute;
-    bottom: -10px; /* Position below bubble */
-    left: 50%;
-    transform: translateX(-50%);
-    border-width: 10px 8px 0; /* Triangle pointing down */
-    border-style: solid;
-    border-top-color: #5d4037; /* Outer tail color (border) */
-    border-left-color: transparent;
-    border-right-color: transparent;
-}
-
-/* Inner part of speech bubble tail (covers border) */
-.speech-bubble::before {
-    content: '';
-    position: absolute;
-    bottom: -7px; /* Position slightly above outer tail */
-    left: 50%;
-    transform: translateX(-50%);
-    border-width: 7px 6px 0; /* Smaller triangle */
-    border-style: solid;
-    border-color: rgba(255,255,255,0.9) transparent transparent transparent; /* Inner tail color (background) */
-    z-index: 1; /* Above ::after */
-}
-
-.dish-name {
-    font-weight: 600;
-    font-size: 10px;
-    color: #333;
-    margin-bottom: 2px;
-}
-
-.dish-price {
-    font-size: 10px;
-    color: #8d1f1f; /* Red price */
-    font-weight: 600;
-}
-
-.dish-emoji {
-    font-size: 18px; /* Base size for emoji fallback */
-    margin-top: 2px;
-    height: 25px; /* Container height */
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-.dish-emoji img {
-    max-height: 100%;
-    max-width: 100%;
-    object-fit: contain; /* Scale image within container */
-}
+.speech-bubble::after { content: ''; position: absolute; bottom: -10px; left: 50%; transform: translateX(-50%); border-width: 10px 8px 0; border-style: solid; border-top-color: #5d4037; border-left-color: transparent; border-right-color: transparent; }
+.speech-bubble::before { content: ''; position: absolute; bottom: -7px; left: 50%; transform: translateX(-50%); border-width: 7px 6px 0; border-style: solid; border-color: rgba(255,255,255,0.9) transparent transparent transparent; z-index: 1; }
+.dish-name { font-weight: 600; font-size: 10px; color: #333; margin-bottom: 2px; }
+.dish-price { font-size: 10px; color: #8d1f1f; font-weight: 600; }
+.dish-emoji { font-size: 18px; margin-top: 2px; height: 25px; display: flex; justify-content: center; align-items: center; }
+.dish-emoji img { max-height: 100%; max-width: 100%; object-fit: contain; }
 
 .mood-indicator {
     position: absolute;
-    top: -10px; /* Position relative to customer */
+    top: -10px; /* Relative to customer element */
     right: -10px;
     font-size: 18px;
-    z-index: 7; /* Above customer/bubble */
+    z-index: 7;
 }
 
 /* --- Delivery Station / Pass --- */
-.delivery-station {
-    position: absolute;
-    bottom: 10px;
-    left: 10px;
-    width: 300px; /* Width of the pass area */
-    height: 60px; /* Height of the pass area */
-    background-color: rgba(161, 136, 127, 0.8); /* Tan color */
-    border: 3px solid #5d4037; /* Dark brown border */
-    border-radius: 8px;
-    padding: 5px;
-    display: flex; /* Align items horizontally */
-    align-items: center; /* Center items vertically */
-    gap: 8px; /* Space between food items */
-    overflow-x: auto; /* Allow horizontal scrolling if needed */
-    overflow-y: hidden;
-    z-index: 4; /* Above dining area, below player */
-}
-
-/* "PASS" label */
-.delivery-station-label {
-    position: absolute; /* Position relative to delivery-station */
-    top: -20px; /* Place above the pass */
-    left: 5px;
-    font-size: 12px;
-    font-weight: 600;
-    color: #5d4037;
-    background-color: rgba(215, 204, 200, 0.9); /* Light background */
-    padding: 1px 5px;
-    border-radius: 4px 4px 0 0; /* Rounded top corners */
-}
-
-.ready-food-item {
-    width: 40px; /* Size of food item icon */
-    height: 40px;
-    font-size: 28px; /* Base size for emoji fallback */
-    background-color: #fff;
-    border: 2px solid #4CAF50; /* Green border for ready */
-    border-radius: 5px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    cursor: pointer;
-    flex-shrink: 0; /* Prevent items from shrinking */
-    box-shadow: 0 0 8px rgba(76, 175, 80, 0.6); /* Green glow */
-    transition: transform 0.2s ease;
-    overflow: hidden; /* Ensure image stays within border */
-}
-
-.ready-food-item:hover {
-    transform: scale(1.1); /* Grow slightly on hover */
-}
-
-.ready-food-item img {
-    max-width: 90%;
-    max-height: 90%;
-    object-fit: contain; /* Scale image inside item */
-}
+.delivery-station { position: absolute; bottom: 10px; left: 10px; width: 300px; height: 60px; background-color: rgba(161, 136, 127, 0.8); border: 3px solid #5d4037; border-radius: 8px; padding: 5px; display: flex; align-items: center; gap: 8px; overflow-x: auto; overflow-y: hidden; z-index: 4; }
+.delivery-station-label { position: absolute; top: -20px; left: 5px; font-size: 12px; font-weight: 600; color: #5d4037; background-color: rgba(215, 204, 200, 0.9); padding: 1px 5px; border-radius: 4px 4px 0 0; }
+.ready-food-item { width: 40px; height: 40px; font-size: 28px; background-color: #fff; border: 2px solid #4CAF50; border-radius: 5px; display: flex; justify-content: center; align-items: center; cursor: pointer; flex-shrink: 0; box-shadow: 0 0 8px rgba(76, 175, 80, 0.6); transition: transform 0.2s ease; overflow: hidden; }
+.ready-food-item:hover { transform: scale(1.1); }
+.ready-food-item img { max-width: 90%; max-height: 90%; object-fit: contain; }
 
 /* --- Trash Can --- */
-.trash-can {
-    position: absolute;
-    bottom: 10px;
-    left: 325px; /* Position next to the delivery pass */
-    width: 50px; /* Size */
-    height: 50px;
-    font-size: 35px; /* Size of the trash emoji */
-    background-color: rgba(100, 100, 100, 0.7); /* Grey background */
-    border: 2px solid #333; /* Dark border */
-    border-radius: 50%; /* Circle */
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    cursor: pointer;
-    z-index: 4; /* Same level as pass */
-    transition: transform 0.2s, background-color 0.2s;
-}
-
-.trash-can:hover {
-    transform: scale(1.1); /* Grow slightly */
-    background-color: rgba(150, 100, 100, 0.8); /* Hint of red on hover */
-}
+.trash-can { position: absolute; bottom: 10px; left: 325px; width: 50px; height: 50px; font-size: 35px; background-color: rgba(100, 100, 100, 0.7); border: 2px solid #333; border-radius: 50%; display: flex; justify-content: center; align-items: center; cursor: pointer; z-index: 4; transition: transform 0.2s, background-color 0.2s; }
+.trash-can:hover { transform: scale(1.1); background-color: rgba(150, 100, 100, 0.8); }
 
 /* ROW 3: KITCHEN */
-.kitchen-row {
-    background-color: #d7ccc8; /* Light grey-brown */
-    padding: 10px;
-    flex-shrink: 0; /* Prevent kitchen from shrinking */
-    height: 160px; /* Fixed height */
-    display: flex;
-    overflow-x: auto; /* Allow horizontal scrolling for stations */
-    overflow-y: hidden;
-    gap: 15px; /* Space between prep areas */
-    align-items: stretch; /* Make prep areas same height */
-    border-top: 5px solid #8d1f1f; /* Red top border */
-    flex-wrap: nowrap; /* Prevent wrapping */
-    width: 100%;
-}
-
-.food-prep-area {
-    background-color: rgba(255,255,255,0.75); /* Semi-transparent white */
-    border-radius: 8px;
-    padding: 8px 10px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    display: flex;
-    flex-direction: column; /* Stack title and stations */
-    align-items: center;
-    flex-shrink: 0; /* Prevent area from shrinking */
-    width: auto; /* Width based on content */
-    min-width: 90px; /* Minimum width */
-    text-align: center;
-}
-
-.food-prep-area h3 {
-    font-size: 13px;
-    color: #5d4037; /* Dark brown title */
-    margin-bottom: 8px;
-    text-align: center;
-    width: 100%;
-    flex-shrink: 0;
-}
-
-.stations-wrapper {
-    display: flex;
-    flex-wrap: nowrap; /* Keep stations in a row */
-    gap: 8px; /* Space between stations within an area */
-    justify-content: flex-start; /* Align stations to the left */
-    width: 100%;
-    overflow-x: hidden; /* Hide internal scrollbar */
-}
-
-.food-station-container {
-    display: flex;
-    flex-direction: column; /* Stack station and label */
-    align-items: center;
-    width: 65px; /* Container width */
-    text-align: center;
-    flex-shrink: 0;
-}
-
-.food-station {
-    width: 45px; /* Station icon size */
-    height: 45px;
-    background-color: #fff;
-    border: 2px solid #a1887f; /* Muted brown border */
-    border-radius: 5px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-size: 24px; /* Base size for emoji fallback */
-    cursor: pointer;
-    transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
-    margin-bottom: 3px; /* Space between station and label */
-    position: relative; /* For progress bar */
-    overflow: hidden; /* Clip progress bar */
-}
-
-.food-station img {
-    max-width: 90%;
-    max-height: 90%;
-    object-fit: contain; /* Scale image inside station */
-}
-
-.food-station:hover {
-    transform: scale(1.1); /* Grow on hover */
-    box-shadow: 0 0 10px rgba(0,0,0,0.2);
-    border-color: #5d4037; /* Darker border on hover */
-}
-
-.station-label {
-    font-size: 11px;
-    color: #333;
-    line-height: 1.2;
-    height: 2.4em; /* Allow for two lines */
-    overflow: hidden;
-    word-wrap: break-word; /* Should not be needed with fixed width */
-}
+.kitchen-row { background-color: #d7ccc8; padding: 10px; flex-shrink: 0; height: 160px; display: flex; overflow-x: auto; overflow-y: hidden; gap: 15px; align-items: stretch; border-top: 5px solid #8d1f1f; flex-wrap: nowrap; width: 100%; }
+.food-prep-area { background-color: rgba(255,255,255,0.75); border-radius: 8px; padding: 8px 10px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); display: flex; flex-direction: column; align-items: center; flex-shrink: 0; width: auto; min-width: 90px; text-align: center; }
+.food-prep-area h3 { font-size: 13px; color: #5d4037; margin-bottom: 8px; text-align: center; width: 100%; flex-shrink: 0; }
+.stations-wrapper { display: flex; flex-wrap: nowrap; gap: 8px; justify-content: flex-start; width: 100%; overflow-x: hidden; }
+.food-station-container { display: flex; flex-direction: column; align-items: center; width: 65px; text-align: center; flex-shrink: 0; }
+.food-station { width: 45px; height: 45px; background-color: #fff; border: 2px solid #a1887f; border-radius: 5px; display: flex; justify-content: center; align-items: center; font-size: 24px; cursor: pointer; transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s; margin-bottom: 3px; position: relative; overflow: hidden; }
+.food-station img { max-width: 90%; max-height: 90%; object-fit: contain; }
+.food-station:hover { transform: scale(1.1); box-shadow: 0 0 10px rgba(0,0,0,0.2); border-color: #5d4037; }
+.station-label { font-size: 11px; color: #333; line-height: 1.2; height: 2.4em; overflow: hidden; word-wrap: break-word; }
 
 /* Preparation Progress & State */
-.prep-progress-bar {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    height: 5px; /* Thickness of progress bar */
-    background-color: rgba(0, 0, 0, 0.2); /* Default bar background */
-    z-index: 1;
-    transform: scaleX(0); /* Start hidden */
-    transform-origin: left; /* Grow from the left */
-    transition: background-color 0.2s; /* Smooth color change */
-}
-
-.food-station.preparing .prep-progress-bar {
-    /* Style applied by JS during animation */
-    /* background-color: #ffcc00; */ /* Yellow during progress */
-}
-
-.preparing {
-    /* Applied to food-station when prepping */
-    animation: preparing-pulse 0.6s infinite alternate ease-in-out;
-    cursor: not-allowed !important; /* Indicate non-interactive */
-}
-
-@keyframes preparing-pulse {
-    from {
-        transform: scale(1);
-        box-shadow: 0 0 5px rgba(255, 204, 0, 0.5);
-        border-color: #ffcc00; /* Yellow border */
-    }
-    to {
-        transform: scale(1.05); /* Slightly smaller pulse */
-        box-shadow: 0 0 15px rgba(255, 204, 0, 1); /* More intense glow */
-        border-color: #ffaa00; /* Darker yellow border */
-    }
-}
+.prep-progress-bar { position: absolute; bottom: 0; left: 0; width: 100%; height: 5px; background-color: rgba(0, 0, 0, 0.2); z-index: 1; transform: scaleX(0); transform-origin: left; transition: background-color 0.2s; }
+.food-station.preparing .prep-progress-bar { /* Style applied by JS */ }
+.preparing { animation: preparing-pulse 0.6s infinite alternate ease-in-out; cursor: not-allowed !important; }
+@keyframes preparing-pulse { from { transform: scale(1); box-shadow: 0 0 5px rgba(255, 204, 0, 0.5); border-color: #ffcc00; } to { transform: scale(1.05); box-shadow: 0 0 15px rgba(255, 204, 0, 1); border-color: #ffaa00; } }
 
 /* MODALS, FEEDBACK, HIGHLIGHT */
-.modal {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0,0,0,0.6); /* Dark overlay */
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 100; /* High z-index */
-    opacity: 0;
-    visibility: hidden;
-    transition: opacity 0.3s ease, visibility 0s linear 0.3s;
-}
+.modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.6); display: flex; justify-content: center; align-items: center; z-index: 100; opacity: 0; visibility: hidden; transition: opacity 0.3s ease, visibility 0s linear 0.3s; }
+.modal:not(.hidden) { opacity: 1; visibility: visible; transition: opacity 0.3s ease, visibility 0s linear 0s; }
+.modal.hidden { display: flex; opacity: 0; visibility: hidden; pointer-events: none; }
+.modal-content { background-color: #fff; padding: 25px 30px; border-radius: 10px; text-align: center; box-shadow: 0 5px 15px rgba(0,0,0,0.3); max-width: 90%; width: 500px; transform: scale(0.9); transition: transform 0.3s ease; position: relative; z-index: 101; }
+.modal:not(.hidden) .modal-content { transform: scale(1); }
+.modal-content h2 { margin-bottom: 15px; color: #8d1f1f; }
+.modal-content p { margin-bottom: 20px; font-size: 16px; color: #555; }
+.modal-buttons { margin-top: 20px; }
+.modal-buttons button { margin: 5px; }
+.modal-buttons button.hidden { display: none; }
 
-/* Make modal visible when not hidden */
-.modal:not(.hidden) {
-    opacity: 1;
-    visibility: visible;
-    transition: opacity 0.3s ease, visibility 0s linear 0s;
-}
+.menu-content { width: 800px; max-width: 95%; max-height: 85vh; overflow-y: auto; text-align: left; }
+.menu-content::-webkit-scrollbar { width: 8px; } .menu-content::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 4px; } .menu-content::-webkit-scrollbar-thumb { background: #a1887f; border-radius: 4px; } .menu-content::-webkit-scrollbar-thumb:hover { background: #8d6e63; }
+.menu-tabs { display: flex; justify-content: center; gap: 10px; margin: 15px 0 25px 0; flex-wrap: wrap; }
+.tab-btn { background-color: #f1f1f1; color: #555; border: 1px solid #ddd; padding: 8px 12px; border-radius: 5px; cursor: pointer; font-size: 13px; font-weight: 500; transition: background-color 0.3s, color 0.3s; } .tab-btn:hover { background-color: #e0e0e0; } .tab-btn.active { background-color: #8d1f1f; color: white; border-color: #8d1f1f; }
+.menu-sections { margin-top: 10px; } .menu-section { display: none; padding: 0 15px; animation: fadeIn 0.4s ease; } .menu-section.active { display: block; } @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+.menu-section h4 { margin-top: 20px; margin-bottom: 10px; color: #5d4037; font-size: 16px; font-weight: 600; border-bottom: 1px solid #eee; padding-bottom: 5px; } .menu-section h4:first-child { margin-top: 0; }
+.menu-item { margin-bottom: 15px; padding-bottom: 15px; border-bottom: 1px dotted #ddd; } .menu-item:last-child { border-bottom: none; }
+.menu-item h5 { color: #8d1f1f; margin-bottom: 5px; font-size: 14px; font-weight: 600; } .menu-item p { color: #666; font-size: 12px; line-height: 1.4; }
 
-/* Ensure hidden modal is truly hidden */
-.modal.hidden {
-    display: flex; /* Keep flex for alignment during transition if needed */
-    opacity: 0;
-    visibility: hidden;
-    pointer-events: none; /* Prevent interaction when hidden */
-}
+.event-options-container { display: flex; flex-direction: column; gap: 10px; margin-top: 15px; } .event-options-container button { width: 80%; margin: 0 auto; }
 
-.modal-content {
-    background-color: #fff;
-    padding: 25px 30px;
-    border-radius: 10px;
-    text-align: center;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-    max-width: 90%; /* Max width relative to viewport */
-    width: 500px; /* Default width */
-    transform: scale(0.9); /* Start slightly small */
-    transition: transform 0.3s ease;
-    position: relative; /* Ensure content is above overlay */
-    z-index: 101;
-}
+.money-indicator, .feedback-indicator { position: absolute; left: 50%; top: 50%; transform: translateX(-50%); font-size: 16px; color: gold; font-weight: bold; animation: float-up-fade 1.8s forwards ease-out; z-index: 20; text-shadow: 1px 1px 2px rgba(0,0,0,0.5); pointer-events: none; text-align: center; line-height: 1.2; padding: 2px 5px; background-color: rgba(0,0,0,0.3); border-radius: 4px; }
+.feedback-indicator.negative { color: #e74c3c; background-color: rgba(150, 0, 0, 0.3); }
+.feedback-indicator.positive { color: #2ecc71; background-color: rgba(0, 100, 0, 0.3); }
+@keyframes float-up-fade { from { opacity: 1; transform: translate(-50%, 0); } to { opacity: 0; transform: translate(-50%, -60px); } }
 
-/* Scale up modal content when modal is visible */
-.modal:not(.hidden) .modal-content {
-    transform: scale(1);
-}
-
-.modal-content h2 {
-    margin-bottom: 15px;
-    color: #8d1f1f; /* Red title */
-}
-
-.modal-content p {
-    margin-bottom: 20px;
-    font-size: 16px;
-    color: #555; /* Dark grey text */
-}
-
-/* Container for modal action buttons */
-.modal-buttons {
-    margin-top: 20px; /* Space above buttons */
-}
-.modal-buttons button {
-    margin: 5px; /* Space around buttons */
-}
-
-/* Hide buttons with .hidden class */
-.modal-buttons button.hidden {
-    display: none;
-}
-
-/* --- Menu Modal Specific Styles --- */
-.menu-content {
-    width: 800px; /* Wider menu */
-    max-width: 95%;
-    max-height: 85vh; /* Limit height, enable scroll */
-    overflow-y: auto; /* Allow vertical scroll */
-    text-align: left; /* Align menu content left */
-}
-
-/* Custom scrollbar for menu */
-.menu-content::-webkit-scrollbar { width: 8px; }
-.menu-content::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 4px; }
-.menu-content::-webkit-scrollbar-thumb { background: #a1887f; border-radius: 4px; }
-.menu-content::-webkit-scrollbar-thumb:hover { background: #8d6e63; }
-
-.menu-tabs {
-    display: flex;
-    justify-content: center;
-    gap: 10px;
-    margin: 15px 0 25px 0;
-    flex-wrap: wrap; /* Allow tabs to wrap on small screens */
-}
-
-.tab-btn {
-    background-color: #f1f1f1; /* Light grey inactive tab */
-    color: #555;
-    border: 1px solid #ddd;
-    padding: 8px 12px;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 13px;
-    font-weight: 500;
-    transition: background-color 0.3s, color 0.3s;
-}
-
-.tab-btn:hover {
-    background-color: #e0e0e0;
-}
-
-.tab-btn.active {
-    background-color: #8d1f1f; /* Red active tab */
-    color: white;
-    border-color: #8d1f1f;
-}
-
-.menu-sections {
-    margin-top: 10px;
-}
-
-.menu-section {
-    display: none; /* Hide inactive sections */
-    padding: 0 15px; /* Padding inside section */
-    animation: fadeIn 0.4s ease; /* Fade in animation */
-}
-
-.menu-section.active {
-    display: block; /* Show active section */
-}
-
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(10px); }
-    to { opacity: 1; transform: translateY(0); }
-}
-
-.menu-section h4 { /* Category titles (Appetizers, Pasta, etc.) */
-    margin-top: 20px;
-    margin-bottom: 10px;
-    color: #5d4037; /* Dark brown */
-    font-size: 16px;
-    font-weight: 600;
-    border-bottom: 1px solid #eee;
-    padding-bottom: 5px;
-}
-
-.menu-section h4:first-child {
-    margin-top: 0; /* Remove top margin for first category */
-}
-
-.menu-item {
-    margin-bottom: 15px;
-    padding-bottom: 15px;
-    border-bottom: 1px dotted #ddd; /* Separator */
-}
-
-.menu-item:last-child {
-    border-bottom: none; /* No border for last item */
-}
-
-.menu-item h5 { /* Food item name */
-    color: #8d1f1f; /* Red */
-    margin-bottom: 5px;
-    font-size: 14px;
-    font-weight: 600;
-}
-
-.menu-item p { /* Food item description (if added) */
-    color: #666;
-    font-size: 12px;
-    line-height: 1.4;
-}
-
-/* --- Event Modal Specific Styles --- */
-.event-options-container {
-    display: flex;
-    flex-direction: column; /* Stack buttons vertically */
-    gap: 10px; /* Space between buttons */
-    margin-top: 15px;
-}
-
-.event-options-container button {
-    width: 80%; /* Make buttons narrower */
-    margin: 0 auto; /* Center buttons */
-}
-
-/* --- Floating Feedback Indicators --- */
-.money-indicator,
-.feedback-indicator {
-    position: absolute; /* Position relative to restaurant */
-    left: 50%; /* Start centered horizontally */
-    top: 50%; /* Start centered vertically */
-    transform: translateX(-50%); /* Fine-tune horizontal center */
-    font-size: 16px;
-    color: gold; /* Default color (e.g., for money gain) */
-    font-weight: bold;
-    animation: float-up-fade 1.8s forwards ease-out; /* Animation */
-    z-index: 20; /* Above most elements */
-    text-shadow: 1px 1px 2px rgba(0,0,0,0.5); /* Text shadow for readability */
-    pointer-events: none; /* Click through */
-    text-align: center;
-    line-height: 1.2; /* Adjust line height for multi-line text */
-    padding: 2px 5px; /* Small padding */
-    background-color: rgba(0,0,0,0.3); /* Slight background */
-    border-radius: 4px;
-}
-
-.feedback-indicator.negative {
-    color: #e74c3c; /* Red for negative feedback */
-    background-color: rgba(150, 0, 0, 0.3);
-}
-
-.feedback-indicator.positive {
-    color: #2ecc71; /* Green for positive feedback */
-    background-color: rgba(0, 100, 0, 0.3);
-}
-/* Default feedback type (info) uses the base style */
-
-@keyframes float-up-fade {
-    from {
-        opacity: 1;
-        transform: translate(-50%, 0); /* Start at original Y */
-    }
-    to {
-        opacity: 0;
-        transform: translate(-50%, -60px); /* Float up 60px */
-    }
-}
-
-/* --- Table Highlighting and Warnings --- */
+/* --- Table Highlighting (Applied to single seat) --- */
 /* Base highlight using pseudo-element on the SEAT */
 .table-highlight .seat::before {
     content: '';
@@ -810,29 +241,22 @@ button:hover {
     left: 50%;
     transform: translate(-50%, -50%); /* Center on seat */
     border: 3px solid gold;
-    border-radius: 8px; /* Slightly rounded corners */
-    box-shadow: 0 0 15px 5px gold; /* Gold glow */
+    border-radius: 8px;
+    box-shadow: 0 0 15px 5px gold;
     animation: pulse 1.2s infinite ease-in-out;
-    z-index: -1; /* Place behind the customer */
+    z-index: -1; /* Behind customer */
     pointer-events: none;
 }
 
 /* Warning style when leaving soon */
 .table-leaving-soon .seat::before {
-    border-color: red !important; /* Override to red border */
-    box-shadow: 0 0 20px 8px red !important; /* Override to red glow */
-    animation: flash-red 0.5s infinite alternate !important; /* Faster flashing animation */
+    border-color: red !important;
+    box-shadow: 0 0 20px 8px red !important;
+    animation: flash-red 0.5s infinite alternate !important;
 }
 
 /* Highlight animations */
-@keyframes pulse {
-    0% { box-shadow: 0 0 10px 3px gold; opacity: 0.7; }
-    50% { box-shadow: 0 0 20px 6px gold; opacity: 1; }
-    100% { box-shadow: 0 0 10px 3px gold; opacity: 0.7; }
-}
-
-@keyframes flash-red {
-    from { opacity: 1; box-shadow: 0 0 20px 8px red; }
-    to { opacity: 0.4; box-shadow: 0 0 10px 4px darkred; }
-}
+@keyframes pulse { 0% { box-shadow: 0 0 10px 3px gold; opacity: 0.7; } 50% { box-shadow: 0 0 20px 6px gold; opacity: 1; } 100% { box-shadow: 0 0 10px 3px gold; opacity: 0.7; } }
+@keyframes flash-red { from { opacity: 1; box-shadow: 0 0 20px 8px red; } to { opacity: 0.4; box-shadow: 0 0 10px 4px darkred; } }
 /* --- End Table Highlighting --- */
+/* <<< END OF UPDATED style.css >>> */
