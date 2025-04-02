@@ -45,7 +45,7 @@ button:active { transform: scale(0.98); } button:hover { background-color: #45a0
     pointer-events: none;
     /* --- ADJUST THESE --- */
     width: 80px;  /* Example: Slightly wider */
-    height: auto;
+    height: 100px;
     opacity: 0;
     overflow: hidden;
 }
@@ -67,7 +67,7 @@ button:active { transform: scale(0.98); } button:hover { background-color: #45a0
     object-fit: contain; /* Keep contain for now */
 }
 .carrying { position: absolute; top: -15px; left: 50%; transform: translateX(-50%); font-size: 30px; /* Base size for emoji fallback */ height: 38px; /* Adjusted size */ width: 38px; /* Adjusted size */ background-color: rgba(255,255,255,0.8); border-radius: 50%; padding: 1px; box-shadow: 0 1px 3px rgba(0,0,0,0.2); display: flex; justify-content: center; align-items: center; z-index: 11; }
-.carrying img { max-width: 100%; max-height: 90%; object-fit: contain; } /* Style for carried image */
+.carrying img { max-width: 100%; max-height: 100%; object-fit: contain; } /* Style for carried image */
 .delivery-radius { position: absolute; width: 80px; height: 80px; border-radius: 50%; border: 2px dashed rgba(0,0,0,0.3); transform: translate(-50%, -50%); pointer-events: none; opacity: 0; transition: opacity 0.3s; z-index: 9; }
 .delivery-radius.active { opacity: 0.5; }
 .customer { position: absolute; font-size: 30px; z-index: 5; cursor: pointer; transition: transform 0.3s ease, opacity 0.5s ease; transform: translateY(0); opacity: 0; }
