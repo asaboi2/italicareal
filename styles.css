@@ -35,8 +35,39 @@ button:active { transform: scale(0.98); } button:hover { background-color: #45a0
 .seat { width: 100%; height: 100%; position: relative; }
 
 /* --- Player & Customer Styles --- */
-.player { position: absolute; display: flex; flex-direction: column; align-items: center; transition: transform 0.1s linear; z-index: 10; user-select: none; pointer-events: none; width: 50px; height: 70px; opacity: 0; }
-.player-image { font-size: 40px; filter: drop-shadow(0 2px 3px rgba(0,0,0,0.3)); line-height: 1; }
+.player-image {
+    /* Keep existing styles like filter if desired */
+    filter: drop-shadow(0 2px 3px rgba(0,0,0,0.3));
+    line-height: 1; /* This might not be needed anymore */
+    /* Ensure the container fills the player dimensions if needed */
+    width: 100%;
+    height: 100%;
+    display: flex; /* Helps center the image if needed */
+    justify-content: center;
+    align-items: center;
+}
+
+.player-image img {
+    max-width: 100%;      /* Prevent image from being wider than the container */
+    max-height: 100%;     /* Prevent image from being taller than the container */
+    object-fit: contain;  /* Scale image down to fit while maintaining aspect ratio */
+    display: block;       /* Prevents potential extra space below the image */
+}
+
+/* You might need to adjust the main .player height if your image has a different aspect ratio */
+.player {
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    transition: transform 0.1s linear;
+    z-index: 10;
+    user-select: none;
+    pointer-events: none;
+    width: 50px; /* Keep or adjust */
+    height: 70px; /* Keep or adjust based on how the image looks */
+    opacity: 0;
+}
 .carrying { position: absolute; top: -15px; left: 50%; transform: translateX(-50%); font-size: 20px; /* Base size for emoji fallback */ height: 28px; /* Adjusted size */ width: 28px; /* Adjusted size */ background-color: rgba(255,255,255,0.8); border-radius: 50%; padding: 1px; box-shadow: 0 1px 3px rgba(0,0,0,0.2); display: flex; justify-content: center; align-items: center; z-index: 11; }
 .carrying img { max-width: 90%; max-height: 90%; object-fit: contain; } /* Style for carried image */
 .delivery-radius { position: absolute; width: 80px; height: 80px; border-radius: 50%; border: 2px dashed rgba(0,0,0,0.3); transform: translate(-50%, -50%); pointer-events: none; opacity: 0; transition: opacity 0.3s; z-index: 9; }
