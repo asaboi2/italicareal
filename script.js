@@ -423,7 +423,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
         money = 0; // Reset money *per level*
-        timeLeft = 180; // Reset time *per level*
+        timeLeft = 120; // Reset time *per level*
         gameRunning = true; isPaused = false;
         carryingFood = null; carryingFoodIcon = null; customers = []; isMoving = false;
         readyItemsOnPass = []; // Clear the pass state
