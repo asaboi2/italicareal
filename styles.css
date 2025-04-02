@@ -45,6 +45,7 @@ button:active { transform: scale(0.98); } button:hover { background-color: #45a0
     pointer-events: none;
     /* --- ADJUST THESE --- */
     width: 80px;  /* Example: Slightly wider */
+    height: auto;
     opacity: 0;
     overflow: hidden;
 }
