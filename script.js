@@ -71,6 +71,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let lastEventIndex = -1;
     let isOvenBroken = false;
     let backgroundSoundsStarted = false;
+    let customersSpawnedThisLevel = 0; // <<< Counter for event delay
 
     // --- Game Configuration ---
     const CUSTOMER_SPAWN_BASE_TIME = 5500;
@@ -78,6 +79,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const CUSTOMER_SPAWN_LEVEL_REDUCTION = 300;
     const CUSTOMER_SPAWN_RANDOM_FACTOR_MIN = 0.9;
     const CUSTOMER_SPAWN_RANDOM_FACTOR_MAX = 1.1;
+    const RANDOM_EVENT_MIN_CUSTOMERS = 3; // <<< Min customers before events can start
 
     const OVEN_ITEMS = [
         'Tomato Pie Slice', 'Tre Sale Slice', 'Garlic Girl', 'Toni Roni',
@@ -192,13 +194,9 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // --- MODIFIED: animatePrepProgress now handles pausing ---
     function animatePrepProgress(progressBarElement, durationMs, onComplete) {
         if (!progressBarElement) return;
-
-        // --- Store animation state on the element itself ---
-        // Clear any previous state before setting new one
-        delete progressBarElement._animation;
+        delete progressBarElement._animation; // Clear previous state first
         progressBarElement._animation = {
             duration: durationMs,
             onComplete: onComplete,
@@ -206,87 +204,42 @@ document.addEventListener('DOMContentLoaded', () => {
             pauseTime: null,
             reqId: null
         };
-        // --- End storing state ---
-
         function step(timestamp) {
             const animState = progressBarElement._animation;
-
-            if (!animState) {
-                // console.warn("Animation state missing during step, stopping.");
-                return; // Stop if state was cleared externally
-            }
-
-            if (!animState.startTime) {
-                animState.startTime = timestamp; // Initialize start time
-            }
-            let start = animState.startTime; // Use stored start time
-
-            // --- Handle Paused State ---
+            if (!animState) { return; }
+            if (!animState.startTime) { animState.startTime = timestamp; }
+            let start = animState.startTime;
             if (isPaused) {
-                if (animState.pauseTime === null) { // Record pause start time ONCE
-                    animState.pauseTime = timestamp;
-                    // console.log(`Pausing animation at ${timestamp}`);
-                }
-                // Keep requesting frames to check for resume
+                if (animState.pauseTime === null) { animState.pauseTime = timestamp; }
                 animState.reqId = requestAnimationFrame(step);
-                return; // Exit step early
+                return;
             }
-
-            // --- Handle Resuming State ---
             if (animState.pauseTime !== null) {
                 const pauseDuration = timestamp - animState.pauseTime;
-                animState.startTime += pauseDuration; // Adjust start time
-                start = animState.startTime;          // Update local start for calculation
-                // console.log(`Resumed animation. Adjusted start by ${pauseDuration.toFixed(0)}ms. New start: ${start}`);
-                animState.pauseTime = null; // Clear pause time
+                animState.startTime += pauseDuration;
+                start = animState.startTime;
+                animState.pauseTime = null;
             }
-            // --- End Resuming State ---
-
-            // Calculate progress based on adjusted start time
             const elapsed = timestamp - start;
             const progress = Math.min(1, elapsed / animState.duration);
-
-            // Apply visual progress
             progressBarElement.style.transform = `scaleX(${progress})`;
-
-            // --- Check Completion ---
             if (progress < 1) {
-                // Continue animation
                 animState.reqId = requestAnimationFrame(step);
             } else {
-                // Animation complete
-                // console.log("Animation complete for:", progressBarElement.closest('.food-station')?.dataset.item);
-
-                // Ensure game is still running/unpaused before completing
                 if (gameRunning && !isPaused) {
                      if (animState.onComplete) {
-                         try {
-                             animState.onComplete(); // Call original completion callback
-                         } catch(e) {
-                            console.error("Error in animation onComplete callback:", e);
-                         }
+                         try { animState.onComplete(); }
+                         catch(e) { console.error("Error in animation onComplete callback:", e); }
                      }
-                } else {
-                    // console.log("Animation reached end, but game not running/paused. Completion callback skipped.");
-                }
-
-                // Clean up animation state on the element
+                } else { }
                 delete progressBarElement._animation;
             }
         }
-
-        // --- Start the Animation ---
-        // Cancel any previous animation frame request for this specific state object
         if (progressBarElement._animation && progressBarElement._animation.reqId) {
             cancelAnimationFrame(progressBarElement._animation.reqId);
-            // console.log("Cancelled previous animation frame request.");
         }
-
-        // Initiate the first step
         progressBarElement._animation.reqId = requestAnimationFrame(step);
     }
-    // --- END MODIFIED: animatePrepProgress ---
-
 
     function addFoodToPass(foodId) {
         const itemData = foodItems[foodId];
@@ -303,75 +256,44 @@ document.addEventListener('DOMContentLoaded', () => {
         deliveryStation.appendChild(itemDiv);
         playSound(sfxReady);
     }
-// --- Table Generation (NEW Grid Layout) ---
-    function generateTables(container, numTables) {
-        container.innerHTML = ''; // Clear existing tables
-        const numCols = 3; // Define number of columns for the grid
-        const numRows = Math.ceil(numTables / numCols); // Calculate rows needed
 
+    function generateTables(container, numTables) {
+        container.innerHTML = '';
+        const numCols = 3;
+        const numRows = Math.ceil(numTables / numCols);
         const containerWidth = container.offsetWidth;
         const containerHeight = container.offsetHeight;
-
-        // Safety check if container dimensions aren't available yet
-        if (containerWidth === 0 || containerHeight === 0) {
-            console.warn("Dining area has no dimensions yet. Table generation might be incorrect.");
-            // Could potentially add a setTimeout retry here if needed, but often okay on DOMContentLoaded
-        }
-
-        // --- Define the usable area for tables as fractions of container size ---
-        // Adjust these fractions to control where the grid appears
-        const gridPaddingTopFraction = 0.50; // Start grid 50% from the top edge
-        const gridPaddingBottomFraction = 0.15; // Leave 15% space below the grid
-        const gridPaddingHorizontalFraction = 0.15; // Leave 15% space on left AND right
-
-        // Calculate the pixel dimensions of the usable grid area
+        if (containerWidth === 0 || containerHeight === 0) { console.warn("Dining area has no dimensions yet."); }
+        const gridPaddingTopFraction = 0.50;
+        const gridPaddingBottomFraction = 0.15;
+        const gridPaddingHorizontalFraction = 0.15;
         const usableHeight = containerHeight * (1 - gridPaddingTopFraction - gridPaddingBottomFraction);
         const usableWidth = containerWidth * (1 - gridPaddingHorizontalFraction * 2);
-
-        // Calculate the size of each cell in the grid
-        const cellHeight = numRows > 0 ? usableHeight / numRows : usableHeight; // Avoid division by zero if no rows
-        const cellWidth = numCols > 0 ? usableWidth / numCols : usableWidth;   // Avoid division by zero if no columns
-
-        // Calculate the starting pixel offset for the grid area
+        const cellHeight = numRows > 0 ? usableHeight / numRows : usableHeight;
+        const cellWidth = numCols > 0 ? usableWidth / numCols : usableWidth;
         const gridTopOffset = containerHeight * gridPaddingTopFraction;
         const gridLeftOffset = containerWidth * gridPaddingHorizontalFraction;
-
         console.log(`Generating ${numTables} tables in a ${numRows}x${numCols} grid.`);
-        // console.log(`Usable Area: ${usableWidth.toFixed(0)}x${usableHeight.toFixed(0)} starting at (${gridLeftOffset.toFixed(0)}, ${gridTopOffset.toFixed(0)})`);
-        // console.log(`Cell Size: ${cellWidth.toFixed(0)}x${cellHeight.toFixed(0)}`);
-
         for (let i = 0; i < numTables; i++) {
             const table = document.createElement('div');
             table.classList.add('table');
             const tableIdNum = i + 1;
             table.id = `table-${tableIdNum}`;
             table.dataset.table = tableIdNum;
-
-            // Create the single seat for the customer
             const seat = document.createElement('div');
             seat.classList.add('seat');
             table.appendChild(seat);
-
-            // Determine the row and column for the current table index
             const row = Math.floor(i / numCols);
             const col = i % numCols;
-
-            // Calculate the center coordinates of the table's assigned cell
-            // Add half cell dimensions to the starting offset + row/col offsets
             const cellCenterX = gridLeftOffset + (col * cellWidth) + (cellWidth / 2);
             const cellCenterY = gridTopOffset + (row * cellHeight) + (cellHeight / 2);
-
-            // Apply the calculated position using pixels for precision
-            table.style.position = 'absolute'; // Ensure absolute positioning is set
+            table.style.position = 'absolute';
             table.style.top = `${cellCenterY}px`;
             table.style.left = `${cellCenterX}px`;
-            // Use transform to center the table element itself on these coordinates
             table.style.transform = 'translate(-50%, -50%)';
-
             container.appendChild(table);
         }
     }
-    // --- End NEW generateTables function ---
 
     // --- Event Listeners ---
     let keysPressed = {};
@@ -422,38 +344,31 @@ document.addEventListener('DOMContentLoaded', () => {
                  progressBar.style.transform = 'scaleX(0)';
                  const prepTimeMs = item.prepTime * 1000;
                  playSound(sfxCook);
-
-                 // Call the MODIFIED animation function
                  animatePrepProgress(progressBar, prepTimeMs, () => {
-                    // This callback now only runs if game is running and not paused
-                    progressBar.style.backgroundColor = '#4CAF50'; // Green flash
+                    progressBar.style.backgroundColor = '#4CAF50';
                     station.classList.remove('preparing');
                     addFoodToPass(foodId);
-                    setTimeout(() => { // Reset visual state after short delay
+                    setTimeout(() => {
                          progressBar.style.transform = 'scaleX(0)';
                          progressBar.style.backgroundColor = 'rgba(0, 0, 0, 0.2)';
                          station.style.pointerEvents = 'auto';
                     }, 200);
                  });
             } else {
-                 // --- MODIFIED: Fallback setTimeout check ---
                  console.warn("Progress bar not found for station:", foodId);
                  playSound(sfxCook);
                  const prepTimeMs = (item.prepTime || 0.1) * 1000;
                  setTimeout(() => {
-                     // CHECK if game state allows completion
                      if (!gameRunning || isPaused) {
                          console.log(`Timeout finished for ${foodId}, but game not running or paused. Aborting completion.`);
-                         station.classList.remove('preparing'); // Still reset visual state
+                         station.classList.remove('preparing');
                          station.style.pointerEvents = 'auto';
-                         return; // Do not add food to pass
+                         return;
                      }
-                     // If okay, complete as normal
                      station.classList.remove('preparing');
                      addFoodToPass(foodId);
                      station.style.pointerEvents = 'auto';
                  }, prepTimeMs);
-                 // --- END MODIFIED: Fallback setTimeout check ---
              }
         });
     });
@@ -571,11 +486,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function startGame() {
         if (gameRunning && !isPaused) return;
-         console.log(`--- startGame: Starting Level ${level} ---`);
+        console.log(`--- startGame: Starting Level ${level} ---`);
         money = 0; timeLeft = 180; gameRunning = true; isPaused = false;
         carryingFood = null; carryingFoodIcon = null; customers = [];
         readyItemsOnPass = []; lastEventIndex = -1; isOvenBroken = false;
         disableOvenStations(false); backgroundSoundsStarted = false;
+        customersSpawnedThisLevel = 0; // <<< Reset counter
         console.log("--- startGame: State reset ---");
         moneyDisplay.textContent = money; levelDisplay.textContent = level;
         timerDisplay.textContent = timeLeft; carryingDisplay.innerHTML = '';
@@ -591,7 +507,7 @@ document.addEventListener('DOMContentLoaded', () => {
         foodStations.forEach(s => {
             s.classList.remove('preparing'); s.style.pointerEvents = 'auto';
             const pb = s.querySelector('.prep-progress-bar');
-            if (pb) { pb.style.transform = 'scaleX(0)'; pb.style.backgroundColor = 'rgba(0, 0, 0, 0.2)'; delete pb._animation; } // Clear animation state
+            if (pb) { pb.style.transform = 'scaleX(0)'; pb.style.backgroundColor = 'rgba(0, 0, 0, 0.2)'; delete pb._animation; }
         });
         stopPlayerMovement();
         console.log("--- startGame: Cleared dynamic elements & stations, Generated Tables ---");
@@ -619,7 +535,6 @@ document.addEventListener('DOMContentLoaded', () => {
         deliveryRadius.classList.remove('active');
         stopLoopingSound(bgmAudio); stopLoopingSound(ambienceAudio);
         backgroundSoundsStarted = false;
-        // Clear any leftover animation states from progress bars
         foodStations.forEach(s => { const pb = s.querySelector('.prep-progress-bar'); if (pb) delete pb._animation; });
         const moneyTarget = levelThresholds[level] || 99999;
         const levelWon = money >= moneyTarget;
@@ -655,8 +570,6 @@ document.addEventListener('DOMContentLoaded', () => {
          isPaused = true; clearInterval(timerInterval); stopPlayerMovement();
          if(backgroundSoundsStarted) { if(bgmAudio) bgmAudio.pause(); if(ambienceAudio) ambienceAudio.pause(); }
          console.log("Game Paused");
-         // Note: requestAnimationFrame loops in animatePrepProgress will continue,
-         // but they will check 'isPaused' and not advance the animation.
      }
 
      function resumeGame() {
@@ -667,10 +580,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 playLoopingSound(bgmAudio, 0.3); playLoopingSound(ambienceAudio, 0.4);
             }
             clearInterval(timerInterval); timerInterval = setInterval(gameTick, 1000);
-            scheduleNextCustomer();
+            scheduleNextCustomer(); // Check if needs scheduling
             console.log("Game Resumed");
-            // Note: animatePrepProgress 'step' functions will detect isPaused is false
-            // and automatically calculate the resume time adjustment.
          } else {
               console.log("Game NOT Resumed (already ended or time up)");
               if (timeLeft <= 0 && gameRunning) { endGame(); }
@@ -679,9 +590,20 @@ document.addEventListener('DOMContentLoaded', () => {
 
      function gameTick() {
          if (!gameRunning || isPaused) { clearInterval(timerInterval); return; }
-         timeLeft--; timerDisplay.textContent = timeLeft; updateCustomers();
-         if (timeLeft <= 0) { endGame(); return; }
-         if (Math.random() < 0.02 && eventModal.classList.contains('hidden')) { triggerRandomEvent(); }
+         timeLeft--;
+         timerDisplay.textContent = timeLeft;
+         updateCustomers();
+
+         if (timeLeft <= 0) {
+             endGame();
+             return;
+         }
+
+         // --- MODIFIED: Check customer count before random event check ---
+         if (customersSpawnedThisLevel >= RANDOM_EVENT_MIN_CUSTOMERS && Math.random() < 0.02 && eventModal.classList.contains('hidden')) {
+             triggerRandomEvent();
+         }
+         // --- END MODIFIED ---
      }
 
     function updateCustomers() {
@@ -843,7 +765,11 @@ document.addEventListener('DOMContentLoaded', () => {
                     spawnTime: Date.now(), patienceTotal: patienceTotal, patienceCurrent: patienceTotal,
                     moodIndicator: moodIndicator, state: 'waiting'
                 };
-                customers.push(newCustomer); tableElement.classList.add('table-highlight');
+                customers.push(newCustomer);
+                customersSpawnedThisLevel++; // <<< Increment counter
+                // console.log(`Customer ${customersSpawnedThisLevel} spawned this level.`); // Optional debug
+
+                tableElement.classList.add('table-highlight');
             } else { }
         } catch (error) { console.error("Error during spawnCustomer:", error); }
         scheduleNextCustomer();
