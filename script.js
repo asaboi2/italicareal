@@ -65,39 +65,53 @@ document.addEventListener('DOMContentLoaded', () => {
     let readyItemsOnPass = []; // Will store { foodId: 'Name', icon: 'src or emoji' }
     let lastEventIndex = -1;
 
-    // --- Game Configuration ---
-    const foodItems = { // Same as previous version...
-        // Appetizers
+  // --- Game Configuration ---
+    const foodItems = {
+        // Appetizers / For the Table / Small Plates (Combined for game category)
         'Bread Basket': { image: 'assets/bread basket.png', price: 5, category: 'Appetizers', prepTime: 1 },
         'Cherry Tomato & Garlic Confit': { image: 'assets/cherry confit.png', price: 12, category: 'Appetizers', prepTime: 2 },
+        'Ahi Crudo': { image: 'assets/ahi crudo.png', price: 20, category: 'Appetizers', prepTime: 3 }, // NEW
         'Whipped Ricotta': { image: 'assets/ricotta.png', price: 14, category: 'Appetizers', prepTime: 2 },
-        'Marinated Olives': { image: 'assets/olives.png', price: 6, category: 'Appetizers', prepTime: 1 },
+        'Raviolo al Uovo': { image: 'assets/raviolo.png', price: 8, category: 'Appetizers', prepTime: 2.5 }, // NEW
+        'Prosciutto e Melone': { image: 'assets/prosciutto e melone.png', price: 10, category: 'Appetizers', prepTime: 1.5 }, // NEW
         'Crispy Gnudi': { image: 'assets/crispy gnudi.png', price: 12, category: 'Appetizers', prepTime: 3.5 },
+        'Marinated Olives': { image: 'assets/olives.png', price: 6, category: 'Appetizers', prepTime: 1 },
+
         // Salads
-        'House Salad': { image: 'assets/house salad.png', price: 12, category: 'Salads', prepTime: 2.5 },
-        'Spicy Caesar Salad': { image: 'assets/spicy caesar.png', price: 14, category: 'Salads', prepTime: 3 },
+        'House Salad': { image: 'assets/house salad.png', price: 12, category: 'Salads', prepTime: 2.5 }, // Name matches menu intent
+        'Spicy Caesar Salad': { image: 'assets/spicy caesar.png', price: 14, category: 'Salads', prepTime: 3 }, // Name matches menu intent
+        'Mean Green Salad': { image: 'assets/mean green salad.png', price: 12, category: 'Salads', prepTime: 2.5 }, // NEW
+        'Summer Tomato Panzanella': { image: 'assets/tomato panzanella.png', price: 10, category: 'Salads', prepTime: 2 }, // NEW
+
         // Pasta
         'Cacio e Pepe': { image: 'assets/Cacio e pepe.png', price: 20, category: 'Pasta', prepTime: 4 },
         'Seeing Red Pesto': { image: 'assets/seeing red.png', price: 24, category: 'Pasta', prepTime: 4 },
         'Short Rib Agnolotti': { image: 'assets/agnolotti.png', price: 32, category: 'Pasta', prepTime: 5 },
-        'Pomodoro': { image: 'assets/pomodoro.png', price: 26, category: 'Pasta', prepTime: 3.5 },
-        // Pizza
-        'Tomato Pie Slice': { image: 'assets/tomato pie.png', price: 5, category: 'Pizza', prepTime: 3 }, // Using full pie image
-        'Tre Sale Slice': { image: 'assets/tresale.png', price: 6, category: 'Pizza', prepTime: 3.5 }, // Using full pizza image
-        'Garlic Girl': { image: 'assets/tomato pie.png', price: 25, category: 'Pizza', prepTime: 4.5 }, // Placeholder Image
-        'Toni Roni': { image: 'assets/toni roni.png', price: 26, category: 'Pizza', prepTime: 5 },
+        'Pomodoro': { image: 'assets/pomodoro.png', price: 26, category: 'Pasta', prepTime: 3.5 }, // Assuming Spaghetti Pomodoro
+
+        // Pizza (Using individual Neopolitan names, and Slice names for Grandma)
+        'Tre Sale Slice': { image: 'assets/tresale.png', price: 6, category: 'Pizza', prepTime: 3.5 }, // Slice from Grandma
+        'Tomato Pie Slice': { image: 'assets/tomato pie.png', price: 5, category: 'Pizza', prepTime: 3 }, // Slice from Grandma
+        'Garlic Girl': { image: 'assets/garlic girl-Photoroom.png', price: 25, category: 'Pizza', prepTime: 4.5 }, // Neopolitan, Updated Image
+        'Toni Roni': { image: 'assets/toni roni.png', price: 26, category: 'Pizza', prepTime: 5 }, // Neopolitan
+
         // Mains
-        'Chicken Cutlets': { image: 'assets/cutlets.png', price: 28, category: 'Mains', prepTime: 5 },
+        'Sweet & Spicy Chicken Cutlets': { image: 'assets/cutlets.png', price: 28, category: 'Mains', prepTime: 5 }, // UPDATED NAME
         'Roasted Half-Chicken': { image: 'assets/half chicken.png', price: 34, category: 'Mains', prepTime: 7 },
-        'Grilled Salmon': { image: 'assets/salmon.png', price: 36, category: 'Mains', prepTime: 4.5 },
-        'Hanger Steak': { image: 'assets/hangar steak.png', price: 38, category: 'Mains', prepTime: 6 }, // Note 'hangar' in filename
-        // Sides
+        'Grilled Sockeye Salmon': { image: 'assets/salmon.png', price: 36, category: 'Mains', prepTime: 4.5 }, // UPDATED NAME
+        'Seared Hanger Steak': { image: 'assets/hangar steak.png', price: 38, category: 'Mains', prepTime: 6 }, // UPDATED NAME
+
+        // Sides / A La Carte
         'Mushroom Risotto': { image: 'assets/mushroom risotto.png', price: 12, category: 'Sides', prepTime: 5 },
-        'Crispy Polenta': { image: 'assets/polenta.png', price: 10, category: 'Sides', prepTime: 4 },
-        'Mashed Potatoes': { image: 'assets/mashed potatoes.png', price: 10, category: 'Sides', prepTime: 3 },
-        'Shoestring Fries': { emoji: '🍟', price: 6, category: 'Sides', prepTime: 2.5 }, // Placeholder Emoji
-        'Grilled Asparagus': { emoji: '🍢', price: 8, category: 'Sides', prepTime: 3 }, // Placeholder Emoji
-        // Drinks
+        'Crispy Baked Polenta': { image: 'assets/polenta.png', price: 10, category: 'Sides', prepTime: 4 }, // UPDATED NAME
+        'Garlic Confit Mashed Potatoes': { image: 'assets/mashed potatoes.png', price: 10, category: 'Sides', prepTime: 3 }, // UPDATED NAME
+        'Parmigiano-Crusted Roast Fingerlings': { image: 'assets/roasted fingerling.png', price: 8, category: 'Sides', prepTime: 3 }, // NEW
+        'Shoestring Fries': { image: 'assets/shoestring fries.png', price: 6, category: 'Sides', prepTime: 2.5 }, // UPDATED IMAGE
+        'Blackened Eggplant': { image: 'assets/eggplant.png', price: 8, category: 'Sides', prepTime: 2.5 }, // NEW
+        'Sauteed Rainbow Chard': { image: 'assets/rainbow chard.png', price: 6, category: 'Sides', prepTime: 2 }, // NEW
+        'Grilled Asparagus': { image: 'assets/grilled asparagus.png', price: 8, category: 'Sides', prepTime: 3 }, // UPDATED IMAGE
+
+        // Drinks (Kept for gameplay)
         'Water': { emoji: '💧', price: 0, category: 'Drinks', prepTime: 0.5 },
         'Wine': { emoji: '🍷', price: 12, category: 'Drinks', prepTime: 0.5 },
         'Soda': { emoji: '🥤', price: 3, category: 'Drinks', prepTime: 0.5 }
