@@ -44,7 +44,7 @@ button:active { transform: scale(0.98); } button:hover { background-color: #45a0
     user-select: none;
     pointer-events: none;
     /* --- ADJUST THESE --- */
-    width: 90px;  /* Example: Slightly wider */
+    width: 80px;  /* Example: Slightly wider */
     opacity: 0;
     overflow: hidden;
 }
